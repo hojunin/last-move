@@ -84,8 +84,9 @@ export async function signUpAction(formData: FormData) {
       if (
         error &&
         typeof error === "object" &&
-        "type" in error &&
-        error.type === "NEXT_REDIRECT"
+        "digest" in error &&
+        typeof error.digest === "string" &&
+        error.digest.startsWith("NEXT_REDIRECT")
       ) {
         throw error;
       }
@@ -184,8 +185,9 @@ export async function signInAction(formData: FormData) {
       if (
         error &&
         typeof error === "object" &&
-        "type" in error &&
-        error.type === "NEXT_REDIRECT"
+        "digest" in error &&
+        typeof error.digest === "string" &&
+        error.digest.startsWith("NEXT_REDIRECT")
       ) {
         throw error;
       }
