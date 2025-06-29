@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Plus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import AddItemModal from "./AddItemModal";
+import AddItemModal from "@/components/AddItemModal";
 
 export default function GlobalNav() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

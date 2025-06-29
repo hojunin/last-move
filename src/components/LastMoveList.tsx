@@ -1,8 +1,8 @@
-import { LastMoveItem } from "@/lib/actions";
-import LastMoveCard from "./LastMoveCard";
+import { ActivityWithLastMove } from "@/lib/actions";
+import LastMoveCard from "@/components/LastMoveCard";
 
 interface LastMoveListProps {
-  items: LastMoveItem[];
+  items: ActivityWithLastMove[];
 }
 
 export default function LastMoveList({ items }: LastMoveListProps) {
@@ -22,7 +22,7 @@ export default function LastMoveList({ items }: LastMoveListProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {items.map((item) => (
         <LastMoveCard key={item.id} item={item} />
       ))}
