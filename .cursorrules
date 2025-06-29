@@ -29,15 +29,46 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: AddItemModal POST 무한 요청 문제 해결
+## Current Task: LastMoveList 카테고리별 섹션 표시 기능 구현
+
+**Task Overview:**
+LastMoveList 컴포넌트를 카테고리별로 섹션을 나누어 표시하도록 개선
+- 현재 존재하는 카테고리만 섹션으로 표시
+- 각 카테고리별로 활동들을 그룹화하여 표시
+- 카테고리 이름과 아이콘을 섹션 헤더로 표시
+
+**구현 계획:**
+[X] 1. 카테고리 데이터 구조 분석
+  [X] ActivityWithLastMove 타입에 카테고리 정보 포함 여부 확인
+  [X] actions.ts에서 카테고리 정보 조인하여 가져오기
+[X] 2. 카테고리별 그룹화 로직 구현
+  [X] 활동 데이터를 카테고리별로 그룹화
+  [X] 카테고리 순서 정렬 (sort_order 기준, 기타는 마지막)
+[X] 3. 섹션 UI 구현
+  [X] 카테고리 섹션 헤더 컴포넌트
+  [X] 각 섹션 내 활동 카드 그리드 레이아웃
+  [X] 섹션 간 적절한 간격 및 스타일링
+
+**카테고리 목록 (참고):**
+💪 건강, 📚 학습, 🏠 생활, 🎨 취미, 👥 인간관계, 💼 업무, 🌱 자기계발, 📝 기타
+
+**완료된 개선사항:**
+- ✅ ActivityWithLastMove 타입 확장: category_id, category_name, category_icon, category_sort_order 필드 추가
+- ✅ getActivitiesWithLastMove 함수 수정: categories 테이블 조인으로 카테고리 정보 포함
+- ✅ 카테고리별 그룹화: Map을 사용한 효율적인 그룹화 로직
+- ✅ 카테고리 정렬: sort_order 기준 정렬, 기타 카테고리는 마지막 배치
+- ✅ 섹션 헤더: 카테고리 아이콘, 이름, 항목 수 표시
+- ✅ 반응형 그리드: 각 섹션 내 카드들의 반응형 배치
+- ✅ 빈 상태 처리: 활동이 없을 때 안내 메시지 유지
+
+**수정된 파일:**
+- `src/lib/actions.ts`: ActivityWithLastMove 타입 확장 및 getActivitiesWithLastMove 함수 수정
+- `src/components/LastMoveList.tsx`: 카테고리별 섹션 표시 로직 구현
+
+## Previous Task: AddItemModal POST 무한 요청 문제 해결 (완료)
 
 **Task Overview:**
 + 아이콘을 누르면 POST 요청이 무한으로 발생하는 문제 해결
-
-**문제 분석:**
-- useActionState에서 Server Action 완료 후 onClose()와 form.reset() 호출
-- 이로 인해 컴포넌트 리렌더링이 발생하면서 무한 루프 가능성
-- Server Action 내부에서 부수 효과(side effects) 발생
 
 **해결 방법:**
 [X] 1. Server Action 정리

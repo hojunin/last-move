@@ -47,6 +47,10 @@ export interface ActivityWithLastMove {
   id: number;
   title: string;
   category: string | null;
+  category_id: number | null;
+  category_name: string | null;
+  category_icon: string | null;
+  category_sort_order: number | null;
   description: string | null;
   last_executed_at: string | null;
   move_count: number;
@@ -106,14 +110,19 @@ export async function getActivitiesWithLastMove(): Promise<
         a.id,
         a.title,
         a.category,
+        a.category_id,
+        c.name as category_name,
+        c.icon as category_icon,
+        c.sort_order as category_sort_order,
         a.description,
         MAX(m.executed_at) as last_executed_at,
         COUNT(m.id) as move_count,
         MAX(DATE(m.executed_at)) as last_move_date
       FROM activities a
+      LEFT JOIN categories c ON a.category_id = c.id
       LEFT JOIN moves m ON a.id = m.activity_id
       WHERE a.is_active = true AND a.user_id = ${userId}
-      GROUP BY a.id, a.title, a.category, a.description
+      GROUP BY a.id, a.title, a.category, a.category_id, c.name, c.icon, c.sort_order, a.description
       ORDER BY last_executed_at ASC NULLS LAST
     `;
 
