@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Settings, Bell, User, LogOut } from "lucide-react";
+import { Plus, Bell, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -108,10 +108,6 @@ export default function GlobalNavClient({ user }: GlobalNavClientProps) {
                 </div>
               </SheetContent>
             </Sheet>
-
-            <Button variant="outline" size="icon" aria-label="설정">
-              <Settings className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </nav>

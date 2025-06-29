@@ -25,6 +25,7 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 - Add debug information to stderr while keeping the main output clean in stdout for better pipeline integration
 - When using seaborn styles in matplotlib, use 'seaborn-v0_8' instead of 'seaborn' as the style name due to recent seaborn version changes
 - Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
+- For Korean input in React, use onCompositionStart/End events to prevent character separation during IME input
 
 # Scratchpad
 
@@ -113,25 +114,56 @@ LastMove 애플리케이션에 사용자 인증 시스템 추가
   [ ] 홈 화면 추가 안내
   [ ] iOS 알림 권한 처리
 
-## Current Task: UI/UX 개선 - 인증 페이지 디자인 업데이트
+## Current Task: AddItemModal 완전 리팩토링 - 새 활동 추가 전용
 
 **Task Overview:**
-shadcn/ui 인증 블록 디자인을 참고하여 회원가입/로그인 페이지 디자인 개선
+AddItemModal을 완전히 새로 작성하여 새로운 활동만 추가하도록 변경
+- 활동 검색 기능 제거
+- 새 활동 추가 시 반복 주기 설정 기능 추가
+- 중복 활동 체크 및 에러 처리
+- 단순화된 UX로 개선
 
-**UI 개선 계획:**
-[X] 1. shadcn/ui 인증 블록 참고 자료 확인
-[X] 2. 회원가입 페이지 디자인 업데이트
-  [X] 현대적인 레이아웃 적용 (min-h-svh, flex, bg-muted)
-  [X] 브랜드 로고 및 아이콘 추가 (Activity, CheckCircle)
-  [X] 카드 기반 폼 디자인
-  [X] 일관된 간격 및 타이포그래피
-  [X] 개선된 에러 메시지 스타일 (destructive 테마)
-[X] 3. 로그인 페이지 디자인 업데이트
-  [X] 회원가입 페이지와 일관된 스타일 적용
-  [X] 브랜드 로고 및 네비게이션 링크
-  [X] 폼 레이아웃 및 스타일링 개선
+**새로운 기능 요구사항:**
+[X] 1. 활동 검색 기능 완전 제거
+[X] 2. 새 활동 추가 폼만 유지
+[X] 3. 반복 주기 설정 추가
+  [X] 매일, 매주, 매월, 사용자 정의 옵션
+  [X] 사용자 정의: 며칠마다, 몇 주마다 설정
+[X] 4. 중복 활동 체크 및 에러 메시지 (Server Action에서 처리)
+[X] 5. 단순화된 단일 폼 UI
+[X] 6. Responsive Dialog 유지 (모바일 Drawer, 데스크톱 Dialog)
 
-**완료된 개선사항:**
+**완료된 리팩토링:**
+- ✅ 활동 검색 기능 완전 제거 (Search, Badge import 제거)
+- ✅ 단일 폼 UI로 단순화 (step 상태 제거)
+- ✅ 반복 주기 선택 기능 추가:
+  - 매일, 매주, 매월, 사용자 정의 옵션
+  - 사용자 정의 시 며칠마다/몇 주마다 설정
+- ✅ Zod 스키마 확장 (frequency, customDays, customWeeks)
+- ✅ shadcn/ui Select 컴포넌트 활용
+- ✅ 폼 검증 개선 (반복 주기 필수 선택)
+- ✅ 사용자 친화적 UI (배경색, 설명 텍스트)
+- ✅ Responsive Dialog 패턴 유지
+
+**이전 완료된 작업:**
+- ✅ shadcn/ui Drawer 컴포넌트 설치 및 설정
+- ✅ useMediaQuery 훅 구현 (src/hooks/use-media-query.ts)
+- ✅ Responsive Dialog 패턴 적용:
+  - 768px 이상: Dialog 컴포넌트 사용
+  - 768px 미만: Drawer 컴포넌트 사용
+- ✅ UX 개선:
+  - 활동 선택 시 바로 Move 생성 및 모달 닫기
+  - 검색 플레이스홀더 텍스트 개선 ("활동 검색 후 바로 추가...")
+  - Plus 아이콘으로 추가 액션 시각화
+  - Drawer에 설명 텍스트 추가
+- ✅ 공통 컨텐츠 컴포넌트 분리로 코드 중복 제거
+- ✅ 모바일 최적화: Drawer의 스와이프 제스처 및 터치 인터페이스
+- ✅ 한글 입력 문제 해결: onCompositionStart/End 이벤트로 IME 처리
+- ✅ react-hook-form 리팩토링: 폼 검증 및 상태 관리 개선
+- ✅ Zod 스키마 검증: 타입 안전한 폼 데이터 검증
+- ✅ shadcn/ui Form 컴포넌트: 일관된 폼 UI 및 에러 처리
+
+**이전 완료된 작업:**
 - ✅ shadcn/ui 인증 블록 디자인 패턴 적용
 - ✅ 현대적인 레이아웃: `min-h-svh`, `bg-muted`, flexbox 중앙 정렬
 - ✅ 브랜드 아이덴티티: Activity 아이콘과 LastMove 로고
