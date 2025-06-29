@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useState, useActionState } from "react";
 import { useForm, type ControllerRenderProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -67,7 +66,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   });
 
   // NOTE: Server Action 상태 관리
-  const [state, formAction] = useFormState(
+  const [state, formAction] = useActionState(
     async (
       prevState: { success: boolean; error: string | null },
       formData: FormData
