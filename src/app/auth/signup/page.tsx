@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,6 @@ import { toast } from "sonner";
 
 export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true);
@@ -26,23 +24,18 @@ export default function SignUpPage() {
     try {
       const result = await signUpAction(formData);
 
-      if (result.error) {
+      // 에러가 있는 경우에만 처리 (성공 시에는 서버에서 리다이렉트됨)
+      if (result?.error) {
         toast.error("회원가입 실패", {
           description: result.error,
         });
-      } else if (result.success) {
-        toast.success("회원가입 완료! 🎉", {
-          description:
-            "LastMove에 오신 것을 환영합니다! 잠시 후 메인 페이지로 이동합니다.",
-        });
-
-        // 약간의 지연 후 리다이렉트 (toast 메시지를 볼 수 있도록)
-        setTimeout(() => {
-          router.push("/");
-          router.refresh();
-        }, 2000);
       }
     } catch (error) {
+      // NEXT_REDIRECT 에러는 정상적인 리다이렉트이므로 무시
+      if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
+        return;
+      }
+
       console.error("회원가입 처리 오류:", error);
       toast.error("회원가입 오류", {
         description: "회원가입 중 예상치 못한 오류가 발생했습니다",

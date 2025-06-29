@@ -65,17 +65,37 @@ export async function signUpAction(formData: FormData) {
 
     console.log("✅ 새 사용자 생성:", result.rows[0]);
 
-    // 자동 로그인
-    await signIn("credentials", {
-      email: validatedData.email,
-      password: validatedData.password,
-      redirect: false,
-    });
+    // 자동 로그인 (회원가입 후 바로 로그인 처리)
+    try {
+      await signIn("credentials", {
+        email: validatedData.email,
+        password: validatedData.password,
+        redirectTo: "/", // 성공 시 메인 페이지로 리다이렉트
+      });
 
-    return {
-      success: true,
-      user: result.rows[0],
-    };
+      // 이 코드는 실행되지 않음 (redirect 발생)
+      return {
+        success: true,
+        user: result.rows[0],
+      };
+    } catch (error: unknown) {
+      // signIn에서 redirect가 발생하면 NEXT_REDIRECT 에러가 throw됨
+      // 이는 정상적인 동작이므로 다시 throw
+      if (
+        error &&
+        typeof error === "object" &&
+        "type" in error &&
+        error.type === "NEXT_REDIRECT"
+      ) {
+        throw error;
+      }
+
+      console.error("자동 로그인 오류:", error);
+      return {
+        error:
+          "회원가입은 완료되었지만 자동 로그인에 실패했습니다. 다시 로그인해주세요.",
+      };
+    }
   } catch (error) {
     console.error("회원가입 오류:", error);
 
@@ -135,24 +155,41 @@ export async function signInAction(formData: FormData) {
       };
     }
 
-    // NextAuth signIn 호출
-    const result = await signIn("credentials", {
-      email: validatedData.email,
-      password: validatedData.password,
-      redirect: false,
-    });
+    // NextAuth signIn 호출 (redirect를 서버에서 처리)
+    try {
+      await signIn("credentials", {
+        email: validatedData.email,
+        password: validatedData.password,
+        redirectTo: "/", // 성공 시 메인 페이지로 리다이렉트
+      });
 
-    if (result?.error) {
-      console.error("NextAuth signIn 오류:", result.error);
+      // 이 코드는 실행되지 않음 (redirect 발생)
+      return {
+        success: true,
+      };
+    } catch (error: unknown) {
+      // signIn에서 redirect가 발생하면 NEXT_REDIRECT 에러가 throw됨
+      // 이는 정상적인 동작이므로 다시 throw
+      if (
+        error &&
+        typeof error === "object" &&
+        "type" in error &&
+        error.type === "NEXT_REDIRECT"
+      ) {
+        throw error;
+      }
+
+      console.error("NextAuth signIn 오류:", error);
       return {
         error: "로그인 처리 중 오류가 발생했습니다",
       };
     }
-
-    return {
-      success: true,
-    };
   } catch (error) {
+    // NEXT_REDIRECT 에러는 다시 throw (정상적인 리다이렉트)
+    if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
+      throw error;
+    }
+
     console.error("로그인 오류:", error);
 
     if (error instanceof z.ZodError) {

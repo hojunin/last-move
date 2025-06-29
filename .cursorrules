@@ -29,7 +29,42 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: User Authentication System Implementation
+## Current Task: 모바일 로그인 세션 문제 해결 (완료)
+
+**Task Overview:**
+모바일에서 로그인 성공 토스트 메시지가 표시되지만 새로고침 시 다시 로그인 페이지로 돌아가는 문제 해결
+
+**문제 분석:**
+- Server Action에서 `redirect: false` 옵션으로 NextAuth signIn 호출
+- 클라이언트에서 수동으로 리다이렉트 처리
+- 세션이 제대로 생성되지 않아 미들웨어에서 인증 실패로 판단
+
+**해결 방법:**
+[X] 1. Server Action 수정
+  [X] signInAction에서 `redirectTo: "/"` 옵션 사용
+  [X] NEXT_REDIRECT 에러 처리 추가 (정상적인 리다이렉트)
+  [X] TypeScript 타입 안전성 확보 (unknown 타입 사용)
+[X] 2. 로그인 페이지 수정
+  [X] 클라이언트 수동 리다이렉트 로직 제거
+  [X] NEXT_REDIRECT 에러 무시 처리
+  [X] 에러 시에만 toast 표시
+[X] 3. 회원가입 페이지 수정
+  [X] 동일한 방식으로 자동 로그인 처리
+  [X] 클라이언트 수동 리다이렉트 로직 제거
+  [X] NEXT_REDIRECT 에러 무시 처리
+
+**수정된 파일:**
+- `src/lib/auth-actions.ts`: Server Action에서 서버 사이드 리다이렉트 처리
+- `src/app/auth/signin/page.tsx`: 클라이언트 리다이렉트 로직 제거
+- `src/app/auth/signup/page.tsx`: 클라이언트 리다이렉트 로직 제거
+
+**핵심 개선사항:**
+- ✅ NextAuth의 서버 사이드 리다이렉트 활용
+- ✅ NEXT_REDIRECT 에러 올바른 처리
+- ✅ 세션 생성 후 즉시 리다이렉트로 안정성 확보
+- ✅ TypeScript 타입 안전성 유지 (any 타입 사용 금지)
+
+## Previous Task: User Authentication System Implementation
 
 **Task Overview:**
 LastMove 애플리케이션에 사용자 인증 시스템 추가
@@ -114,7 +149,71 @@ LastMove 애플리케이션에 사용자 인증 시스템 추가
   [ ] 홈 화면 추가 안내
   [ ] iOS 알림 권한 처리
 
-## Current Task: Toast 기반 로그인 에러 처리 구현
+## Current Task: AddItemModal 단순화 및 개선 (완료)
+
+**Task Overview:**
+AddItemModal을 사용자 요청에 맞게 단순화 및 개선
+1. 한글 입력 IME 문제 해결 (자음/모음 분리 현상)
+2. 카테고리를 Select 컴포넌트로 변경 + DB 테이블 관리
+3. 설명 필드 제거
+4. 반복 주기 필드 제거
+
+**개선 계획:**
+[X] 1. 한글 입력 IME 처리
+  [X] onCompositionStart/End 이벤트 추가
+  [X] 입력 상태 관리 개선
+  [X] 제출 버튼 비활성화 조건에 isComposing 추가
+[X] 2. 카테고리 DB 테이블 설계 및 생성
+  [X] categories 테이블 생성
+  [X] 기본 카테고리 데이터 삽입 (8개 카테고리)
+  [X] activities 테이블과 FK 관계 설정
+[X] 3. 카테고리 Select 컴포넌트 구현
+  [X] 카테고리 조회 Server Action 추가 (getCategories)
+  [X] Select UI 컴포넌트로 변경
+  [X] 아이콘과 이름 표시
+  [X] CategorySelect 서버 컴포넌트 분리
+[X] 4. 폼 스키마 단순화
+  [X] description 필드 제거
+  [X] frequency 관련 필드 제거
+  [X] Zod 스키마 업데이트 (category_id 필수)
+[X] 5. UI 단순화
+  [X] 불필요한 필드 제거
+  [X] 폼 레이아웃 정리
+  [X] Drawer 설명 텍스트 업데이트
+[X] 6. Server Action 폼 처리
+  [X] useFormState로 Server Action 처리
+  [X] isLoading 상태 제거
+  [X] 에러 처리 개선
+  [X] TypeScript 타입 안전성 확보
+
+**완료된 개선사항:**
+- ✅ 한글 IME 처리: onCompositionStart/End 이벤트로 입력 상태 관리
+- ✅ 카테고리 DB 테이블: 8개 기본 카테고리 (건강, 학습, 생활, 취미, 인간관계, 업무, 자기계발, 기타)
+- ✅ 카테고리 Select: 아이콘과 이름이 표시되는 드롭다운
+- ✅ 폼 단순화: 활동명과 카테고리만 입력받는 깔끔한 UI
+- ✅ Server Actions 기반 폼 처리: useFormState 사용
+- ✅ 서버/클라이언트 컴포넌트 분리: CategorySelect 서버 컴포넌트
+- ✅ 중복 활동 체크 유지
+- ✅ TypeScript 타입 안전성 확보
+- ✅ 구문 오류 수정 완료
+
+**카테고리 목록:**
+💪 건강, 📚 학습, 🏠 생활, 🎨 취미, 👥 인간관계, 💼 업무, 🌱 자기계발, 📝 기타
+
+**주요 파일:**
+- `src/components/AddItemModal.tsx`: 클라이언트 컴포넌트 (폼 상태 관리)
+- `src/components/CategorySelect.tsx`: 서버 컴포넌트 (카테고리 렌더링)
+- `src/lib/actions.ts`: Server Actions (createActivityAndMove 수정)
+- `sql/create-categories-table.sql`: 카테고리 테이블 스키마
+- `scripts/create-categories-table.js`: 카테고리 테이블 생성 스크립트
+
+**기존 완료된 작업:**
+- ✅ NextAuth.js v5 기반 사용자 인증 시스템
+- ✅ 사용자별 활동 및 Move 관리
+- ✅ Toast 기반 에러 처리
+- ✅ Responsive Dialog/Drawer 패턴
+
+## Previous Task: Toast 기반 로그인 에러 처리 구현 (완료)
 
 **Task Overview:**
 로그인 실패 시 구체적인 실패 이유를 shadcn/ui toast로 표시하도록 개선
@@ -148,123 +247,6 @@ LastMove 애플리케이션에 사용자 인증 시스템 추가
 - Toast로 일관된 피드백 제공
 - 성공 시 적절한 지연으로 사용자 경험 개선
 - 에러와 성공 메시지 구분된 스타일링
-
-## Previous Task: AddItemModal 완전 리팩토링 - 새 활동 추가 전용 (완료)
-
-**Task Overview:**
-AddItemModal을 완전히 새로 작성하여 새로운 활동만 추가하도록 변경
-- 활동 검색 기능 제거
-- 새 활동 추가 시 반복 주기 설정 기능 추가
-- 중복 활동 체크 및 에러 처리
-- 단순화된 UX로 개선
-
-**새로운 기능 요구사항:**
-[X] 1. 활동 검색 기능 완전 제거
-[X] 2. 새 활동 추가 폼만 유지
-[X] 3. 반복 주기 설정 추가
-  [X] 매일, 매주, 매월, 사용자 정의 옵션
-  [X] 사용자 정의: 며칠마다, 몇 주마다 설정
-[X] 4. 중복 활동 체크 및 에러 메시지 (Server Action에서 처리)
-[X] 5. 단순화된 단일 폼 UI
-[X] 6. Responsive Dialog 유지 (모바일 Drawer, 데스크톱 Dialog)
-
-**완료된 리팩토링:**
-- ✅ 활동 검색 기능 완전 제거 (Search, Badge import 제거)
-- ✅ 단일 폼 UI로 단순화 (step 상태 제거)
-- ✅ 반복 주기 선택 기능 추가:
-  - 매일, 매주, 매월, 사용자 정의 옵션
-  - 사용자 정의 시 며칠마다/몇 주마다 설정
-- ✅ Zod 스키마 확장 (frequency, customDays, customWeeks)
-- ✅ shadcn/ui Select 컴포넌트 활용
-- ✅ 폼 검증 개선 (반복 주기 필수 선택)
-- ✅ 사용자 친화적 UI (배경색, 설명 텍스트)
-- ✅ Responsive Dialog 패턴 유지
-
-**이전 완료된 작업:**
-- ✅ shadcn/ui Drawer 컴포넌트 설치 및 설정
-- ✅ useMediaQuery 훅 구현 (src/hooks/use-media-query.ts)
-- ✅ Responsive Dialog 패턴 적용:
-  - 768px 이상: Dialog 컴포넌트 사용
-  - 768px 미만: Drawer 컴포넌트 사용
-- ✅ UX 개선:
-  - 활동 선택 시 바로 Move 생성 및 모달 닫기
-  - 검색 플레이스홀더 텍스트 개선 ("활동 검색 후 바로 추가...")
-  - Plus 아이콘으로 추가 액션 시각화
-  - Drawer에 설명 텍스트 추가
-- ✅ 공통 컨텐츠 컴포넌트 분리로 코드 중복 제거
-- ✅ 모바일 최적화: Drawer의 스와이프 제스처 및 터치 인터페이스
-- ✅ 한글 입력 문제 해결: onCompositionStart/End 이벤트로 IME 처리
-- ✅ react-hook-form 리팩토링: 폼 검증 및 상태 관리 개선
-- ✅ Zod 스키마 검증: 타입 안전한 폼 데이터 검증
-- ✅ shadcn/ui Form 컴포넌트: 일관된 폼 UI 및 에러 처리
-
-**이전 완료된 작업:**
-- ✅ shadcn/ui 인증 블록 디자인 패턴 적용
-- ✅ 현대적인 레이아웃: `min-h-svh`, `bg-muted`, flexbox 중앙 정렬
-- ✅ 브랜드 아이덴티티: Activity 아이콘과 LastMove 로고
-- ✅ 카드 기반 폼 디자인: `overflow-hidden`, 깔끔한 경계선
-- ✅ 개선된 타이포그래피: `text-xl` 제목, 적절한 설명 텍스트
-- ✅ 일관된 폼 스타일: `grid gap-4`, `grid gap-2` 레이아웃
-- ✅ 접근성 개선: `leading-none peer-disabled` 라벨 스타일
-- ✅ 테마 호환 에러 메시지: `border-destructive/50`, `bg-destructive/10`
-- ✅ 호버 효과: `hover:text-primary` 링크 스타일
-- ✅ 플레이스홀더 개선: 보안 친화적 `••••••••` 패턴
-
-**이전 상태:** 알림 시스템 핵심 기능 구현 완료, 테스트 및 최적화 단계
-
-**최신 구현 완료 사항:**
-- ✅ 알림 데이터베이스 테이블 생성 (notifications, user_notification_settings, notification_schedules, notification_stats)
-- ✅ 알림 Server Actions 구현 (일일/장기/연속기록 알림 생성 로직)
-- ✅ PWA 서비스 워커 푸시 알림 핸들러 구현
-- ✅ 알림 권한 요청 및 푸시 구독 컴포넌트 구현
-- ✅ GlobalNav에 알림 설정 UI 통합
-- ✅ 테스트용 알림 생성 API 엔드포인트 구현
-- ✅ VAPID 키 생성 및 설정 완료
-- ✅ 실제 푸시 알림 발송 서비스 구현 (web-push 라이브러리 사용)
-- ✅ 로컬 테스트 및 서버 푸시 테스트 기능 추가
-
-**기존 완성된 기능:**
-- ✅ Next.js 15 기반 애플리케이션
-- ✅ shadcn/ui 컴포넌트 시스템
-- ✅ Vercel Postgres 데이터베이스 연결
-- ✅ Server Actions을 통한 데이터 처리
-- ✅ GSAP 애니메이션 (카드 등장 및 클릭 효과)
-- ✅ PWA 설정 (manifest.json, service worker)
-- ✅ 반응형 디자인
-- ✅ TypeScript 타입 안전성
-- ✅ Zod를 통한 폼 검증
-
-**주요 컴포넌트 (업데이트됨):**
-- GlobalNav: 상단 네비게이션 및 활동 추가 버튼
-- LastMoveList: 활동 목록 표시
-- LastMoveCard: 개별 활동 카드 (일수 표시, 완료 버튼)
-- AddItemModal: 활동 검색/선택 및 새 활동 생성 모달
-
-**데이터베이스 스키마 (업데이트됨):**
-- activities 테이블: 활동 정의 관리
-- moves 테이블: 활동 실행 기록
-- 정규화된 구조로 데이터 중복 제거
-- 활동 검색 및 선택 기능 지원
-
-**남은 작업:**
-- ✅ 환경 변수 설정 (.env.local 파일) - 완료
-- ✅ 데이터베이스 초기화 (테이블 생성) - 완료  
-- 프로덕션 빌드 최적화
-- PWA 아이콘 생성
-
-**데이터베이스 설정 완료 (업데이트됨):**
-- ✅ Vercel Postgres 연결 성공
-- ✅ activities 및 moves 테이블 생성
-- ✅ 기존 데이터 마이그레이션 완료 (4개 활동, 4개 실행 기록)
-- ✅ 인덱스 및 트리거 설정 완료
-- ✅ 데이터 정규화 및 구조 개선 완료 
-
-**UI/UX 개선 완료:**
-- ✅ 모바일 최적화: 카드 높이 대폭 감소, 초컴팩트 레이아웃
-- ✅ 완료 버튼 크기 축소 및 간소화 (h-6, px-2)
-- ✅ 하루 한 번 완료 제한: updated_at 기준으로 당일 완료 방지
-- ✅ 반응형 그리드: 모바일(1열) → 태블릿(2열) → 데스크톱(3-4열)
-- ✅ 극도로 컴팩트한 디자인: 패딩 p-3, 간격 space-y-2, 텍스트 크기 축소
 
 **최신 업데이트 (데이터 구조 개선):**
 - ✅ activities와 moves 테이블로 데이터 구조 분리
