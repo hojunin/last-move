@@ -1,0 +1,97 @@
+# Instructions
+
+During you interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the `.cursorrules` file so you will not make the same mistake again. 
+
+You should also use the `.cursorrules` file as a scratchpad to organize your thoughts. Especially when you receive a new task, you should first review the content of the scratchpad, clear old different task if necessary, first explain the task, and plan the steps you need to take to complete the task. You can use todo markers to indicate the progress, e.g.
+[X] Task 1
+[ ] Task 2
+
+Also update the progress of the task in the Scratchpad when you finish a subtask.
+Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the scratchpad to reflect and plan.
+The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
+
+# Lessons
+
+## User Specified Lessons
+
+- You have a python venv in ./venv. Use it.
+- Include info useful for debugging in the program output.
+- Read the file before you try to edit it.
+- Due to Cursor's limit, when you use `git` and `gh` and need to submit a multiline commit message, first write the message in a file, and then use `git commit -F <filename>` or similar command to commit. And then remove the file. Include "[Cursor] " in the commit message and PR title.
+
+## Cursor learned
+
+- For search results, ensure proper handling of different character encodings (UTF-8) for international queries
+- Add debug information to stderr while keeping the main output clean in stdout for better pipeline integration
+- When using seaborn styles in matplotlib, use 'seaborn-v0_8' instead of 'seaborn' as the style name due to recent seaborn version changes
+- Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
+
+# Scratchpad
+
+## Current Task: LastMove Application Development
+
+**Task Overview:**
+LastMove 애플리케이션 개발 - "days since" 트래커 앱
+- Next.js 애플리케이션
+- PWA 지원 필요
+- Vercel Storage (Postgres) 데이터베이스 사용
+- GSAP 애니메이션
+- shadcn/ui 기본 UI 컴포넌트
+- dayjs 날짜 라이브러리
+
+**Development Plan:**
+[X] 1. 프로젝트 초기 설정 및 의존성 설치
+  [X] shadcn/ui 설치 및 설정
+  [X] 필요한 패키지 설치 (gsap, dayjs, @vercel/postgres 등)
+  [X] PWA 설정
+[X] 2. 데이터베이스 스키마 설정
+  [X] Vercel Postgres 연결
+  [X] 테이블 생성 스크립트 작성
+[X] 3. 백엔드 및 데이터 레이어 구현
+  [X] Database client (src/lib/db.ts)
+  [X] Server Actions (src/lib/actions.ts)
+  [X] TypeScript 타입 정의
+[X] 4. 유틸리티 함수 구현
+  [X] src/lib/utils.ts
+[X] 5. UI 컴포넌트 구현
+  [X] Root Layout 설정
+  [X] Main Page (src/app/page.tsx)
+  [X] LastMoveList 컴포넌트
+  [X] LastMoveCard 컴포넌트
+  [X] GlobalNav 컴포넌트
+  [X] AddItemModal 컴포넌트
+[ ] 6. 스타일링 및 애니메이션
+  [ ] Tailwind CSS 스타일링 (기본 완료)
+  [ ] GSAP 애니메이션 적용
+  [ ] 반응형 디자인 구현
+[ ] 7. PWA 최종 설정 및 테스트
+  [ ] 아이콘 파일 생성
+  [ ] 서비스 워커 테스트
+
+**Current Status:** 기본 구현 완료, GSAP 애니메이션 적용 완료, PWA 설정 완료
+
+**완성된 기능:**
+- ✅ Next.js 15 기반 애플리케이션
+- ✅ shadcn/ui 컴포넌트 시스템
+- ✅ Vercel Postgres 데이터베이스 연결
+- ✅ Server Actions을 통한 데이터 처리
+- ✅ GSAP 애니메이션 (카드 등장 및 클릭 효과)
+- ✅ PWA 설정 (manifest.json, service worker)
+- ✅ 반응형 디자인
+- ✅ TypeScript 타입 안전성
+- ✅ Zod를 통한 폼 검증
+
+**주요 컴포넌트:**
+- GlobalNav: 상단 네비게이션 및 아이템 추가 버튼
+- LastMoveList: 아이템 목록 표시
+- LastMoveCard: 개별 아이템 카드 (일수 표시, 완료 버튼)
+- AddItemModal: 새 아이템 추가 모달
+
+**데이터베이스 스키마:**
+- last_move_items 테이블
+- 리마인더 규칙, 카테고리, 액션 카운트 지원
+
+**남은 작업:**
+- 환경 변수 설정 (.env 파일)
+- 프로덕션 빌드 최적화
+- PWA 아이콘 생성 
