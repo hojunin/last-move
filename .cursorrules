@@ -64,6 +64,7 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 - ✅ 세션 생성 후 즉시 리다이렉트로 안정성 확보
 - ✅ TypeScript 타입 안전성 유지 (any 타입 사용 금지)
 - ✅ NextAuth v5와 Next.js 15 호환성 확보
+- ✅ PWA 패키지를 @ducanh2912/next-pwa로 업그레이드 (Next.js 15 호환)
 
 ## Previous Task: User Authentication System Implementation
 
