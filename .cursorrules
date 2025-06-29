@@ -28,49 +28,59 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: LastMove Application Development
+## Current Task: PWA Push Notification System Implementation
 
 **Task Overview:**
-LastMove 애플리케이션 개발 - "days since" 트래커 앱
-- Next.js 애플리케이션
-- PWA 지원 필요
-- Vercel Storage (Postgres) 데이터베이스 사용
-- GSAP 애니메이션
-- shadcn/ui 기본 UI 컴포넌트
-- dayjs 날짜 라이브러리
+LastMove 애플리케이션에 PWA 푸시 알림 시스템 추가
+- iOS 호환 PWA 알림 구현
+- 데이터베이스 알림 테이블 생성
+- 스마트 알림 로직 (예: 하루 종료 1시간 전 미완료 활동 알림)
+- Service Worker 기반 백그라운드 알림
+
+**알림 종류 설계:**
+1. **일일 리마인더**: 매일 해야 하는 활동이 오늘 미완료 시 저녁 11시 알림
+2. **주간 리마인더**: 주 단위 활동이 주말까지 미완료 시 금요일 저녁 알림  
+3. **장기 미실행 알림**: 7일 이상 미실행 활동에 대한 격려 알림
+4. **연속 기록 축하**: 3일, 7일, 30일 연속 완료 시 축하 알림
+5. **목표 달성**: 월간/연간 목표 달성 시 축하 알림
 
 **Development Plan:**
-[X] 1. 프로젝트 초기 설정 및 의존성 설치
-  [X] shadcn/ui 설치 및 설정
-  [X] 필요한 패키지 설치 (gsap, dayjs, @vercel/postgres 등)
-  [X] PWA 설정
-[X] 2. 데이터베이스 스키마 설정
-  [X] Vercel Postgres 연결
-  [X] 테이블 생성 스크립트 작성
-[X] 3. 백엔드 및 데이터 레이어 구현
-  [X] Database client (src/lib/db.ts)
-  [X] Server Actions (src/lib/actions.ts)
-  [X] TypeScript 타입 정의
-[X] 4. 유틸리티 함수 구현
-  [X] src/lib/utils.ts
-[X] 5. UI 컴포넌트 구현
-  [X] Root Layout 설정
-  [X] Main Page (src/app/page.tsx)
-  [X] LastMoveList 컴포넌트
-  [X] LastMoveCard 컴포넌트
-  [X] GlobalNav 컴포넌트
-  [X] AddItemModal 컴포넌트
-[ ] 6. 스타일링 및 애니메이션
-  [ ] Tailwind CSS 스타일링 (기본 완료)
-  [ ] GSAP 애니메이션 적용
-  [ ] 반응형 디자인 구현
-[ ] 7. PWA 최종 설정 및 테스트
-  [ ] 아이콘 파일 생성
-  [ ] 서비스 워커 테스트
+[X] 1. 데이터베이스 스키마 확장
+  [X] notifications 테이블 생성
+  [X] notification_schedules 테이블 생성 (알림 스케줄 관리)
+  [X] user_notification_settings 테이블 생성 (사용자 알림 설정)
+[X] 2. 백엔드 알림 시스템
+  [X] 알림 생성 및 스케줄링 로직
+  [X] 푸시 알림 발송 Server Actions
+  [X] 알림 상태 관리 (읽음/미읽음, 발송완료 등)
+[X] 3. PWA 알림 설정
+  [X] Service Worker 푸시 알림 핸들러 업데이트
+  [X] 알림 권한 요청 로직
+  [ ] VAPID 키 설정 및 푸시 서비스 연동
+[X] 4. 프론트엔드 알림 UI
+  [X] 알림 설정 페이지/모달
+  [ ] 알림 목록 및 히스토리
+  [X] 알림 권한 요청 컴포넌트
+[X] 5. 알림 로직 구현
+  [X] 일일/주간/장기 알림 스케줄러
+  [ ] 백그라운드 작업 (cron job 또는 Vercel Edge Functions)
+  [X] 알림 발송 조건 체크 로직
+[ ] 6. iOS PWA 최적화
+  [ ] iOS Safari 호환성 확인
+  [ ] 홈 화면 추가 안내
+  [ ] iOS 알림 권한 처리
 
-**Current Status:** 데이터 구조 개선 완료 - activities와 moves 테이블로 분리
+**Current Status:** 알림 시스템 핵심 기능 구현 완료, 테스트 및 최적화 단계
 
-**완성된 기능:**
+**최신 구현 완료 사항:**
+- ✅ 알림 데이터베이스 테이블 생성 (notifications, user_notification_settings, notification_schedules, notification_stats)
+- ✅ 알림 Server Actions 구현 (일일/장기/연속기록 알림 생성 로직)
+- ✅ PWA 서비스 워커 푸시 알림 핸들러 구현
+- ✅ 알림 권한 요청 및 푸시 구독 컴포넌트 구현
+- ✅ GlobalNav에 알림 설정 UI 통합
+- ✅ 테스트용 알림 생성 API 엔드포인트 구현
+
+**기존 완성된 기능:**
 - ✅ Next.js 15 기반 애플리케이션
 - ✅ shadcn/ui 컴포넌트 시스템
 - ✅ Vercel Postgres 데이터베이스 연결
@@ -111,4 +121,15 @@ LastMove 애플리케이션 개발 - "days since" 트래커 앱
 - ✅ 완료 버튼 크기 축소 및 간소화 (h-6, px-2)
 - ✅ 하루 한 번 완료 제한: updated_at 기준으로 당일 완료 방지
 - ✅ 반응형 그리드: 모바일(1열) → 태블릿(2열) → 데스크톱(3-4열)
-- ✅ 극도로 컴팩트한 디자인: 패딩 p-3, 간격 space-y-2, 텍스트 크기 축소 
+- ✅ 극도로 컴팩트한 디자인: 패딩 p-3, 간격 space-y-2, 텍스트 크기 축소
+
+**최신 업데이트 (데이터 구조 개선):**
+- ✅ activities와 moves 테이블로 데이터 구조 분리
+- ✅ 활동 검색 및 선택 기능 구현
+- ✅ 새 활동 생성 및 즉시 실행 기록 기능
+- ✅ 디바운싱을 통한 실시간 검색
+- ✅ 기존 활동 선택 시 즉시 Move 기록
+- ✅ 새 활동 생성 시 활동과 Move 동시 생성
+- ✅ 모든 Server Actions async 함수로 수정
+- ✅ TypeScript 타입 안전성 유지
+- ✅ 기존 호환성 유지 (별칭 함수 제공) 

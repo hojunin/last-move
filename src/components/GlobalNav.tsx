@@ -1,9 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Settings } from "lucide-react";
+import { Plus, Settings, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import AddItemModal from "@/components/AddItemModal";
+import NotificationPermission from "@/components/NotificationPermission";
 
 export default function GlobalNav() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -22,6 +31,27 @@ export default function GlobalNav() {
             >
               <Plus className="h-4 w-4" />
             </Button>
+
+            {/* 알림 설정 시트 */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" aria-label="알림 설정">
+                  <Bell className="h-4 w-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>알림 설정</SheetTitle>
+                  <SheetDescription>
+                    활동 리마인더와 축하 메시지 설정을 관리하세요.
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="mt-6">
+                  <NotificationPermission />
+                </div>
+              </SheetContent>
+            </Sheet>
+
             <Button variant="outline" size="icon" aria-label="설정">
               <Settings className="h-4 w-4" />
             </Button>
