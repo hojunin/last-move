@@ -23,8 +23,16 @@ if (!vapidPublicKey || !vapidPrivateKey) {
 }
 
 // NOTE: 단일 푸시 알림 발송
+interface PushSubscriptionData {
+  endpoint: string;
+  keys: {
+    p256dh: string;
+    auth: string;
+  };
+}
+
 export async function sendPushNotification(
-  subscription: Record<string, unknown>,
+  subscription: Record<string, unknown> | PushSubscriptionData,
   payload: {
     title: string;
     body: string;
@@ -52,20 +60,29 @@ export async function sendPushNotification(
       tag: "lastmove-notification",
     });
 
-    const options = {
+    const options: webpush.RequestOptions = {
       TTL: 60 * 60 * 24, // 24시간
       urgency:
         payload.priority === "urgent"
-          ? "high"
+          ? ("high" as const)
           : payload.priority === "high"
-          ? "high"
+          ? ("high" as const)
           : payload.priority === "low"
-          ? "low"
-          : "normal",
+          ? ("low" as const)
+          : ("normal" as const),
+    };
+
+    // 구독 데이터 타입 검증 및 변환
+    const validatedSubscription: webpush.PushSubscription = {
+      endpoint: (subscription as PushSubscriptionData).endpoint,
+      keys: {
+        p256dh: (subscription as PushSubscriptionData).keys.p256dh,
+        auth: (subscription as PushSubscriptionData).keys.auth,
+      },
     };
 
     const result = await webpush.sendNotification(
-      subscription as webpush.PushSubscription,
+      validatedSubscription,
       pushPayload,
       options
     );

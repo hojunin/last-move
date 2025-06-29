@@ -3,6 +3,7 @@
 import { sql } from "./db";
 import { revalidatePath } from "next/cache";
 import dayjs from "dayjs";
+import { auth } from "@/lib/auth";
 
 // NOTE: 알림 관련 타입 정의
 export interface NotificationSettings {
@@ -52,11 +53,15 @@ export interface Notification {
   created_at: string;
 }
 
-// NOTE: 사용자 알림 설정 가져오기
-export async function getNotificationSettings(
-  userId: string = "default_user"
-): Promise<NotificationSettings | null> {
+// NOTE: 사용자 알림 설정 가져오기 (인증된 사용자)
+export async function getNotificationSettings(): Promise<NotificationSettings | null> {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return null;
+    }
+
+    const userId = parseInt(session.user.id);
     const result = await sql`
       SELECT * FROM user_notification_settings 
       WHERE user_id = ${userId}
@@ -70,12 +75,17 @@ export async function getNotificationSettings(
   }
 }
 
-// NOTE: 알림 설정 업데이트
+// NOTE: 알림 설정 업데이트 (인증된 사용자)
 export async function updateNotificationSettings(
-  settings: Partial<NotificationSettings>,
-  userId: string = "default_user"
+  settings: Partial<NotificationSettings>
 ) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "인증이 필요합니다" };
+    }
+
+    const userId = parseInt(session.user.id);
     const updateFields = [];
     const values = [];
     let paramIndex = 1;

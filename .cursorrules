@@ -28,14 +28,57 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: PWA Push Notification System Implementation
+## Current Task: User Authentication System Implementation
 
 **Task Overview:**
-LastMove 애플리케이션에 PWA 푸시 알림 시스템 추가
-- iOS 호환 PWA 알림 구현
-- 데이터베이스 알림 테이블 생성
-- 스마트 알림 로직 (예: 하루 종료 1시간 전 미완료 활동 알림)
-- Service Worker 기반 백그라운드 알림
+LastMove 애플리케이션에 사용자 인증 시스템 추가
+- 사용자 테이블 생성 및 관리
+- 회원가입/로그인 기능 구현
+- 미들웨어 기반 접근 제어
+- 1년간 세션 유지
+- 기존 알림 시스템과 연동
+
+**Authentication Plan:**
+[X] 1. 데이터베이스 스키마 확장
+  [X] users 테이블 생성
+  [X] 기존 테이블과 사용자 연동 (FK 추가)
+[X] 2. 인증 라이브러리 설정
+  [X] NextAuth.js 설치 및 설정
+  [X] 세션 관리 구성
+[X] 3. 인증 페이지 구현
+  [X] 로그인 페이지
+  [X] 회원가입 페이지
+  [X] 인증 폼 컴포넌트
+[X] 4. 미들웨어 구현
+  [X] 인증 체크 미들웨어
+  [X] 보호된 라우트 설정
+[X] 5. 기존 기능 연동
+  [X] 사용자별 활동 관리
+  [X] 사용자별 알림 설정
+
+**인증 시스템 구현 완료:**
+- ✅ NextAuth.js v5 설치 및 설정 완료
+- ✅ users, accounts, sessions, verification_tokens 테이블 생성
+- ✅ 기존 테이블에 user_id 컬럼 추가 (activities, moves, notifications, user_notification_settings)
+- ✅ 회원가입/로그인 페이지 구현 (bcryptjs 비밀번호 해싱)
+- ✅ 미들웨어 기반 인증 체크 (인증되지 않은 사용자는 로그인 페이지로 리다이렉트)
+- ✅ 1년간 세션 유지 설정 (JWT maxAge: 365일)
+- ✅ 사용자별 데이터 분리 (Server Actions 수정)
+- ✅ GlobalNav에 사용자 정보 표시 및 로그아웃 기능
+- ✅ 서버/클라이언트 컴포넌트 분리 구조
+
+**주요 파일:**
+- `src/lib/auth.ts`: NextAuth.js 설정
+- `src/lib/auth-actions.ts`: 회원가입/로그인 Server Actions
+- `middleware.ts`: 인증 체크 미들웨어
+- `src/app/auth/signin/page.tsx`: 로그인 페이지
+- `src/app/auth/signup/page.tsx`: 회원가입 페이지
+- `src/components/GlobalNav.tsx`: 서버 컴포넌트 (세션 체크)
+- `src/components/GlobalNavClient.tsx`: 클라이언트 컴포넌트 (UI 상태 관리)
+
+**환경변수 추가:**
+- `NEXTAUTH_SECRET`: 세션 암호화 키
+- `NEXTAUTH_URL`: 애플리케이션 URL
 
 **알림 종류 설계:**
 1. **일일 리마인더**: 매일 해야 하는 활동이 오늘 미완료 시 저녁 11시 알림
@@ -70,7 +113,37 @@ LastMove 애플리케이션에 PWA 푸시 알림 시스템 추가
   [ ] 홈 화면 추가 안내
   [ ] iOS 알림 권한 처리
 
-**Current Status:** 알림 시스템 핵심 기능 구현 완료, 테스트 및 최적화 단계
+## Current Task: UI/UX 개선 - 인증 페이지 디자인 업데이트
+
+**Task Overview:**
+shadcn/ui 인증 블록 디자인을 참고하여 회원가입/로그인 페이지 디자인 개선
+
+**UI 개선 계획:**
+[X] 1. shadcn/ui 인증 블록 참고 자료 확인
+[X] 2. 회원가입 페이지 디자인 업데이트
+  [X] 현대적인 레이아웃 적용 (min-h-svh, flex, bg-muted)
+  [X] 브랜드 로고 및 아이콘 추가 (Activity, CheckCircle)
+  [X] 카드 기반 폼 디자인
+  [X] 일관된 간격 및 타이포그래피
+  [X] 개선된 에러 메시지 스타일 (destructive 테마)
+[X] 3. 로그인 페이지 디자인 업데이트
+  [X] 회원가입 페이지와 일관된 스타일 적용
+  [X] 브랜드 로고 및 네비게이션 링크
+  [X] 폼 레이아웃 및 스타일링 개선
+
+**완료된 개선사항:**
+- ✅ shadcn/ui 인증 블록 디자인 패턴 적용
+- ✅ 현대적인 레이아웃: `min-h-svh`, `bg-muted`, flexbox 중앙 정렬
+- ✅ 브랜드 아이덴티티: Activity 아이콘과 LastMove 로고
+- ✅ 카드 기반 폼 디자인: `overflow-hidden`, 깔끔한 경계선
+- ✅ 개선된 타이포그래피: `text-xl` 제목, 적절한 설명 텍스트
+- ✅ 일관된 폼 스타일: `grid gap-4`, `grid gap-2` 레이아웃
+- ✅ 접근성 개선: `leading-none peer-disabled` 라벨 스타일
+- ✅ 테마 호환 에러 메시지: `border-destructive/50`, `bg-destructive/10`
+- ✅ 호버 효과: `hover:text-primary` 링크 스타일
+- ✅ 플레이스홀더 개선: 보안 친화적 `••••••••` 패턴
+
+**이전 상태:** 알림 시스템 핵심 기능 구현 완료, 테스트 및 최적화 단계
 
 **최신 구현 완료 사항:**
 - ✅ 알림 데이터베이스 테이블 생성 (notifications, user_notification_settings, notification_schedules, notification_stats)

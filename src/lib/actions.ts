@@ -3,6 +3,7 @@
 import { sql } from "./db";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { auth } from "@/lib/auth";
 
 // NOTE: 활동 정의 타입
 export interface Activity {
@@ -57,11 +58,18 @@ const createActivitySchema = z.object({
 //   notes: z.string().optional(),
 // });
 
-// NOTE: 모든 활동과 최근 실행 정보를 가져오는 서버 액션
+// NOTE: 모든 활동과 최근 실행 정보를 가져오는 서버 액션 (사용자별)
 export async function getActivitiesWithLastMove(): Promise<
   ActivityWithLastMove[]
 > {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      console.log("No authenticated user found");
+      return [];
+    }
+
+    const userId = parseInt(session.user.id);
     const result = await sql`
       SELECT 
         a.id,
@@ -73,7 +81,7 @@ export async function getActivitiesWithLastMove(): Promise<
         MAX(DATE(m.executed_at)) as last_move_date
       FROM activities a
       LEFT JOIN moves m ON a.id = m.activity_id
-      WHERE a.is_active = true
+      WHERE a.is_active = true AND a.user_id = ${userId}
       GROUP BY a.id, a.title, a.category, a.description
       ORDER BY last_executed_at ASC NULLS LAST
     `;
@@ -85,12 +93,19 @@ export async function getActivitiesWithLastMove(): Promise<
   }
 }
 
-// NOTE: 활동 검색 (자동완성용)
+// NOTE: 활동 검색 (자동완성용, 사용자별)
 export async function searchActivities(query: string): Promise<Activity[]> {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return [];
+    }
+
+    const userId = parseInt(session.user.id);
     const result = await sql`
       SELECT * FROM activities 
       WHERE is_active = true 
+      AND user_id = ${userId}
       AND (title ILIKE ${"%" + query + "%"} OR category ILIKE ${
       "%" + query + "%"
     })
@@ -105,9 +120,15 @@ export async function searchActivities(query: string): Promise<Activity[]> {
   }
 }
 
-// NOTE: 새 활동을 생성하는 서버 액션
+// NOTE: 새 활동을 생성하는 서버 액션 (사용자별)
 export async function createActivity(formData: FormData) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "인증이 필요합니다" };
+    }
+
+    const userId = parseInt(session.user.id);
     const rawData = {
       title: formData.get("title"),
       category: formData.get("category") || null,
@@ -130,7 +151,8 @@ export async function createActivity(formData: FormData) {
         description,
         reminder_rule_type, 
         reminder_interval, 
-        reminder_days_of_week
+        reminder_days_of_week,
+        user_id
       )
       VALUES (
         ${validatedData.title},
@@ -142,7 +164,8 @@ export async function createActivity(formData: FormData) {
           validatedData.reminder_days_of_week
             ? JSON.stringify(validatedData.reminder_days_of_week)
             : null
-        }
+        },
+        ${userId}
       )
       RETURNING id
     `;
@@ -158,12 +181,28 @@ export async function createActivity(formData: FormData) {
   }
 }
 
-// NOTE: 새 Move를 기록하는 서버 액션
+// NOTE: 새 Move를 기록하는 서버 액션 (사용자별)
 export async function createMove(activityId: number, notes?: string) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "인증이 필요합니다" };
+    }
+
+    const userId = parseInt(session.user.id);
+
+    // 해당 활동이 현재 사용자의 것인지 확인
+    const activityCheck = await sql`
+      SELECT id FROM activities WHERE id = ${activityId} AND user_id = ${userId}
+    `;
+
+    if (activityCheck.rows.length === 0) {
+      return { success: false, error: "권한이 없는 활동입니다" };
+    }
+
     await sql`
-      INSERT INTO moves (activity_id, notes)
-      VALUES (${activityId}, ${notes || null})
+      INSERT INTO moves (activity_id, notes, user_id)
+      VALUES (${activityId}, ${notes || null}, ${userId})
     `;
 
     revalidatePath("/");
