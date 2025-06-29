@@ -5,6 +5,7 @@ import { sql } from "@vercel/postgres";
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig: NextAuthConfig = {
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth/signin",
   },
