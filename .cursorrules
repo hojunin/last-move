@@ -29,7 +29,41 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: 모바일 로그인 세션 문제 해결 (완료)
+## Current Task: AddItemModal POST 무한 요청 문제 해결
+
+**Task Overview:**
++ 아이콘을 누르면 POST 요청이 무한으로 발생하는 문제 해결
+
+**문제 분석:**
+- useActionState에서 Server Action 완료 후 onClose()와 form.reset() 호출
+- 이로 인해 컴포넌트 리렌더링이 발생하면서 무한 루프 가능성
+- Server Action 내부에서 부수 효과(side effects) 발생
+
+**해결 방법:**
+[X] 1. Server Action 정리
+  [X] useActionState 내부에서 onClose()와 form.reset() 제거
+  [X] 순수한 상태 반환만 처리
+[X] 2. useEffect로 성공 처리 분리 (실패)
+  [X] useEffect로 state.success 감지 시 모달 닫기 처리
+  [X] toast.success로 성공 메시지 표시
+  [X] form.reset()과 onClose() 분리 실행
+  [X] 의존성 배열 문제로 여전히 무한 루프 발생
+[X] 3. useActionState를 useTransition으로 교체
+  [X] useActionState 대신 useState + useTransition 사용
+  [X] form.handleSubmit으로 폼 처리 변경
+  [X] Server Action을 직접 호출하는 방식으로 변경
+  [X] hidden input 제거 (불필요해짐)
+  [X] isPending 상태로 로딩 UI 개선
+[X] 4. CategorySelect 서버/클라이언트 컴포넌트 문제 해결
+  [X] CategorySelect 서버 컴포넌트를 클라이언트 컴포넌트에서 사용 불가 문제 발견
+  [X] AddItemModal에서 직접 카테고리 데이터 가져오도록 변경
+  [X] useEffect로 getCategories() 호출
+  [X] SelectContent와 SelectItem을 직접 렌더링
+
+**수정된 파일:**
+- `src/components/AddItemModal.tsx`: useActionState → useTransition + useState 방식으로 완전 교체, CategorySelect 서버 컴포넌트 문제 해결
+
+## Previous Task: 모바일 로그인 세션 문제 해결 (완료)
 
 **Task Overview:**
 모바일에서 로그인 성공 토스트 메시지가 표시되지만 새로고침 시 다시 로그인 페이지로 돌아가는 문제 해결

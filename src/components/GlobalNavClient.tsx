@@ -46,7 +46,10 @@ export default function GlobalNavClient({ user }: GlobalNavClientProps) {
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setIsAddModalOpen(true)}
+              onClick={() => {
+                console.log("Plus button clicked, opening modal");
+                setIsAddModalOpen(true);
+              }}
               aria-label="새 아이템 추가"
             >
               <Plus className="h-4 w-4" />

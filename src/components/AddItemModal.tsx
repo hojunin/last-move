@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useForm, type ControllerRenderProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -27,12 +27,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createActivityAndMove } from "@/lib/actions";
+import {
+  createActivityAndMove,
+  getCategories,
+  type Category,
+} from "@/lib/actions";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import CategorySelect from "./CategorySelect";
+import { toast } from "sonner";
 
 // NOTE: 새 활동 생성 폼 스키마 (단순화)
 const newActivitySchema = z.object({
@@ -54,7 +64,24 @@ interface AddItemModalProps {
 
 export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   const [isComposing, setIsComposing] = useState(false); // NOTE: 한글 입력 상태 관리
+  const [categories, setCategories] = useState<Category[]>([]);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  console.log("AddItemModal render:", { isOpen, isDesktop });
+
+  // NOTE: 카테고리 목록 가져오기
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoryList = await getCategories();
+        setCategories(categoryList);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // NOTE: react-hook-form 설정
   const form = useForm<NewActivityFormData>({
@@ -65,27 +92,34 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
     },
   });
 
-  // NOTE: Server Action 상태 관리
-  const [state, formAction] = useActionState(
-    async (
-      prevState: { success: boolean; error: string | null },
-      formData: FormData
-    ) => {
+  // NOTE: 폼 제출 상태 관리
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  // NOTE: 폼 제출 핸들러
+  const handleSubmit = async (data: NewActivityFormData) => {
+    setError(null);
+
+    startTransition(async () => {
       try {
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("category_id", data.category_id.toString());
+
         await createActivityAndMove(formData);
-        onClose();
+
+        toast.success("활동이 추가되었습니다!");
         form.reset();
-        return { success: true, error: null };
+        onClose();
       } catch (error: unknown) {
         const errorMessage =
           error instanceof Error
             ? error.message
             : "알 수 없는 오류가 발생했습니다";
-        return { success: false, error: errorMessage };
+        setError(errorMessage);
       }
-    },
-    { success: false, error: null }
-  );
+    });
+  };
 
   // NOTE: 폼 초기화
   const resetForm = () => {
@@ -111,7 +145,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   const ModalContent = ({ className }: { className?: string }) => (
     <div className={className}>
       <Form {...form}>
-        <form action={formAction} className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           {/* 활동명 */}
           <FormField
             control={form.control}
@@ -135,8 +169,6 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
                   />
                 </FormControl>
                 <FormMessage />
-                {/* Hidden input for form submission */}
-                <input type="hidden" name="title" value={field.value} />
               </FormItem>
             )}
           />
@@ -163,23 +195,27 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
                       <SelectValue placeholder="카테고리를 선택하세요" />
                     </SelectTrigger>
                   </FormControl>
-                  <CategorySelect />
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem
+                        key={category.id}
+                        value={category.id.toString()}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>{category.icon}</span>
+                          <span>{category.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
                 <FormMessage />
-                {/* Hidden input for form submission */}
-                <input
-                  type="hidden"
-                  name="category_id"
-                  value={field.value || ""}
-                />
               </FormItem>
             )}
           />
 
           {/* 에러 메시지 표시 */}
-          {state.error && (
-            <div className="text-red-500 text-sm">{state.error}</div>
-          )}
+          {error && <div className="text-red-500 text-sm">{error}</div>}
 
           {/* 버튼 */}
           <div className="flex gap-3 pt-4">
@@ -193,10 +229,10 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
             </Button>
             <Button
               type="submit"
-              disabled={!form.formState.isValid || isComposing}
+              disabled={!form.formState.isValid || isComposing || isPending}
               className="flex-1"
             >
-              활동 추가
+              {isPending ? "추가 중..." : "활동 추가"}
             </Button>
           </div>
         </form>
@@ -205,6 +241,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   );
 
   if (isDesktop) {
+    console.log("Rendering Dialog for desktop");
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
         <DialogContent className="sm:max-w-md">
