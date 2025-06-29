@@ -14,28 +14,38 @@ import {
 } from "@/components/ui/card";
 import { signInAction } from "@/lib/auth-actions";
 import { Activity } from "lucide-react";
+import { toast } from "sonner";
 
 export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const router = useRouter();
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true);
-    setError("");
 
     try {
       const result = await signInAction(formData);
 
       if (result.error) {
-        setError(result.error);
+        toast.error("로그인 실패", {
+          description: result.error,
+        });
       } else if (result.success) {
-        router.push("/");
-        router.refresh();
+        toast.success("로그인 성공", {
+          description: "환영합니다! 잠시 후 메인 페이지로 이동합니다.",
+        });
+
+        // 약간의 지연 후 리다이렉트 (toast 메시지를 볼 수 있도록)
+        setTimeout(() => {
+          router.push("/");
+          router.refresh();
+        }, 1000);
       }
     } catch (error) {
       console.error("로그인 처리 오류:", error);
-      setError("로그인 중 오류가 발생했습니다");
+      toast.error("로그인 오류", {
+        description: "로그인 중 예상치 못한 오류가 발생했습니다",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -94,12 +104,6 @@ export default function SignInPage() {
                   disabled={isLoading}
                 />
               </div>
-
-              {error && (
-                <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
-                  {error}
-                </div>
-              )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "로그인 중..." : "로그인"}

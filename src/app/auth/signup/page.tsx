@@ -13,27 +13,30 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { signUpAction } from "@/lib/auth-actions";
-import { Activity, CheckCircle } from "lucide-react";
+import { Activity } from "lucide-react";
+import { toast } from "sonner";
 
 export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true);
-    setError("");
-    setSuccess(false);
 
     try {
       const result = await signUpAction(formData);
 
       if (result.error) {
-        setError(result.error);
+        toast.error("회원가입 실패", {
+          description: result.error,
+        });
       } else if (result.success) {
-        setSuccess(true);
-        // 2초 후 메인 페이지로 이동
+        toast.success("회원가입 완료! 🎉", {
+          description:
+            "LastMove에 오신 것을 환영합니다! 잠시 후 메인 페이지로 이동합니다.",
+        });
+
+        // 약간의 지연 후 리다이렉트 (toast 메시지를 볼 수 있도록)
         setTimeout(() => {
           router.push("/");
           router.refresh();
@@ -41,37 +44,12 @@ export default function SignUpPage() {
       }
     } catch (error) {
       console.error("회원가입 처리 오류:", error);
-      setError("회원가입 중 오류가 발생했습니다");
+      toast.error("회원가입 오류", {
+        description: "회원가입 중 예상치 못한 오류가 발생했습니다",
+      });
     } finally {
       setIsLoading(false);
     }
-  }
-
-  if (success) {
-    return (
-      <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-        <div className="flex w-full max-w-sm flex-col gap-6">
-          <div className="flex items-center gap-2 self-center font-medium">
-            <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <CheckCircle className="size-4" />
-            </div>
-            LastMove
-          </div>
-          <Card className="overflow-hidden">
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl text-green-600">
-                회원가입 완료! 🎉
-              </CardTitle>
-              <CardDescription>
-                LastMove에 오신 것을 환영합니다!
-                <br />
-                잠시 후 자동으로 이동됩니다...
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -159,12 +137,6 @@ export default function SignUpPage() {
                   disabled={isLoading}
                 />
               </div>
-
-              {error && (
-                <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
-                  {error}
-                </div>
-              )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "계정 생성 중..." : "계정 만들기"}

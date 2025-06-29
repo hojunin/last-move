@@ -101,6 +101,40 @@ export async function signInAction(formData: FormData) {
 
     const validatedData = signInSchema.parse(rawData);
 
+    // 사용자 존재 확인
+    const userResult = await sql`
+      SELECT id, email, password_hash, name, is_active
+      FROM users 
+      WHERE email = ${validatedData.email}
+    `;
+
+    if (userResult.rows.length === 0) {
+      return {
+        error: "등록되지 않은 이메일 주소입니다",
+      };
+    }
+
+    const user = userResult.rows[0];
+
+    // 계정 비활성화 확인
+    if (!user.is_active) {
+      return {
+        error: "비활성화된 계정입니다. 관리자에게 문의하세요",
+      };
+    }
+
+    // 비밀번호 확인
+    const isPasswordValid = await bcrypt.compare(
+      validatedData.password,
+      user.password_hash
+    );
+
+    if (!isPasswordValid) {
+      return {
+        error: "비밀번호가 올바르지 않습니다",
+      };
+    }
+
     // NextAuth signIn 호출
     const result = await signIn("credentials", {
       email: validatedData.email,
@@ -109,8 +143,9 @@ export async function signInAction(formData: FormData) {
     });
 
     if (result?.error) {
+      console.error("NextAuth signIn 오류:", result.error);
       return {
-        error: "이메일 또는 비밀번호가 올바르지 않습니다",
+        error: "로그인 처리 중 오류가 발생했습니다",
       };
     }
 
