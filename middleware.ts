@@ -1,10 +1,11 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { authConfig } from "@/lib/auth";
+import NextAuth from "next-auth";
 
-export async function middleware(request: NextRequest) {
-  const session = await auth();
-  const { pathname } = request.nextUrl;
+const { auth } = NextAuth(authConfig);
+
+export default auth((req) => {
+  const { pathname } = req.nextUrl;
 
   // 인증이 필요하지 않은 경로들
   const publicPaths = [
@@ -16,7 +17,7 @@ export async function middleware(request: NextRequest) {
     "/manifest.json",
     "/sw.js",
     "/sw-notifications.js",
-    "/workbox-e9849328.js",
+    "/workbox-3c9d0171.js", // 새로운 workbox 파일명으로 업데이트
   ];
 
   // public 경로는 통과
@@ -27,14 +28,14 @@ export async function middleware(request: NextRequest) {
   }
 
   // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
-  if (!session) {
-    const signInUrl = new URL("/auth/signin", request.url);
+  if (!req.auth) {
+    const signInUrl = new URL("/auth/signin", req.url);
     signInUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(signInUrl);
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: [
