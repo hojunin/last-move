@@ -60,9 +60,10 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 **핵심 개선사항:**
 - ✅ NextAuth의 서버 사이드 리다이렉트 활용
-- ✅ NEXT_REDIRECT 에러 올바른 처리
+- ✅ NEXT_REDIRECT 에러 올바른 처리 (digest 속성 체크)
 - ✅ 세션 생성 후 즉시 리다이렉트로 안정성 확보
 - ✅ TypeScript 타입 안전성 유지 (any 타입 사용 금지)
+- ✅ NextAuth v5와 Next.js 15 호환성 확보
 
 ## Previous Task: User Authentication System Implementation
 

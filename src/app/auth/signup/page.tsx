@@ -32,7 +32,13 @@ export default function SignUpPage() {
       }
     } catch (error) {
       // NEXT_REDIRECT 에러는 정상적인 리다이렉트이므로 무시
-      if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "digest" in error &&
+        typeof error.digest === "string" &&
+        error.digest.startsWith("NEXT_REDIRECT")
+      ) {
         return;
       }
 

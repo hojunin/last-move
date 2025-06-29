@@ -97,6 +97,17 @@ export async function signUpAction(formData: FormData) {
       };
     }
   } catch (error) {
+    // NEXT_REDIRECT 에러는 다시 throw (정상적인 리다이렉트)
+    if (
+      error &&
+      typeof error === "object" &&
+      "digest" in error &&
+      typeof error.digest === "string" &&
+      error.digest.startsWith("NEXT_REDIRECT")
+    ) {
+      throw error;
+    }
+
     console.error("회원가입 오류:", error);
 
     if (error instanceof z.ZodError) {
@@ -181,12 +192,21 @@ export async function signInAction(formData: FormData) {
 
       console.error("NextAuth signIn 오류:", error);
       return {
-        error: "로그인 처리 중 오류가 발생했습니다",
+        error:
+          error instanceof Error
+            ? error.message
+            : "로그인 처리 중 오류가 발생했습니다",
       };
     }
   } catch (error) {
     // NEXT_REDIRECT 에러는 다시 throw (정상적인 리다이렉트)
-    if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "digest" in error &&
+      typeof error.digest === "string" &&
+      error.digest.startsWith("NEXT_REDIRECT")
+    ) {
       throw error;
     }
 
