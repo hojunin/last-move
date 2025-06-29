@@ -162,7 +162,7 @@ export default function NotificationPermission({
     return outputArray;
   };
 
-  // 테스트 알림 보내기
+  // 테스트 알림 보내기 (로컬)
   const sendTestNotification = () => {
     if (permission === "granted") {
       new Notification("LastMove 테스트 알림", {
@@ -170,6 +170,44 @@ export default function NotificationPermission({
         icon: "/icon-192x192.png",
         badge: "/badge-72x72.png",
       });
+    }
+  };
+
+  // 푸시 알림 테스트 (서버를 통해)
+  const sendPushTest = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const response = await fetch("/api/notifications/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "immediate",
+          userId: "default_user",
+          notification: {
+            title: "🚀 LastMove 푸시 알림 테스트",
+            body: "서버를 통한 푸시 알림이 정상적으로 작동합니다!",
+            priority: "normal",
+            data: { test: true },
+          },
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        console.log("푸시 알림 테스트 성공");
+      } else {
+        setError(result.error || "푸시 알림 테스트에 실패했습니다");
+      }
+    } catch (error) {
+      console.error("푸시 알림 테스트 오류:", error);
+      setError("푸시 알림 테스트 중 오류가 발생했습니다");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -268,7 +306,15 @@ export default function NotificationPermission({
                 variant="outline"
                 className="w-full"
               >
-                테스트 알림 보내기
+                로컬 테스트 알림
+              </Button>
+              <Button
+                onClick={sendPushTest}
+                variant="outline"
+                className="w-full"
+                disabled={isLoading}
+              >
+                {isLoading ? "발송 중..." : "푸시 알림 테스트"}
               </Button>
               <Button
                 onClick={unsubscribeFromPush}
