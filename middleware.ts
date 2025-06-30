@@ -9,6 +9,7 @@ export default auth((req) => {
 
   // 인증이 필요하지 않은 경로들
   const publicPaths = [
+    "/about",
     "/auth/signin",
     "/auth/signup",
     "/api/auth",
@@ -27,11 +28,10 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
+  // 인증되지 않은 사용자는 About 페이지로 리다이렉트
   if (!req.auth) {
-    const signInUrl = new URL("/auth/signin", req.url);
-    signInUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(signInUrl);
+    const aboutUrl = new URL("/about", req.url);
+    return NextResponse.redirect(aboutUrl);
   }
 
   return NextResponse.next();
