@@ -126,7 +126,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
     form.reset();
   };
 
-  // NOTE: 모달 닫힐 때 폼 초기화
+  // NOTE: 모달 기힐 때 폼 초기화
   const handleClose = () => {
     resetForm();
     onClose();
@@ -218,7 +218,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
           {error && <div className="text-red-500 text-sm">{error}</div>}
 
           {/* 버튼 */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-3 py-4 mx-4">
             <Button
               type="button"
               variant="outline"
@@ -244,7 +244,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
     console.log('Rendering Dialog for desktop');
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md pb-4">
           <DialogHeader>
             <DialogTitle>새 활동 추가</DialogTitle>
           </DialogHeader>
@@ -263,7 +263,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
             새로운 활동을 추가하고 바로 시작하세요
           </DrawerDescription>
         </DrawerHeader>
-        <ModalContent className="px-4" />
+        <ModalContent />
       </DrawerContent>
     </Drawer>
   );
