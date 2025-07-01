@@ -416,3 +416,29 @@ AddItemModal을 사용자 요청에 맞게 단순화 및 개선
 - ✅ 모든 Server Actions async 함수로 수정
 - ✅ TypeScript 타입 안전성 유지
 - ✅ 기존 호환성 유지 (별칭 함수 제공) 
+
+## Current Task: LastMoveDetailModal 빌드 에러 해결 (완료)
+
+**Task Overview:**
+LastMoveDetailModal.tsx에서 발생한 TypeScript ESLint 빌드 에러 해결
+
+**해결된 문제들:**
+[X] 1. 사용하지 않는 import 제거
+  [X] SheetDescription, SheetClose 제거
+  [X] Label 제거
+[X] 2. React Hook useEffect 의존성 문제 해결
+  [X] loadData 함수를 useCallback으로 감싸기
+  [X] useCallback import 추가
+  [X] loadData 의존성 배열에 추가
+
+**기술적 해결 방법:**
+- TypeScript ESLint @typescript-eslint/no-unused-vars 에러 해결
+- React Hook react-hooks/exhaustive-deps 경고 해결
+- useCallback 훅으로 loadData 함수 메모이제이션
+- 의존성 배열에 activityId 추가로 적절한 재실행 보장
+
+**빌드 결과:**
+- ✅ 빌드 성공 (pnpm build)
+- ✅ 모든 TypeScript 에러 해결
+- ✅ 모든 ESLint 에러 해결
+- ⚠️ VAPID keys 경고는 푸시 알림 관련이므로 무관 

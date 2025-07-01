@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,12 +9,9 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
-  SheetClose,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -105,25 +102,8 @@ export default function LastMoveDetailModal({
     },
   });
 
-  // 데이터 로드
-  useEffect(() => {
-    if (activityId && isOpen) {
-      loadData();
-    }
-  }, [activityId, isOpen]);
-
-  // 활동 정보가 로드되면 폼 초기화
-  useEffect(() => {
-    if (activity) {
-      activityForm.reset({
-        title: activity.title,
-        category_id: activity.category_id || undefined,
-        description: activity.description || '',
-      });
-    }
-  }, [activity, activityForm]);
-
-  const loadData = async () => {
+  // 데이터 로드 함수를 useCallback으로 감싸서 의존성 문제 해결
+  const loadData = useCallback(async () => {
     if (!activityId) return;
 
     setIsLoading(true);
@@ -143,7 +123,25 @@ export default function LastMoveDetailModal({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [activityId]);
+
+  // 데이터 로드
+  useEffect(() => {
+    if (activityId && isOpen) {
+      loadData();
+    }
+  }, [activityId, isOpen, loadData]);
+
+  // 활동 정보가 로드되면 폼 초기화
+  useEffect(() => {
+    if (activity) {
+      activityForm.reset({
+        title: activity.title,
+        category_id: activity.category_id || undefined,
+        description: activity.description || '',
+      });
+    }
+  }, [activity, activityForm]);
 
   const handleActivityUpdate = async (data: z.infer<typeof activitySchema>) => {
     if (!activityId) return;
