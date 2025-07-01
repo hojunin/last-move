@@ -1,24 +1,33 @@
-import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
+import IOSPWAMeta from '@/components/IOSPWAMeta';
+import './globals.css';
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+  subsets: ['latin'],
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
-  title: "LastMove",
-  description: "Days since tracker app",
-  manifest: "/manifest.json",
+  title: 'LastMove',
+  description: 'Days since tracker app',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'LastMove',
+  },
+  icons: {
+    apple: [{ url: '/icon-180x180.png', sizes: '180x180', type: 'image/png' }],
+  },
 };
 
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#000000",
+  themeColor: '#000000',
 };
 
 export default function RootLayout({
@@ -28,6 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={inter.variable}>
+      <IOSPWAMeta />
       <body className="min-h-screen bg-background font-sans antialiased">
         {children}
         <Toaster />

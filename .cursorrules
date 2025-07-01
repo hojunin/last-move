@@ -29,101 +29,77 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: LastMove Detail 모달 구현
+## Current Task: iOS PWA 아이콘 및 스플래시 스크린 구현 (완료)
 
 **Task Overview:**
-LastMove Detail 모달을 만들어 활동의 상세 정보를 보고 편집할 수 있도록 구현
-- 활동 상세 정보 표시 (제목, 카테고리, 마지막 업데이트, 며칠 전, 총 회수)
-- 달력 UI로 실행한 날짜들 모두 표시
-- 실행 날짜 수정/삭제 기능
-- 활동 상세 정보 수정 기능 (react-hook-form 사용)
-- LastMoveCard에서 클릭 시 모달 열기
+iOS PWA 지원을 위한 앱 아이콘과 스플래시 스크린 구현
+- lastmove.jpg 이미지를 다양한 크기의 아이콘으로 변환
+- iOS 디바이스별 스플래시 이미지 생성
+- iOS PWA 메타 태그 추가
+- manifest.json 업데이트
 
 **구현 계획:**
-[X] 1. 데이터베이스 액션 추가
-  [X] getActivityDetail: 특정 활동 상세 정보 가져오기
-  [X] getActivityMoves: 특정 활동의 모든 Move 기록 가져오기
-  [X] updateActivity: 활동 정보 수정
-  [X] updateMove: Move 날짜/노트 수정  
-  [X] deleteMove: Move 삭제
-[X] 2. Detail 모달 컴포넌트 구현
-  [X] LastMoveDetailModal 컴포넌트 생성
-  [X] 활동 정보 표시 섹션
-  [X] 달력 UI 구현 (실행 날짜 표시)
-  [X] 편집 폼 구현 (react-hook-form)
-[X] 3. LastMoveCard 수정
-  [X] 클릭 이벤트로 Detail 모달 열기
-  [X] 완료 버튼과 상세보기 구분
-[X] 4. UI/UX 개선
-  [X] 달력에서 날짜 클릭 시 수정 모드
-  [X] 폼 유효성 검사
-  [X] 로딩 상태 및 에러 처리
-  [X] 반응형 디자인
-[X] 5. Sheet 컴포넌트 통일
-  [X] 데스크톱에서도 Dialog 대신 Sheet 사용 (side="right")
-  [X] 모바일은 Sheet side="bottom" 유지
+[X] 1. 아이콘 이미지 생성
+  [X] macOS sips 도구로 다양한 크기 PNG 아이콘 생성
+  [X] 180x180 (iOS 앱 아이콘)
+  [X] 192x192 (PWA 표준)
+  [X] 512x512 (PWA 표준)
+[X] 2. iOS 스플래시 이미지 생성
+  [X] iPhone 8: 750x1334
+  [X] iPhone XR: 828x1792
+  [X] iPhone X/XS: 1125x2436
+  [X] iPhone 12/13/14: 1170x2532
+  [X] iPad: 1536x2048
+  [X] iPad Pro: 2048x2732
+[X] 3. iOS PWA 메타 태그 구현
+  [X] IOSPWAMeta 컴포넌트 생성
+  [X] 디바이스별 미디어 쿼리 적용
+  [X] layout.tsx에 컴포넌트 통합
+[X] 4. manifest.json 업데이트
+  [X] 생성된 아이콘들 등록
+  [X] 앱 바로가기 메뉴 추가
+  [X] 카테고리 및 언어 정보 추가
 
 **완료된 구현사항:**
-- ✅ 커스텀 Calendar 컴포넌트 생성 (dayjs 기반)
-- ✅ 5개 새로운 Server Actions 추가 (getActivityDetail, getActivityMoves, updateActivity, updateMove, deleteMove)
-- ✅ LastMoveDetailModal 컴포넌트 구현:
-  * 활동 상세 정보 표시 (제목, 카테고리, 마지막 실행, 총 회수)
-  * 읽기/편집 모드 토글
-  * React Hook Form으로 활동 정보 수정
-  * 달력 UI로 실행 날짜 하이라이트 표시
-  * 달력 날짜 클릭 시 해당 Move 수정 모드
-  * 최근 기록 목록 및 개별 수정/삭제 기능
-  * Toast 기반 성공/에러 메시지
-- ✅ LastMoveCard 수정:
-  * 카드 클릭 시 Detail 모달 열기 (cursor-pointer 추가)
-  * 완료 버튼 이벤트 버블링 방지 (stopPropagation)
-  * 모달 상태 관리
-- ✅ 접근성 개선:
-  * VisuallyHidden 컴포넌트 추가
-  * 모든 Dialog에서 DialogTitle 필수 포함
-  * Screen reader 호환성 확보
-- ✅ 반응형 디자인 구현:
-  * 모바일: Sheet 컴포넌트로 BottomSheet 구현 (90vh 높이)
-  * 데스크톱: Sheet 컴포넌트로 RightSheet 구현 (800px 너비)
-  * useMediaQuery 훅으로 768px 기준 분기 처리
-- ✅ UI/UX 개선:
-  * 데스크톱에서 활동 정보를 세로로 한 줄씩 표시 (그리드 제거)
-  * 마지막 실행 날짜 형식: "x일 전 (YYYY-MM-DD)" 표시
-  * 모든 화면에서 1컬럼 세로 레이아웃
-  * 공통 ModalContent 컴포넌트로 코드 재사용
-- ✅ Sheet 컴포넌트 통일:
-  * Dialog 컴포넌트 완전 제거
-  * 모바일: Sheet side="bottom" (90vh 높이)
-  * 데스크톱: Sheet side="right" (800px 너비)
-  * 일관된 사용자 경험 제공
+- ✅ macOS sips 도구로 9개 이미지 파일 생성
+  * 3개 아이콘: icon-180x180.png, icon-192x192.png, icon-512x512.png
+  * 6개 스플래시: splash-750x1334.png, splash-828x1792.png, splash-1125x2436.png, splash-1170x2532.png, splash-1536x2048.png, splash-2048x2732.png
+- ✅ IOSPWAMeta 컴포넌트 구현:
+  * 디바이스별 apple-touch-startup-image 링크 태그
+  * 정확한 미디어 쿼리로 디바이스 타게팅
+  * iPhone 8, XR, X/XS, 12/13/14, iPad, iPad Pro 지원
+- ✅ layout.tsx 업데이트:
+  * iOS PWA 메타데이터 추가 (appleWebApp 설정)
+  * apple-touch-icon 등록
+  * IOSPWAMeta 컴포넌트 통합
+- ✅ manifest.json 개선:
+  * 3개 아이콘 등록 (purpose: any, maskable any)
+  * "새 활동 추가" 바로가기 메뉴 추가
+  * 카테고리: lifestyle, productivity
+  * 언어: ko, 방향: ltr
 
-**완료된 작업:**
-- ✅ LastMove Detail 모달 완전 구현 완료!
-  * 모든 요구사항 충족 (활동 상세정보, 달력 UI, 편집 기능)
-  * 반응형 디자인 및 Sheet 컴포넌트 통일
-  * 접근성 및 사용성 개선
-  * 완전한 CRUD 기능 (생성, 읽기, 수정, 삭제)
+**iOS PWA 기능:**
+1. **앱 설치**: Safari에서 "홈 화면에 추가" 지원
+2. **스플래시 스크린**: 앱 실행 시 디바이스별 최적화된 스플래시 표시
+3. **앱 아이콘**: 홈 화면에 표시될 고품질 아이콘
+4. **독립 실행**: 브라우저 UI 없이 네이티브 앱처럼 실행
+5. **바로가기**: 앱 아이콘 길게 눌러서 "새 활동 추가" 빠른 접근
 
-**기술 스택:**
-- React Hook Form: 폼 상태 관리 ✅
-- Shadcn/ui: Sheet, Form 컴포넌트 ✅
-- 커스텀 달력 UI: 실행 날짜 표시 (dayjs 기반) ✅
-- GSAP: 애니메이션 효과 (기존 유지) ✅
-- dayjs: 날짜 처리 ✅
+**기술적 구현:**
+- macOS sips 명령어로 이미지 변환 (JPG → PNG)
+- Next.js App Router 메타데이터 API 활용
+- 디바이스 픽셀 비율 및 해상도 기반 미디어 쿼리
+- PWA 표준 준수 (manifest.json, service worker 기존 유지)
 
-**주요 기능:**
-1. **활동 정보 표시**: 제목, 카테고리 (아이콘+이름), 마지막 실행일, 총 실행 회수
-2. **편집 모드**: 활동 제목, 카테고리, 설명 수정 가능
-3. **달력 UI**: 실행한 날짜들을 파란색으로 하이라이트, 클릭 시 해당 Move 수정 모드
-4. **Move 관리**: 개별 Move의 날짜/메모 수정, 삭제 기능
-5. **반응형**: 모든 화면에서 1컬럼 세로 레이아웃 (활동정보 → 달력 순서)
-6. **사용자 인증**: 모든 액션에서 세션 기반 사용자 확인 및 권한 체크
+**지원 디바이스:**
+- iPhone 8 (375×667, 2x)
+- iPhone XR (414×896, 2x)
+- iPhone X/XS (375×812, 3x)
+- iPhone 12/13/14 (390×844, 3x)
+- iPad (768×1024, 2x)
+- iPad Pro (1024×1366, 2x)
 
-**TypeScript 타입 안전성:**
-- ActivityDetail, Move, Category 인터페이스 정의
-- zod 스키마로 폼 유효성 검사 (activitySchema, moveSchema)
-- react-hook-form과 zod resolver 통합
-- Server Actions 리턴 타입 명시
+## Previous Task: LastMove Detail 모달 구현 (완료)
 
 ## Previous Task: 로그인 성공 후 About 페이지 리다이렉트 문제 해결 (완료)
 
