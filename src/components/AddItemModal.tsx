@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState, useTransition, useEffect } from "react";
-import { useForm, type ControllerRenderProps } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useState, useTransition, useEffect } from 'react';
+import { useForm, type ControllerRenderProps } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Drawer,
   DrawerClose,
@@ -18,7 +18,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer";
+} from '@/components/ui/drawer';
 import {
   Form,
   FormControl,
@@ -26,32 +26,32 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   createActivityAndMove,
   getCategories,
   type Category,
-} from "@/lib/actions";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { toast } from "sonner";
+} from '@/lib/actions';
+import { useMediaQuery } from '@/hooks/use-media-query';
+import { toast } from 'sonner';
 
 // NOTE: 새 활동 생성 폼 스키마 (단순화)
 const newActivitySchema = z.object({
   title: z
     .string()
-    .min(1, "활동명을 입력해주세요")
-    .max(100, "활동명은 100자 이하로 입력해주세요"),
+    .min(1, '활동명을 입력해주세요')
+    .max(100, '활동명은 100자 이하로 입력해주세요'),
   category_id: z.number({
-    required_error: "카테고리를 선택해주세요",
+    required_error: '카테고리를 선택해주세요',
   }),
 });
 
@@ -65,9 +65,9 @@ interface AddItemModalProps {
 export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   const [isComposing, setIsComposing] = useState(false); // NOTE: 한글 입력 상태 관리
   const [categories, setCategories] = useState<Category[]>([]);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
-  console.log("AddItemModal render:", { isOpen, isDesktop });
+  console.log('AddItemModal render:', { isOpen, isDesktop });
 
   // NOTE: 카테고리 목록 가져오기
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
         const categoryList = await getCategories();
         setCategories(categoryList);
       } catch (error) {
-        console.error("Failed to fetch categories:", error);
+        console.error('Failed to fetch categories:', error);
       }
     };
 
@@ -87,7 +87,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   const form = useForm<NewActivityFormData>({
     resolver: zodResolver(newActivitySchema),
     defaultValues: {
-      title: "",
+      title: '',
       category_id: undefined,
     },
   });
@@ -103,19 +103,19 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
     startTransition(async () => {
       try {
         const formData = new FormData();
-        formData.append("title", data.title);
-        formData.append("category_id", data.category_id.toString());
+        formData.append('title', data.title);
+        formData.append('category_id', data.category_id.toString());
 
         await createActivityAndMove(formData);
 
-        toast.success("활동이 추가되었습니다!");
+        toast.success('활동이 추가되었습니다!');
         form.reset();
         onClose();
       } catch (error: unknown) {
         const errorMessage =
           error instanceof Error
             ? error.message
-            : "알 수 없는 오류가 발생했습니다";
+            : '알 수 없는 오류가 발생했습니다';
         setError(errorMessage);
       }
     });
@@ -153,7 +153,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<NewActivityFormData, "title">;
+              field: ControllerRenderProps<NewActivityFormData, 'title'>;
             }) => (
               <FormItem>
                 <FormLabel>
@@ -180,7 +180,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<NewActivityFormData, "category_id">;
+              field: ControllerRenderProps<NewActivityFormData, 'category_id'>;
             }) => (
               <FormItem>
                 <FormLabel>
@@ -232,7 +232,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
               disabled={!form.formState.isValid || isComposing || isPending}
               className="flex-1"
             >
-              {isPending ? "추가 중..." : "활동 추가"}
+              {isPending ? '추가 중...' : '활동 추가'}
             </Button>
           </div>
         </form>
@@ -241,7 +241,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   );
 
   if (isDesktop) {
-    console.log("Rendering Dialog for desktop");
+    console.log('Rendering Dialog for desktop');
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
         <DialogContent className="sm:max-w-md">
@@ -264,11 +264,6 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
           </DrawerDescription>
         </DrawerHeader>
         <ModalContent className="px-4" />
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">닫기</Button>
-          </DrawerClose>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
