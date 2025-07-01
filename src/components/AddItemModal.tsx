@@ -12,10 +12,8 @@ import {
 } from '@/components/ui/dialog';
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
@@ -126,7 +124,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
     form.reset();
   };
 
-  // NOTE: 모달 기힐 때 폼 초기화
+  // NOTE: 모달 닫힐 때 폼 초기화
   const handleClose = () => {
     resetForm();
     onClose();
@@ -142,113 +140,113 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   };
 
   // NOTE: 공통 컨텐츠 컴포넌트
-  const ModalContent = ({ className }: { className?: string }) => (
-    <div className={className}>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          {/* 활동명 */}
-          <FormField
-            control={form.control}
-            name="title"
-            render={({
-              field,
-            }: {
-              field: ControllerRenderProps<NewActivityFormData, 'title'>;
-            }) => (
-              <FormItem>
-                <FormLabel>
-                  활동명 <span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="예: 운동하기, 책 읽기, 물 마시기"
-                    autoFocus
-                    onCompositionStart={handleCompositionStart}
-                    onCompositionEnd={handleCompositionEnd}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+  const FormContent = () => (
+    <>
+      {/* 활동명 */}
+      <FormField
+        control={form.control}
+        name="title"
+        render={({
+          field,
+        }: {
+          field: ControllerRenderProps<NewActivityFormData, 'title'>;
+        }) => (
+          <FormItem>
+            <FormLabel>
+              활동명 <span className="text-red-500">*</span>
+            </FormLabel>
+            <FormControl>
+              <Input
+                placeholder="예: 운동하기, 책 읽기, 물 마시기"
+                autoFocus
+                onCompositionStart={handleCompositionStart}
+                onCompositionEnd={handleCompositionEnd}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-          {/* 카테고리 */}
-          <FormField
-            control={form.control}
-            name="category_id"
-            render={({
-              field,
-            }: {
-              field: ControllerRenderProps<NewActivityFormData, 'category_id'>;
-            }) => (
-              <FormItem>
-                <FormLabel>
-                  카테고리 <span className="text-red-500">*</span>
-                </FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(parseInt(value))}
-                  value={field.value?.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="카테고리를 선택하세요" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem
-                        key={category.id}
-                        value={category.id.toString()}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span>{category.icon}</span>
-                          <span>{category.name}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* 에러 메시지 표시 */}
-          {error && <div className="text-red-500 text-sm">{error}</div>}
-
-          {/* 버튼 */}
-          <div className="flex gap-3 py-4 mx-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              className="flex-1"
+      {/* 카테고리 */}
+      <FormField
+        control={form.control}
+        name="category_id"
+        render={({
+          field,
+        }: {
+          field: ControllerRenderProps<NewActivityFormData, 'category_id'>;
+        }) => (
+          <FormItem>
+            <FormLabel>
+              카테고리 <span className="text-red-500">*</span>
+            </FormLabel>
+            <Select
+              onValueChange={(value) => field.onChange(parseInt(value))}
+              value={field.value?.toString()}
             >
-              취소
-            </Button>
-            <Button
-              type="submit"
-              disabled={!form.formState.isValid || isComposing || isPending}
-              className="flex-1"
-            >
-              {isPending ? '추가 중...' : '활동 추가'}
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="카테고리를 선택하세요" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id.toString()}>
+                    <div className="flex items-center gap-2">
+                      <span>{category.icon}</span>
+                      <span>{category.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* 에러 메시지 표시 */}
+      {error && <div className="text-red-500 text-sm">{error}</div>}
+
+      {/* 버튼 */}
+      <div className="flex gap-3 py-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleClose}
+          className="flex-1"
+        >
+          취소
+        </Button>
+        <Button
+          type="submit"
+          disabled={!form.formState.isValid || isComposing || isPending}
+          className="flex-1"
+        >
+          {isPending ? '추가 중...' : '활동 추가'}
+        </Button>
+      </div>
+    </>
   );
 
   if (isDesktop) {
     console.log('Rendering Dialog for desktop');
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-md pb-4">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>새 활동 추가</DialogTitle>
           </DialogHeader>
-          <ModalContent />
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-6 mx-4 pb-4"
+            >
+              <FormContent />
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     );
@@ -263,7 +261,14 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
             새로운 활동을 추가하고 바로 시작하세요
           </DrawerDescription>
         </DrawerHeader>
-        <ModalContent />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6 mx-4 pb-4"
+          >
+            <FormContent />
+          </form>
+        </Form>
       </DrawerContent>
     </Drawer>
   );
