@@ -29,24 +29,56 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: LastMoveDetailModal 캘린더 인터렉션 개선
+## Current Task: 새로운 작업 대기 중
+
+## Previous Task: LastMoveDetailModal 리팩토링 (Thinking in React 패턴 적용) - 완료
+
+**Task Overview:**
+LastMoveDetailModal 컴포넌트를 React의 "Thinking in React" 패턴에 맞게 리팩토링
+1. 현재 루트 컴포넌트에 집중된 상태와 로직을 계층적으로 분리
+2. 단일 책임 원칙에 따라 각 컴포넌트를 작은 단위로 분할
+3. LastMoveDetailModal 폴더를 생성하고 내부에 세부 컴포넌트들 구성
+4. 루트 컴포넌트만 barrel pattern으로 export
+
+**완료된 리팩토링:**
+- ✅ src/components/LastMoveDetailModal/ 폴더 구조 생성
+- ✅ types.ts: 공통 타입 및 인터페이스 정의
+- ✅ ActivityStats.tsx: 활동 통계 정보 표시 (가장 독립적)
+- ✅ ActivityEditForm.tsx: 활동 편집 폼 (React Hook Form 통합)
+- ✅ ActivityInfoSection.tsx: 활동 정보 표시/편집 모드 관리
+- ✅ ExecutionCalendar.tsx: 실행 기록 캘린더 표시
+- ✅ MoveForm.tsx: Move 추가/수정/삭제 폼
+- ✅ MovePopover.tsx: 날짜 클릭 시 Move 관리 팝오버
+- ✅ LastMoveDetailModal.tsx: 리팩토링된 루트 컴포넌트 (상태 관리만 담당)
+- ✅ index.ts: Barrel pattern export
+- ✅ 기존 파일 백업 (LastMoveDetailModal.tsx.backup)
+
+**리팩토링 결과:**
+1. **단일 책임 원칙**: 각 컴포넌트가 명확한 하나의 역할만 담당
+2. **상태 분산**: 루트 컴포넌트의 상태를 MovePopoverState로 그룹화
+3. **재사용성 향상**: 각 컴포넌트가 독립적으로 재사용 가능
+4. **타입 안전성**: 모든 props와 상태에 TypeScript 타입 적용
+5. **데이터 흐름 최적화**: props drilling 최소화, 콜백 함수를 통한 단방향 데이터 흐름
+6. **코드 가독성**: 각 컴포넌트 100-150줄 내외로 관리 용이
+
+**컴포넌트 계층 구조:**
+```
+LastMoveDetailModal (루트)
+├── ActivityInfoSection
+│   ├── ActivityStats (통계 표시)
+│   └── ActivityEditForm (편집 폼)
+├── ExecutionCalendar (캘린더)
+└── MovePopover (팝오버)
+    └── MoveForm (Move 관리 폼)
+```
+
+## Previous Task: LastMoveDetailModal 캘린더 인터렉션 개선 (완료)
 
 **Task Overview:**
 LastMoveDetailModal 컴포넌트의 캘린더 기능 개선
 1. 최근 기록 섹션 제거
 2. 캘린더 날짜 클릭 시 추가/수정/삭제 가능하도록 개선
 3. 현재 모달 방식을 Popover로 변경하여 UX 개선
-
-**구현 계획:**
-[X] 1. shadcn/ui Popover 컴포넌트 설치
-[X] 2. 최근 기록 섹션 제거
-[X] 3. Popover 기반 날짜 인터렉션 구현
-  [X] 날짜 클릭 시 Popover 열기
-  [X] 해당 날짜에 기록이 있으면 수정/삭제 옵션
-  [X] 해당 날짜에 기록이 없으면 추가 옵션
-[X] 4. 폼 로직을 Popover 내부로 이동
-[X] 5. 특정 날짜로 Move 생성하는 Server Action 구현
-[X] 6. UX 개선 및 테스트
 
 **완료된 UX 개선사항:**
 - ✅ 날짜 필드 숨김 처리 (캘린더에서 이미 선택했으므로 중복 제거)
