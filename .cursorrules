@@ -417,7 +417,35 @@ AddItemModal을 사용자 요청에 맞게 단순화 및 개선
 - ✅ TypeScript 타입 안전성 유지
 - ✅ 기존 호환성 유지 (별칭 함수 제공) 
 
-## Current Task: LastMoveDetailModal 빌드 에러 해결 (완료)
+## Current Task: Favicon 업데이트 (완료)
+
+**Task Overview:**
+lastmove.jpg 이미지를 기반으로 favicon을 생성하고 모든 사용 위치를 업데이트
+
+**완료된 작업:**
+[X] 1. 다양한 크기의 favicon 생성
+  [X] 16x16, 32x32 PNG 파일 생성 (sips 사용)
+  [X] 고품질 favicon.ico 생성 (Python Pillow 사용, 16/32/48/64 사이즈)
+[X] 2. favicon 사용 위치 업데이트
+  [X] src/app/favicon.ico - Next.js App Router 기본 favicon
+  [X] src/app/layout.tsx - metadata icons 설정
+  [X] public/manifest.json - PWA 아이콘 목록에 작은 사이즈 추가
+[X] 3. 파일 정리
+  [X] 불필요한 임시 파일 제거
+  [X] 빌드 성공 확인
+
+**기술적 구현:**
+- macOS sips 도구로 PNG 파일 생성
+- Python Pillow 라이브러리로 고품질 ICO 파일 생성 (다중 사이즈)
+- Next.js metadata API 활용한 favicon 설정
+- PWA manifest.json 아이콘 목록 확장
+
+**생성된 파일:**
+- src/app/favicon.ico (487 bytes, 16/32/48/64 사이즈)
+- public/favicon-16x16.png (955 bytes)
+- public/favicon-32x32.png (1,184 bytes)
+
+## Previous Task: LastMoveDetailModal 빌드 에러 해결 (완료)
 
 **Task Overview:**
 LastMoveDetailModal.tsx에서 발생한 TypeScript ESLint 빌드 에러 해결
