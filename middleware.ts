@@ -7,6 +7,9 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   const { pathname } = req.nextUrl;
 
+  // 디버깅: 모든 요청 로그
+  console.log(`[미들웨어] 요청: ${pathname}, 인증 상태: ${!!req.auth}`);
+
   // 인증이 필요하지 않은 경로들
   const publicPaths = [
     '/about',
@@ -25,19 +28,21 @@ export default auth((req) => {
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
 
   if (isPublicPath) {
+    console.log(`[미들웨어] 퍼블릭 경로 통과: ${pathname}`);
     return NextResponse.next();
   }
 
   // 인증되지 않은 사용자는 About 페이지로 리다이렉트
   if (!req.auth) {
     console.log(
-      `미들웨어: 인증되지 않은 사용자 ${pathname} → /about 리다이렉트`,
+      `[미들웨어] 인증되지 않은 사용자 ${pathname} → /about 리다이렉트`,
     );
     const aboutUrl = new URL('/about', req.url);
     return NextResponse.redirect(aboutUrl);
   }
 
   // 인증된 사용자는 정상적으로 통과
+  console.log(`[미들웨어] 인증된 사용자 통과: ${pathname}`);
   return NextResponse.next();
 });
 
