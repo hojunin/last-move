@@ -1,9 +1,9 @@
-"use server";
+'use server';
 
-import { sql } from "./db";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import { auth } from "@/lib/auth";
+import { sql } from './db';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+import { auth } from '@/lib/auth';
 
 // NOTE: 카테고리 타입
 export interface Category {
@@ -25,7 +25,7 @@ export interface Activity {
   category: string | null;
   category_id: number | null;
   description: string | null;
-  reminder_rule_type: "none" | "daily" | "weekly" | "monthly" | "custom" | null;
+  reminder_rule_type: 'none' | 'daily' | 'weekly' | 'monthly' | 'custom' | null;
   reminder_interval: number | null;
   reminder_days_of_week: number[] | null;
   created_at: string;
@@ -59,11 +59,11 @@ export interface ActivityWithLastMove {
 
 // NOTE: 활동 생성을 위한 Zod 스키마
 const createActivitySchema = z.object({
-  title: z.string().min(1, "제목은 필수입니다"),
+  title: z.string().min(1, '제목은 필수입니다'),
   category_id: z.number().optional(),
   description: z.string().optional(),
   reminder_rule_type: z
-    .enum(["none", "daily", "weekly", "monthly", "custom"])
+    .enum(['none', 'daily', 'weekly', 'monthly', 'custom'])
     .optional(),
   reminder_interval: z.number().optional(),
   reminder_days_of_week: z.array(z.number()).optional(),
@@ -88,7 +88,7 @@ export async function getCategories(): Promise<Category[]> {
 
     return result.rows as Category[];
   } catch (error) {
-    console.error("Failed to fetch categories:", error);
+    console.error('Failed to fetch categories:', error);
     return [];
   }
 }
@@ -100,7 +100,7 @@ export async function getActivitiesWithLastMove(): Promise<
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      console.log("No authenticated user found");
+      console.log('No authenticated user found');
       return [];
     }
 
@@ -128,7 +128,7 @@ export async function getActivitiesWithLastMove(): Promise<
 
     return result.rows as ActivityWithLastMove[];
   } catch (error) {
-    console.error("Failed to fetch activities:", error);
+    console.error('Failed to fetch activities:', error);
     return [];
   }
 }
@@ -146,8 +146,8 @@ export async function searchActivities(query: string): Promise<Activity[]> {
       SELECT * FROM activities 
       WHERE is_active = true 
       AND user_id = ${userId}
-      AND (title ILIKE ${"%" + query + "%"} OR category ILIKE ${
-      "%" + query + "%"
+      AND (title ILIKE ${'%' + query + '%'} OR category ILIKE ${
+      '%' + query + '%'
     })
       ORDER BY title
       LIMIT 10
@@ -155,7 +155,7 @@ export async function searchActivities(query: string): Promise<Activity[]> {
 
     return result.rows as Activity[];
   } catch (error) {
-    console.error("Failed to search activities:", error);
+    console.error('Failed to search activities:', error);
     return [];
   }
 }
@@ -165,22 +165,22 @@ export async function createActivity(formData: FormData) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return { success: false, error: "인증이 필요합니다" };
+      return { success: false, error: '인증이 필요합니다' };
     }
 
     const userId = parseInt(session.user.id);
     const rawData = {
-      title: formData.get("title"),
-      category_id: formData.get("category_id")
-        ? Number(formData.get("category_id"))
+      title: formData.get('title'),
+      category_id: formData.get('category_id')
+        ? Number(formData.get('category_id'))
         : null,
-      description: formData.get("description") || null,
-      reminder_rule_type: formData.get("reminder_rule_type") || "none",
-      reminder_interval: formData.get("reminder_interval")
-        ? Number(formData.get("reminder_interval"))
+      description: formData.get('description') || null,
+      reminder_rule_type: formData.get('reminder_rule_type') || 'none',
+      reminder_interval: formData.get('reminder_interval')
+        ? Number(formData.get('reminder_interval'))
         : null,
-      reminder_days_of_week: formData.get("reminder_days_of_week")
-        ? JSON.parse(formData.get("reminder_days_of_week") as string)
+      reminder_days_of_week: formData.get('reminder_days_of_week')
+        ? JSON.parse(formData.get('reminder_days_of_week') as string)
         : null,
     };
 
@@ -195,7 +195,7 @@ export async function createActivity(formData: FormData) {
     `;
 
     if (existingActivity.rows.length > 0) {
-      return { success: false, error: "이미 존재하는 활동입니다" };
+      return { success: false, error: '이미 존재하는 활동입니다' };
     }
 
     const result = await sql`
@@ -212,7 +212,7 @@ export async function createActivity(formData: FormData) {
         ${validatedData.title},
         ${validatedData.category_id},
         ${validatedData.description},
-        ${validatedData.reminder_rule_type || "none"},
+        ${validatedData.reminder_rule_type || 'none'},
         ${validatedData.reminder_interval},
         ${
           validatedData.reminder_days_of_week
@@ -224,14 +224,14 @@ export async function createActivity(formData: FormData) {
       RETURNING id
     `;
 
-    revalidatePath("/");
+    revalidatePath('/');
     return { success: true, activityId: result.rows[0].id };
   } catch (error) {
-    console.error("Failed to create activity:", error);
+    console.error('Failed to create activity:', error);
     if (error instanceof z.ZodError) {
       return { success: false, error: error.errors[0].message };
     }
-    return { success: false, error: "활동 생성에 실패했습니다" };
+    return { success: false, error: '활동 생성에 실패했습니다' };
   }
 }
 
@@ -240,7 +240,7 @@ export async function createMove(activityId: number, notes?: string) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return { success: false, error: "인증이 필요합니다" };
+      return { success: false, error: '인증이 필요합니다' };
     }
 
     const userId = parseInt(session.user.id);
@@ -251,7 +251,7 @@ export async function createMove(activityId: number, notes?: string) {
     `;
 
     if (activityCheck.rows.length === 0) {
-      return { success: false, error: "권한이 없는 활동입니다" };
+      return { success: false, error: '권한이 없는 활동입니다' };
     }
 
     await sql`
@@ -259,11 +259,11 @@ export async function createMove(activityId: number, notes?: string) {
       VALUES (${activityId}, ${notes || null}, ${userId})
     `;
 
-    revalidatePath("/");
+    revalidatePath('/');
     return { success: true };
   } catch (error) {
-    console.error("Failed to create move:", error);
-    return { success: false, error: "Move 기록에 실패했습니다" };
+    console.error('Failed to create move:', error);
+    return { success: false, error: 'Move 기록에 실패했습니다' };
   }
 }
 
@@ -272,15 +272,15 @@ export async function createActivityAndMove(formData: FormData) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      throw new Error("인증이 필요합니다");
+      throw new Error('인증이 필요합니다');
     }
 
     const userId = parseInt(session.user.id);
-    const title = formData.get("title") as string;
-    const categoryId = formData.get("category_id") as string;
+    const title = formData.get('title') as string;
+    const categoryId = formData.get('category_id') as string;
 
     if (!title || !categoryId) {
-      throw new Error("모든 필드를 입력해주세요");
+      throw new Error('모든 필드를 입력해주세요');
     }
 
     // 중복 활동 체크
@@ -292,7 +292,7 @@ export async function createActivityAndMove(formData: FormData) {
     `;
 
     if (existingActivity.rows.length > 0) {
-      throw new Error("이미 존재하는 활동입니다");
+      throw new Error('이미 존재하는 활동입니다');
     }
 
     // 활동 생성
@@ -318,9 +318,9 @@ export async function createActivityAndMove(formData: FormData) {
       VALUES (${activityId}, ${userId})
     `;
 
-    revalidatePath("/");
+    revalidatePath('/');
   } catch (error) {
-    console.error("Failed to create activity and move:", error);
+    console.error('Failed to create activity and move:', error);
     throw error;
   }
 }
@@ -330,3 +330,242 @@ export const getItems = getActivitiesWithLastMove;
 export const logAction = async (activityId: number) =>
   await createMove(activityId);
 export type LastMoveItem = ActivityWithLastMove;
+
+// NOTE: Detail 모달용 추가 타입들
+export interface ActivityDetail extends Activity {
+  category_name: string | null;
+  category_icon: string | null;
+  move_count: number;
+  last_executed_at: string | null;
+}
+
+export interface MoveWithDetails extends Move {
+  activity_title: string;
+}
+
+// NOTE: 특정 활동의 상세 정보를 가져오는 서버 액션
+export async function getActivityDetail(
+  activityId: number,
+): Promise<ActivityDetail | null> {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return null;
+    }
+
+    const userId = parseInt(session.user.id);
+    const result = await sql`
+      SELECT 
+        a.*,
+        c.name as category_name,
+        c.icon as category_icon,
+        COUNT(m.id) as move_count,
+        MAX(m.executed_at) as last_executed_at
+      FROM activities a
+      LEFT JOIN categories c ON a.category_id = c.id
+      LEFT JOIN moves m ON a.id = m.activity_id
+      WHERE a.id = ${activityId} AND a.user_id = ${userId} AND a.is_active = true
+      GROUP BY a.id, c.name, c.icon
+    `;
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return result.rows[0] as ActivityDetail;
+  } catch (error) {
+    console.error('Failed to fetch activity detail:', error);
+    return null;
+  }
+}
+
+// NOTE: 특정 활동의 모든 Move 기록을 가져오는 서버 액션
+export async function getActivityMoves(activityId: number): Promise<Move[]> {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return [];
+    }
+
+    const userId = parseInt(session.user.id);
+
+    // 해당 활동이 현재 사용자의 것인지 확인
+    const activityCheck = await sql`
+      SELECT id FROM activities WHERE id = ${activityId} AND user_id = ${userId}
+    `;
+
+    if (activityCheck.rows.length === 0) {
+      return [];
+    }
+
+    const result = await sql`
+      SELECT id, activity_id, executed_at, notes, created_at
+      FROM moves
+      WHERE activity_id = ${activityId} AND user_id = ${userId}
+      ORDER BY executed_at DESC
+    `;
+
+    return result.rows as Move[];
+  } catch (error) {
+    console.error('Failed to fetch activity moves:', error);
+    return [];
+  }
+}
+
+// NOTE: 활동 정보를 수정하는 서버 액션
+const updateActivitySchema = z.object({
+  title: z.string().min(1, '제목은 필수입니다'),
+  category_id: z.number().optional(),
+  description: z.string().optional(),
+  reminder_rule_type: z
+    .enum(['none', 'daily', 'weekly', 'monthly', 'custom'])
+    .optional(),
+  reminder_interval: z.number().optional(),
+  reminder_days_of_week: z.array(z.number()).optional(),
+});
+
+export async function updateActivity(
+  activityId: number,
+  data: z.infer<typeof updateActivitySchema>,
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: '인증이 필요합니다' };
+    }
+
+    const userId = parseInt(session.user.id);
+
+    // 해당 활동이 현재 사용자의 것인지 확인
+    const activityCheck = await sql`
+      SELECT id FROM activities WHERE id = ${activityId} AND user_id = ${userId}
+    `;
+
+    if (activityCheck.rows.length === 0) {
+      return { success: false, error: '권한이 없는 활동입니다' };
+    }
+
+    const validatedData = updateActivitySchema.parse(data);
+
+    // 동일한 제목의 다른 활동이 있는지 확인 (자신 제외)
+    const existingActivity = await sql`
+      SELECT id FROM activities 
+      WHERE title = ${validatedData.title} 
+      AND user_id = ${userId} 
+      AND id != ${activityId}
+      AND is_active = true
+    `;
+
+    if (existingActivity.rows.length > 0) {
+      return { success: false, error: '이미 존재하는 활동 제목입니다' };
+    }
+
+    await sql`
+      UPDATE activities SET
+        title = ${validatedData.title},
+        category_id = ${validatedData.category_id || null},
+        description = ${validatedData.description || null},
+        reminder_rule_type = ${validatedData.reminder_rule_type || 'none'},
+        reminder_interval = ${validatedData.reminder_interval || null},
+        reminder_days_of_week = ${
+          validatedData.reminder_days_of_week
+            ? JSON.stringify(validatedData.reminder_days_of_week)
+            : null
+        },
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${activityId} AND user_id = ${userId}
+    `;
+
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to update activity:', error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.errors[0].message };
+    }
+    return { success: false, error: '활동 수정에 실패했습니다' };
+  }
+}
+
+// NOTE: Move 기록을 수정하는 서버 액션
+const updateMoveSchema = z.object({
+  executed_at: z.string(),
+  notes: z.string().optional(),
+});
+
+export async function updateMove(
+  moveId: number,
+  data: z.infer<typeof updateMoveSchema>,
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: '인증이 필요합니다' };
+    }
+
+    const userId = parseInt(session.user.id);
+
+    // 해당 Move가 현재 사용자의 것인지 확인
+    const moveCheck = await sql`
+      SELECT m.id FROM moves m
+      JOIN activities a ON m.activity_id = a.id
+      WHERE m.id = ${moveId} AND m.user_id = ${userId} AND a.user_id = ${userId}
+    `;
+
+    if (moveCheck.rows.length === 0) {
+      return { success: false, error: '권한이 없는 Move입니다' };
+    }
+
+    const validatedData = updateMoveSchema.parse(data);
+
+    await sql`
+      UPDATE moves SET
+        executed_at = ${validatedData.executed_at},
+        notes = ${validatedData.notes || null}
+      WHERE id = ${moveId} AND user_id = ${userId}
+    `;
+
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to update move:', error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.errors[0].message };
+    }
+    return { success: false, error: 'Move 수정에 실패했습니다' };
+  }
+}
+
+// NOTE: Move 기록을 삭제하는 서버 액션
+export async function deleteMove(moveId: number) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: '인증이 필요합니다' };
+    }
+
+    const userId = parseInt(session.user.id);
+
+    // 해당 Move가 현재 사용자의 것인지 확인
+    const moveCheck = await sql`
+      SELECT m.id FROM moves m
+      JOIN activities a ON m.activity_id = a.id
+      WHERE m.id = ${moveId} AND m.user_id = ${userId} AND a.user_id = ${userId}
+    `;
+
+    if (moveCheck.rows.length === 0) {
+      return { success: false, error: '권한이 없는 Move입니다' };
+    }
+
+    await sql`
+      DELETE FROM moves 
+      WHERE id = ${moveId} AND user_id = ${userId}
+    `;
+
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete move:', error);
+    return { success: false, error: 'Move 삭제에 실패했습니다' };
+  }
+}

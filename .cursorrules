@@ -29,7 +29,103 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: 로그인 성공 후 About 페이지 리다이렉트 문제 해결
+## Current Task: LastMove Detail 모달 구현
+
+**Task Overview:**
+LastMove Detail 모달을 만들어 활동의 상세 정보를 보고 편집할 수 있도록 구현
+- 활동 상세 정보 표시 (제목, 카테고리, 마지막 업데이트, 며칠 전, 총 회수)
+- 달력 UI로 실행한 날짜들 모두 표시
+- 실행 날짜 수정/삭제 기능
+- 활동 상세 정보 수정 기능 (react-hook-form 사용)
+- LastMoveCard에서 클릭 시 모달 열기
+
+**구현 계획:**
+[X] 1. 데이터베이스 액션 추가
+  [X] getActivityDetail: 특정 활동 상세 정보 가져오기
+  [X] getActivityMoves: 특정 활동의 모든 Move 기록 가져오기
+  [X] updateActivity: 활동 정보 수정
+  [X] updateMove: Move 날짜/노트 수정  
+  [X] deleteMove: Move 삭제
+[X] 2. Detail 모달 컴포넌트 구현
+  [X] LastMoveDetailModal 컴포넌트 생성
+  [X] 활동 정보 표시 섹션
+  [X] 달력 UI 구현 (실행 날짜 표시)
+  [X] 편집 폼 구현 (react-hook-form)
+[X] 3. LastMoveCard 수정
+  [X] 클릭 이벤트로 Detail 모달 열기
+  [X] 완료 버튼과 상세보기 구분
+[X] 4. UI/UX 개선
+  [X] 달력에서 날짜 클릭 시 수정 모드
+  [X] 폼 유효성 검사
+  [X] 로딩 상태 및 에러 처리
+  [X] 반응형 디자인
+[X] 5. Sheet 컴포넌트 통일
+  [X] 데스크톱에서도 Dialog 대신 Sheet 사용 (side="right")
+  [X] 모바일은 Sheet side="bottom" 유지
+
+**완료된 구현사항:**
+- ✅ 커스텀 Calendar 컴포넌트 생성 (dayjs 기반)
+- ✅ 5개 새로운 Server Actions 추가 (getActivityDetail, getActivityMoves, updateActivity, updateMove, deleteMove)
+- ✅ LastMoveDetailModal 컴포넌트 구현:
+  * 활동 상세 정보 표시 (제목, 카테고리, 마지막 실행, 총 회수)
+  * 읽기/편집 모드 토글
+  * React Hook Form으로 활동 정보 수정
+  * 달력 UI로 실행 날짜 하이라이트 표시
+  * 달력 날짜 클릭 시 해당 Move 수정 모드
+  * 최근 기록 목록 및 개별 수정/삭제 기능
+  * Toast 기반 성공/에러 메시지
+- ✅ LastMoveCard 수정:
+  * 카드 클릭 시 Detail 모달 열기 (cursor-pointer 추가)
+  * 완료 버튼 이벤트 버블링 방지 (stopPropagation)
+  * 모달 상태 관리
+- ✅ 접근성 개선:
+  * VisuallyHidden 컴포넌트 추가
+  * 모든 Dialog에서 DialogTitle 필수 포함
+  * Screen reader 호환성 확보
+- ✅ 반응형 디자인 구현:
+  * 모바일: Sheet 컴포넌트로 BottomSheet 구현 (90vh 높이)
+  * 데스크톱: Sheet 컴포넌트로 RightSheet 구현 (800px 너비)
+  * useMediaQuery 훅으로 768px 기준 분기 처리
+- ✅ UI/UX 개선:
+  * 데스크톱에서 활동 정보를 세로로 한 줄씩 표시 (그리드 제거)
+  * 마지막 실행 날짜 형식: "x일 전 (YYYY-MM-DD)" 표시
+  * 모든 화면에서 1컬럼 세로 레이아웃
+  * 공통 ModalContent 컴포넌트로 코드 재사용
+- ✅ Sheet 컴포넌트 통일:
+  * Dialog 컴포넌트 완전 제거
+  * 모바일: Sheet side="bottom" (90vh 높이)
+  * 데스크톱: Sheet side="right" (800px 너비)
+  * 일관된 사용자 경험 제공
+
+**완료된 작업:**
+- ✅ LastMove Detail 모달 완전 구현 완료!
+  * 모든 요구사항 충족 (활동 상세정보, 달력 UI, 편집 기능)
+  * 반응형 디자인 및 Sheet 컴포넌트 통일
+  * 접근성 및 사용성 개선
+  * 완전한 CRUD 기능 (생성, 읽기, 수정, 삭제)
+
+**기술 스택:**
+- React Hook Form: 폼 상태 관리 ✅
+- Shadcn/ui: Sheet, Form 컴포넌트 ✅
+- 커스텀 달력 UI: 실행 날짜 표시 (dayjs 기반) ✅
+- GSAP: 애니메이션 효과 (기존 유지) ✅
+- dayjs: 날짜 처리 ✅
+
+**주요 기능:**
+1. **활동 정보 표시**: 제목, 카테고리 (아이콘+이름), 마지막 실행일, 총 실행 회수
+2. **편집 모드**: 활동 제목, 카테고리, 설명 수정 가능
+3. **달력 UI**: 실행한 날짜들을 파란색으로 하이라이트, 클릭 시 해당 Move 수정 모드
+4. **Move 관리**: 개별 Move의 날짜/메모 수정, 삭제 기능
+5. **반응형**: 모든 화면에서 1컬럼 세로 레이아웃 (활동정보 → 달력 순서)
+6. **사용자 인증**: 모든 액션에서 세션 기반 사용자 확인 및 권한 체크
+
+**TypeScript 타입 안전성:**
+- ActivityDetail, Move, Category 인터페이스 정의
+- zod 스키마로 폼 유효성 검사 (activitySchema, moveSchema)
+- react-hook-form과 zod resolver 통합
+- Server Actions 리턴 타입 명시
+
+## Previous Task: 로그인 성공 후 About 페이지 리다이렉트 문제 해결 (완료)
 
 **Task Overview:**
 로그인 성공 후에도 about 페이지로 이동하는 문제와 Service Worker 에러 해결
@@ -38,59 +134,18 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 - PWA 관련 workbox 에러
 - Push notification user_id 타입 에러
 
-**문제 분석:**
-[X] 1. 미들웨어 인증 로직 확인
-  [X] 로그인 후 세션 생성 상태 확인 (로직은 정상)
-  [X] 미들웨어에서 올바른 리다이렉트 처리 여부 확인
-[X] 2. Service Worker 에러 분석
-  [X] sw.js 파일 내용 확인 (_ref 에러 발견)
-  [X] workbox 설정 확인
-  [X] PWA 설정 문제 여부 확인
-[X] 3. About 페이지 SSR 문제 해결
-  [X] GSAP dynamic import로 변경
-  [X] export const dynamic = 'force-dynamic' 추가
-[X] 4. Push notification user_id 에러 해결
-  [X] savePushSubscription, createNotification 함수에서 세션 기반 user_id 사용
-  [X] 하드코딩된 "default_user" 문자열 제거
-  [X] 모든 알림 관련 함수에서 실제 사용자 ID 사용
-  [X] API 라우트에서 세션 기반 인증 처리
-[ ] 5. 최종 테스트
-  [ ] 개발 모드에서 로그인 후 리다이렉트 테스트
-  [ ] Service Worker 에러 해결 확인
-  [ ] Push notification 기능 테스트
-
-**해결 방법:**
-[X] 1. Node.js 버전 업그레이드 (v16 → v20)
-[X] 2. GSAP 서버사이드 렌더링 문제 해결
-  [X] GSAP를 dynamic import로 변경
-  [X] About 페이지에 dynamic = 'force-dynamic' 추가
-[X] 3. Service Worker 새로 생성 시도
-  [X] pnpm build로 새 SW 생성 (부분 성공)
-[X] 4. NextAuth 환경변수 문제 해결
-  [X] .env.local 파일 생성으로 개발환경 분리
-  [X] NEXTAUTH_URL을 localhost:3000으로 설정
-  [X] 개발환경에서는 localhost, 프로덕션에서는 vercel.app 도메인 사용
-[X] 5. Push notification user_id 타입 에러 해결
-  [X] `savePushSubscription()` 함수에서 세션 기반 user_id 사용
-  [X] `createNotification()` 함수에서 userId 매개변수 옵셔널 처리
-  [X] `createDailyReminders()`, `createLongInactiveReminders()`, `createStreakCelebrationNotifications()` 함수에서 세션 기반 사용자별 처리
-  [X] `getNotificationSettings()`, `updateNotificationSettings()` 함수에서 세션 기반 사용자 설정 처리
-  [X] API 라우트 `/api/notifications/send`에서 세션 기반 인증
-  [X] `NotificationPermission.tsx`에서 하드코딩된 "default_user" 제거
-  [X] 모든 알림 함수에서 실제 정수 타입 user_id 사용
-[ ] 6. 최종 테스트
-  [ ] 개발 서버에서 로그인 후 localhost 리다이렉트 확인
-  [ ] Service Worker 에러 해결 확인
-  [ ] Push notification 기능 정상 동작 확인
+**완료된 해결 방법:**
+- ✅ Node.js 버전 업그레이드 (v16 → v20)
+- ✅ GSAP 서버사이드 렌더링 문제 해결
+- ✅ Service Worker 새로 생성 시도
+- ✅ NextAuth 환경변수 문제 해결
+- ✅ Push notification user_id 타입 에러 해결
+- ✅ 모든 알림 함수에서 실제 정수 타입 user_id 사용
 
 ## Previous Task: LastMoveCard 모바일 컴팩트 디자인 개선 (완료)
 
 **Task Overview:**
 LastMoveCard 컴포넌트를 모바일에서 더 컴팩트하게 만들기
-- shadcn Card 컴포넌트 대신 커스텀 카드 스타일 구현
-- 제목과 마지막 실행일만 표시 (회수 제거)
-- 완료 버튼에서 아이콘 제거
-- 모바일 친화적 컴팩트 레이아웃
 
 **완료된 개선사항:**
 - ✅ shadcn Card 컴포넌트 제거하고 커스텀 div 기반 카드 구현
@@ -249,42 +304,32 @@ LastMove 애플리케이션에 사용자 인증 시스템 추가
 - `src/components/GlobalNav.tsx`: 서버 컴포넌트 (세션 체크)
 - `src/components/GlobalNavClient.tsx`: 클라이언트 컴포넌트 (UI 상태 관리)
 
-**환경변수 추가:**
-- `NEXTAUTH_SECRET`: 세션 암호화 키
-- `NEXTAUTH_URL`: 애플리케이션 URL
+**현재 진행 중:**
+- 🔄 데스크톱에서도 Sheet 컴포넌트 사용하도록 변경
+  - 모바일: Sheet side="bottom"
+  - 데스크톱: Sheet side="right"
+  - Dialog 컴포넌트 완전 제거
 
-**알림 종류 설계:**
-1. **일일 리마인더**: 매일 해야 하는 활동이 오늘 미완료 시 저녁 11시 알림
-2. **주간 리마인더**: 주 단위 활동이 주말까지 미완료 시 금요일 저녁 알림  
-3. **장기 미실행 알림**: 7일 이상 미실행 활동에 대한 격려 알림
-4. **연속 기록 축하**: 3일, 7일, 30일 연속 완료 시 축하 알림
-5. **목표 달성**: 월간/연간 목표 달성 시 축하 알림
+**기술 스택:**
+- React Hook Form: 폼 상태 관리 ✅
+- Shadcn/ui: Dialog, Form 컴포넌트 ✅
+- 커스텀 달력 UI: 실행 날짜 표시 (dayjs 기반) ✅
+- GSAP: 애니메이션 효과 (기존 유지) ✅
+- dayjs: 날짜 처리 ✅
 
-**Development Plan:**
-[X] 1. 데이터베이스 스키마 확장
-  [X] notifications 테이블 생성
-  [X] notification_schedules 테이블 생성 (알림 스케줄 관리)
-  [X] user_notification_settings 테이블 생성 (사용자 알림 설정)
-[X] 2. 백엔드 알림 시스템
-  [X] 알림 생성 및 스케줄링 로직
-  [X] 푸시 알림 발송 Server Actions
-  [X] 알림 상태 관리 (읽음/미읽음, 발송완료 등)
-[X] 3. PWA 알림 설정
-  [X] Service Worker 푸시 알림 핸들러 업데이트
-  [X] 알림 권한 요청 로직
-  [X] VAPID 키 설정 및 푸시 서비스 연동
-[X] 4. 프론트엔드 알림 UI
-  [X] 알림 설정 페이지/모달
-  [ ] 알림 목록 및 히스토리
-  [X] 알림 권한 요청 컴포넌트
-[X] 5. 알림 로직 구현
-  [X] 일일/주간/장기 알림 스케줄러
-  [ ] 백그라운드 작업 (cron job 또는 Vercel Edge Functions)
-  [X] 알림 발송 조건 체크 로직
-[ ] 6. iOS PWA 최적화
-  [ ] iOS Safari 호환성 확인
-  [ ] 홈 화면 추가 안내
-  [ ] iOS 알림 권한 처리
+**주요 기능:**
+1. **활동 정보 표시**: 제목, 카테고리 (아이콘+이름), 마지막 실행일, 총 실행 회수
+2. **편집 모드**: 활동 제목, 카테고리, 설명 수정 가능
+3. **달력 UI**: 실행한 날짜들을 파란색으로 하이라이트, 클릭 시 해당 Move 수정 모드
+4. **Move 관리**: 개별 Move의 날짜/메모 수정, 삭제 기능
+5. **반응형**: 모든 화면에서 1컬럼 세로 레이아웃 (활동정보 → 달력 순서)
+6. **사용자 인증**: 모든 액션에서 세션 기반 사용자 확인 및 권한 체크
+
+**TypeScript 타입 안전성:**
+- ActivityDetail, Move, Category 인터페이스 정의
+- zod 스키마로 폼 유효성 검사 (activitySchema, moveSchema)
+- react-hook-form과 zod resolver 통합
+- Server Actions 리턴 타입 명시
 
 ## Current Task: AddItemModal 단순화 및 개선 (완료)
 
