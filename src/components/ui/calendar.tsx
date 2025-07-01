@@ -11,7 +11,10 @@ interface CalendarProps {
   selected?: Date | undefined;
   onSelect?: (date: Date | undefined) => void;
   highlightedDates?: Date[];
-  onHighlightedDateClick?: (date: Date) => void;
+  onHighlightedDateClick?: (
+    date: Date,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => void;
   disabled?: (date: Date) => boolean;
 }
 
@@ -52,11 +55,15 @@ export function Calendar({
     return disabled && disabled(date.toDate());
   };
 
-  const handleDateClick = (date: Dayjs) => {
+  const handleDateClick = (
+    date: Dayjs,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     if (isDateDisabled(date)) return;
 
-    if (isDateHighlighted(date) && onHighlightedDateClick) {
-      onHighlightedDateClick(date.toDate());
+    // onHighlightedDateClick이 있으면 모든 날짜에 대해 호출 (하이라이트 여부 무관)
+    if (onHighlightedDateClick) {
+      onHighlightedDateClick(date.toDate(), event);
     } else if (onSelect) {
       onSelect(date.toDate());
     }
@@ -121,7 +128,7 @@ export function Calendar({
               key={day.format('YYYY-MM-DD')}
               variant="ghost"
               size="sm"
-              onClick={() => handleDateClick(day)}
+              onClick={(event) => handleDateClick(day, event)}
               disabled={disabledDate}
               className={cn(
                 'h-8 w-8 p-0 font-normal relative',

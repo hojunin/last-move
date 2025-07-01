@@ -39,6 +39,7 @@ import {
   updateActivity,
   updateMove,
   deleteMove,
+  createMoveWithDate,
 } from '@/lib/actions';
 import { daysSince } from '@/lib/utils';
 import {
@@ -48,10 +49,17 @@ import {
   Trash2,
   Save,
   X,
+  Plus,
 } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { toast } from 'sonner';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import dayjs from 'dayjs';
+import { tv } from 'tailwind-variants';
 
 interface LastMoveDetailModalProps {
   activityId: number | null;
@@ -70,6 +78,19 @@ const moveSchema = z.object({
   notes: z.string().optional(),
 });
 
+const sheetContentVariants = tv({
+  base: 'overflow-y-auto',
+  variants: {
+    side: {
+      right: '',
+      bottom: 'h-auto max-h-[65vh]',
+    },
+  },
+  defaultVariants: {
+    side: 'bottom',
+  },
+});
+
 export default function LastMoveDetailModal({
   activityId,
   isOpen,
@@ -80,7 +101,17 @@ export default function LastMoveDetailModal({
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingMoveId, setEditingMoveId] = useState<number | null>(null);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedMove, setSelectedMove] = useState<Move | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [triggerRef, setTriggerRef] = useState<HTMLElement | null>(null);
+  const [triggerPosition, setTriggerPosition] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  } | null>(null);
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   // 활동 수정 폼
@@ -162,14 +193,17 @@ export default function LastMoveDetailModal({
   };
 
   const handleMoveUpdate = async (data: z.infer<typeof moveSchema>) => {
-    if (!editingMoveId) return;
+    if (!selectedMove) return;
 
+    setIsSubmitting(true);
     try {
-      const result = await updateMove(editingMoveId, data);
+      const result = await updateMove(selectedMove.id, data);
       if (result.success) {
         toast.success('기록이 수정되었습니다');
-        setEditingMoveId(null);
+        setPopoverOpen(false);
         moveForm.reset();
+        setSelectedMove(null);
+        setSelectedDate(null);
         await loadData(); // 데이터 새로고침
       } else {
         toast.error(result.error || '기록 수정에 실패했습니다');
@@ -177,16 +211,22 @@ export default function LastMoveDetailModal({
     } catch (error) {
       console.error('Failed to update move:', error);
       toast.error('기록 수정 중 오류가 발생했습니다');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleMoveDelete = async (moveId: number) => {
     if (!confirm('이 기록을 삭제하시겠습니까?')) return;
 
+    setIsSubmitting(true);
     try {
       const result = await deleteMove(moveId);
       if (result.success) {
         toast.success('기록이 삭제되었습니다');
+        setPopoverOpen(false);
+        setSelectedMove(null);
+        setSelectedDate(null);
         await loadData(); // 데이터 새로고침
       } else {
         toast.error(result.error || '기록 삭제에 실패했습니다');
@@ -194,28 +234,72 @@ export default function LastMoveDetailModal({
     } catch (error) {
       console.error('Failed to delete move:', error);
       toast.error('기록 삭제 중 오류가 발생했습니다');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleMoveEdit = (move: Move) => {
-    setEditingMoveId(move.id);
-    moveForm.reset({
-      executed_at: dayjs(move.executed_at).format('YYYY-MM-DD'),
-      notes: move.notes || '',
-    });
+  const handleMoveCreate = async (data: z.infer<typeof moveSchema>) => {
+    if (!activityId) return;
+
+    setIsSubmitting(true);
+    try {
+      const result = await createMoveWithDate(
+        activityId,
+        data.executed_at,
+        data.notes || undefined,
+      );
+      if (result.success) {
+        toast.success('기록이 추가되었습니다');
+        setPopoverOpen(false);
+        moveForm.reset();
+        setSelectedMove(null);
+        setSelectedDate(null);
+        await loadData(); // 데이터 새로고침
+      } else {
+        toast.error(result.error || '기록 추가에 실패했습니다');
+      }
+    } catch (error) {
+      console.error('Failed to create move:', error);
+      toast.error('기록 추가 중 오류가 발생했습니다');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleMoveEditCancel = () => {
-    setEditingMoveId(null);
-    moveForm.reset();
-  };
-
-  const handleCalendarDateClick = (date: Date) => {
+  const handleCalendarDateClick = (
+    date: Date,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     const moveOnDate = moves.find((move) =>
       dayjs(move.executed_at).isSame(dayjs(date), 'day'),
     );
+
+    // 클릭된 버튼의 위치 계산
+    const rect = event.currentTarget.getBoundingClientRect();
+    setTriggerRef(event.currentTarget);
+    setTriggerPosition({
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+    });
+    setSelectedDate(date);
+    setSelectedMove(moveOnDate || null);
+    setPopoverOpen(true);
+
+    // 기존 Move가 있으면 편집 폼에 데이터 설정
     if (moveOnDate) {
-      handleMoveEdit(moveOnDate);
+      moveForm.reset({
+        executed_at: dayjs(moveOnDate.executed_at).format('YYYY-MM-DD'),
+        notes: moveOnDate.notes || '',
+      });
+    } else {
+      // 새로운 Move 추가를 위해 선택된 날짜로 초기화
+      moveForm.reset({
+        executed_at: dayjs(date).format('YYYY-MM-DD'),
+        notes: '',
+      });
     }
   };
 
@@ -245,7 +329,7 @@ export default function LastMoveDetailModal({
     const moveDates = moves.map((move) => new Date(move.executed_at));
 
     return (
-      <div className={`${className} space-y-6`}>
+      <div className={`${className}`}>
         {/* 활동 정보 */}
         <div className="space-y-4">
           {!isEditing ? (
@@ -364,66 +448,10 @@ export default function LastMoveDetailModal({
               </form>
             </Form>
           )}
-
-          {/* Move 편집 폼 */}
-          {editingMoveId && (
-            <div className="border rounded-lg p-4 mt-4">
-              <h4 className="font-medium mb-3">기록 수정</h4>
-              <Form {...moveForm}>
-                <form
-                  onSubmit={moveForm.handleSubmit(handleMoveUpdate)}
-                  className="space-y-3"
-                >
-                  <FormField
-                    control={moveForm.control}
-                    name="executed_at"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>날짜</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={moveForm.control}
-                    name="notes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>메모</FormLabel>
-                        <FormControl>
-                          <Input placeholder="메모를 입력하세요" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="flex gap-2">
-                    <Button type="submit" size="sm">
-                      <Save className="h-4 w-4 mr-2" />
-                      저장
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleMoveEditCancel}
-                    >
-                      취소
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </div>
-          )}
         </div>
 
         {/* 달력 및 기록 관리 */}
-        <div className="space-y-4">
+        <div className="space-y-4 relative">
           <h4 className="font-medium">실행 기록</h4>
           <Calendar
             className="border rounded-lg"
@@ -432,45 +460,135 @@ export default function LastMoveDetailModal({
             disabled={(date) => dayjs(date).isAfter(dayjs(), 'day')}
           />
 
-          {/* 최근 기록 목록 */}
-          <div className="space-y-2 max-h-60 overflow-y-auto">
-            <h5 className="text-sm font-medium">최근 기록</h5>
-            {moves.slice(0, 10).map((move) => (
-              <div
-                key={move.id}
-                className="flex items-center justify-between p-2 bg-muted rounded-md"
-              >
-                <div>
-                  <div className="text-sm font-medium">
-                    {dayjs(move.executed_at).format('YYYY-MM-DD')}
+          {triggerRef && triggerPosition && (
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <PopoverTrigger asChild>
+                <div
+                  style={{
+                    position: 'fixed',
+                    top: triggerPosition.top,
+                    left: triggerPosition.left,
+                    width: triggerPosition.width,
+                    height: triggerPosition.height,
+                    pointerEvents: 'none',
+                    zIndex: 9999,
+                  }}
+                />
+              </PopoverTrigger>
+              <PopoverContent className="w-72" side="right" align="center">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">
+                      {selectedDate
+                        ? dayjs(selectedDate).format('YYYY년 MM월 DD일')
+                        : '날짜 선택됨'}
+                    </h4>
+                    {selectedMove ? (
+                      <div className="p-2 bg-muted rounded-md">
+                        <p className="text-sm font-medium">기존 기록</p>
+                        {selectedMove.notes ? (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            메모: {selectedMove.notes}
+                          </p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            메모 없음
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        새 기록을 추가할 수 있습니다
+                      </p>
+                    )}
                   </div>
-                  {move.notes && (
-                    <div className="text-xs text-muted-foreground">
-                      {move.notes}
-                    </div>
-                  )}
+
+                  <Form {...moveForm}>
+                    <form
+                      onSubmit={moveForm.handleSubmit(
+                        selectedMove ? handleMoveUpdate : handleMoveCreate,
+                      )}
+                      className="space-y-3"
+                    >
+                      {/* 날짜 필드 숨김 - 캘린더에서 이미 선택했으므로 */}
+                      <FormField
+                        control={moveForm.control}
+                        name="executed_at"
+                        render={() => <input type="hidden" />}
+                      />
+
+                      <FormField
+                        control={moveForm.control}
+                        name="notes"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>메모</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="메모를 입력하세요"
+                                disabled={isSubmitting}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="flex gap-2 flex-wrap">
+                        {selectedMove ? (
+                          <>
+                            <Button
+                              type="submit"
+                              size="sm"
+                              disabled={isSubmitting}
+                              className="flex-1"
+                            >
+                              <Save className="h-4 w-4 mr-2" />
+                              {isSubmitting ? '수정 중...' : '수정'}
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              disabled={isSubmitting}
+                              className="flex-1"
+                              onClick={() =>
+                                selectedMove &&
+                                handleMoveDelete(selectedMove.id)
+                              }
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              {isSubmitting ? '삭제 중...' : '삭제'}
+                            </Button>
+                          </>
+                        ) : (
+                          <Button
+                            type="submit"
+                            size="sm"
+                            disabled={isSubmitting}
+                            className="flex-1"
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            {isSubmitting ? '추가 중...' : '추가'}
+                          </Button>
+                        )}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled={isSubmitting}
+                          onClick={() => setPopoverOpen(false)}
+                        >
+                          취소
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
                 </div>
-                <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleMoveEdit(move)}
-                    className="h-6 w-6 p-0"
-                  >
-                    <Edit2 className="h-3 w-3" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleMoveDelete(move.id)}
-                    className="h-6 w-6 p-0 text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
       </div>
     );
@@ -480,11 +598,9 @@ export default function LastMoveDetailModal({
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side={isDesktop ? 'right' : 'bottom'}
-        className={
-          isDesktop
-            ? 'w-[800px] sm:w-[800px] overflow-y-auto'
-            : 'h-[90vh] overflow-y-auto'
-        }
+        className={sheetContentVariants({
+          side: isDesktop ? 'right' : 'bottom',
+        })}
       >
         <SheetHeader>
           <div className="flex items-center justify-between">

@@ -267,6 +267,54 @@ export async function createMove(activityId: number, notes?: string) {
   }
 }
 
+// NOTE: 특정 날짜로 새 Move를 기록하는 서버 액션 (사용자별)
+export async function createMoveWithDate(
+  activityId: number,
+  executedAt: string,
+  notes?: string,
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: '인증이 필요합니다' };
+    }
+
+    const userId = parseInt(session.user.id);
+
+    // 해당 활동이 현재 사용자의 것인지 확인
+    const activityCheck = await sql`
+      SELECT id FROM activities WHERE id = ${activityId} AND user_id = ${userId}
+    `;
+
+    if (activityCheck.rows.length === 0) {
+      return { success: false, error: '권한이 없는 활동입니다' };
+    }
+
+    // 해당 날짜에 이미 기록이 있는지 확인
+    const existingMove = await sql`
+      SELECT id FROM moves 
+      WHERE activity_id = ${activityId} 
+      AND user_id = ${userId}
+      AND DATE(executed_at) = DATE(${executedAt})
+    `;
+
+    if (existingMove.rows.length > 0) {
+      return { success: false, error: '해당 날짜에 이미 기록이 있습니다' };
+    }
+
+    await sql`
+      INSERT INTO moves (activity_id, executed_at, notes, user_id)
+      VALUES (${activityId}, ${executedAt}, ${notes || null}, ${userId})
+    `;
+
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to create move with date:', error);
+    return { success: false, error: 'Move 기록에 실패했습니다' };
+  }
+}
+
 // NOTE: 활동과 Move를 함께 생성하는 서버 액션
 export async function createActivityAndMove(formData: FormData) {
   try {

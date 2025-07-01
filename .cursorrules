@@ -29,7 +29,36 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: iOS PWA 아이콘 및 스플래시 스크린 구현 (완료)
+## Current Task: LastMoveDetailModal 캘린더 인터렉션 개선
+
+**Task Overview:**
+LastMoveDetailModal 컴포넌트의 캘린더 기능 개선
+1. 최근 기록 섹션 제거
+2. 캘린더 날짜 클릭 시 추가/수정/삭제 가능하도록 개선
+3. 현재 모달 방식을 Popover로 변경하여 UX 개선
+
+**구현 계획:**
+[X] 1. shadcn/ui Popover 컴포넌트 설치
+[X] 2. 최근 기록 섹션 제거
+[X] 3. Popover 기반 날짜 인터렉션 구현
+  [X] 날짜 클릭 시 Popover 열기
+  [X] 해당 날짜에 기록이 있으면 수정/삭제 옵션
+  [X] 해당 날짜에 기록이 없으면 추가 옵션
+[X] 4. 폼 로직을 Popover 내부로 이동
+[X] 5. 특정 날짜로 Move 생성하는 Server Action 구현
+[X] 6. UX 개선 및 테스트
+
+**완료된 UX 개선사항:**
+- ✅ 날짜 필드 숨김 처리 (캘린더에서 이미 선택했으므로 중복 제거)
+- ✅ 기존 Move 정보 개선 표시 (메모 내용 미리 보기)
+- ✅ 로딩 상태 추가 (생성/수정/삭제 중 상태 표시)
+- ✅ Popover 크기 최적화 (w-80 → w-72)
+- ✅ 버튼 레이아웃 개선 (flex-1 적용, 로딩 상태 반영)
+- ✅ 입력 필드 비활성화 (로딩 중 편집 방지)
+- ✅ Popover 위치 최적화 (클릭된 날짜 버튼 옆에 정확히 표시)
+- ✅ tailwind-variants 도입 및 조건부 스타일 개선
+
+## Previous Task: iOS PWA 아이콘 및 스플래시 스크린 구현 (완료)
 
 **Task Overview:**
 iOS PWA 지원을 위한 앱 아이콘과 스플래시 스크린 구현
