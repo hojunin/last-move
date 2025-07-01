@@ -1,14 +1,13 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ActivityWithLastMove, createMove } from "@/lib/actions";
-import { daysSince } from "@/lib/utils";
-import { Clock, CheckCircle } from "lucide-react";
-import { gsap } from "gsap";
-import dayjs from "dayjs";
+import { useState, useRef, useEffect } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ActivityWithLastMove, createMove } from '@/lib/actions';
+import { daysSince } from '@/lib/utils';
+import { Clock } from 'lucide-react';
+import { gsap } from 'gsap';
+import dayjs from 'dayjs';
 
 interface LastMoveCardProps {
   item: ActivityWithLastMove;
@@ -23,7 +22,7 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
 
   // NOTE: 오늘 이미 완료했는지 확인 (last_move_date 사용)
   const isCompletedToday = Boolean(
-    item.last_move_date && dayjs(item.last_move_date).isSame(dayjs(), "day")
+    item.last_move_date && dayjs(item.last_move_date).isSame(dayjs(), 'day'),
   );
 
   useEffect(() => {
@@ -40,8 +39,8 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
           y: 0,
           scale: 1,
           duration: 0.5,
-          ease: "back.out(1.7)",
-        }
+          ease: 'back.out(1.7)',
+        },
       );
     }
   }, []);
@@ -64,75 +63,69 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
     try {
       const result = await createMove(item.id);
       if (!result.success) {
-        alert(result.error || "Move 기록에 실패했습니다");
+        alert(result.error || 'Move 기록에 실패했습니다');
       }
     } catch (error) {
-      console.error("Failed to log action:", error);
-      alert("Move 기록 중 오류가 발생했습니다");
+      console.error('Failed to log action:', error);
+      alert('Move 기록 중 오류가 발생했습니다');
     } finally {
       setIsLoading(false);
     }
   };
 
   const getDaysColor = (days: number | null) => {
-    if (days === null) return "text-gray-600";
-    if (days === 0) return "text-green-600";
-    if (days <= 3) return "text-yellow-600";
-    if (days <= 7) return "text-orange-600";
-    return "text-red-600";
+    if (days === null) return 'text-gray-600';
+    if (days === 0) return 'text-green-600';
+    if (days <= 3) return 'text-yellow-600';
+    if (days <= 7) return 'text-orange-600';
+    return 'text-red-600';
   };
 
   const getDaysText = (days: number | null) => {
-    if (days === null) return "기록 없음";
-    if (days === 0) return "오늘";
-    if (days === 1) return "1일 전";
+    if (days === null) return '기록 없음';
+    if (days === 0) return '오늘';
+    if (days === 1) return '1일 전';
     return `${days}일 전`;
   };
 
   return (
-    <Card
+    <div
       ref={cardRef}
-      className="hover:shadow-md transition-shadow duration-200 h-fit"
+      className="bg-white border border-gray-200 rounded-lg p-2.5 hover:shadow-md transition-shadow duration-200 h-fit"
     >
-      <CardContent className="p-3">
-        <div className="space-y-2">
-          {/* 제목과 카테고리 */}
-          <div className="flex items-center justify-between min-h-0">
-            <h3 className="font-medium text-sm truncate pr-2 leading-tight">
-              {item.title}
-            </h3>
-            {item.category && (
-              <Badge variant="secondary" className="text-xs shrink-0 h-5 px-2">
-                {item.category}
-              </Badge>
-            )}
-          </div>
-
-          {/* 경과 시간과 완료 버튼 */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <Clock className="h-3 w-3 text-muted-foreground" />
-              <span className={`text-xs font-medium ${getDaysColor(days)}`}>
-                {getDaysText(days)}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                ({item.move_count}회)
-              </span>
-            </div>
-
-            <Button
-              onClick={handleLogAction}
-              disabled={isLoading || isCompletedToday}
-              variant={isCompletedToday ? "secondary" : "default"}
-              size="sm"
-              className="h-6 px-2 text-xs"
-            >
-              <CheckCircle className="h-3 w-3 mr-1" />
-              {isLoading ? "처리중" : isCompletedToday ? "완료됨" : "완료"}
-            </Button>
-          </div>
+      <div className="space-y-1.5">
+        {/* 제목과 카테고리 */}
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium text-sm truncate pr-2 leading-tight">
+            {item.title}
+          </h3>
+          {item.category && (
+            <Badge variant="secondary" className="text-xs shrink-0 h-4 px-1.5">
+              {item.category}
+            </Badge>
+          )}
         </div>
-      </CardContent>
-    </Card>
+
+        {/* 경과 시간과 완료 버튼 */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <Clock className="h-3 w-3 text-muted-foreground" />
+            <span className={`text-xs font-medium ${getDaysColor(days)}`}>
+              {getDaysText(days)}
+            </span>
+          </div>
+
+          <Button
+            onClick={handleLogAction}
+            disabled={isLoading || isCompletedToday}
+            variant={isCompletedToday ? 'secondary' : 'default'}
+            size="sm"
+            className="h-5 px-2 text-xs"
+          >
+            {isLoading ? '처리중' : isCompletedToday ? '완료됨' : '완료'}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

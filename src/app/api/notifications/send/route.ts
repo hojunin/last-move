@@ -1,33 +1,45 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import {
   sendPendingNotifications,
   sendImmediateNotification,
-} from "@/lib/push-service";
+} from '@/lib/push-service';
+import { auth } from '@/lib/auth';
 
 // NOTE: 대기 중인 알림 발송
 export async function POST(request: NextRequest) {
   try {
-    const { type, userId, notification } = await request.json();
+    const { type, notification } = await request.json();
 
-    if (type === "pending") {
+    if (type === 'pending') {
       // 대기 중인 모든 알림 발송
       const result = await sendPendingNotifications();
       return NextResponse.json(result);
-    } else if (type === "immediate" && userId && notification) {
+    } else if (type === 'immediate' && notification) {
+      // 세션에서 user_id 가져오기
+      const session = await auth();
+      if (!session?.user?.id) {
+        return NextResponse.json(
+          { success: false, error: '인증되지 않은 사용자입니다' },
+          { status: 401 },
+        );
+      }
+
+      const userId = session.user.id;
+
       // 즉시 알림 발송
       const result = await sendImmediateNotification(userId, notification);
       return NextResponse.json(result);
     } else {
       return NextResponse.json(
-        { success: false, error: "잘못된 요청 형식입니다" },
-        { status: 400 }
+        { success: false, error: '잘못된 요청 형식입니다' },
+        { status: 400 },
       );
     }
   } catch (error) {
-    console.error("Failed to send notifications:", error);
+    console.error('Failed to send notifications:', error);
     return NextResponse.json(
-      { success: false, error: "알림 발송에 실패했습니다" },
-      { status: 500 }
+      { success: false, error: '알림 발송에 실패했습니다' },
+      { status: 500 },
     );
   }
 }
@@ -38,16 +50,16 @@ export async function GET() {
     // 간단한 상태 정보 반환
     return NextResponse.json({
       success: true,
-      message: "알림 발송 서비스가 활성화되어 있습니다",
+      message: '알림 발송 서비스가 활성화되어 있습니다',
       vapidConfigured: !!(
         process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY
       ),
     });
   } catch (error) {
-    console.error("Failed to get notification service status:", error);
+    console.error('Failed to get notification service status:', error);
     return NextResponse.json(
-      { success: false, error: "상태 조회에 실패했습니다" },
-      { status: 500 }
+      { success: false, error: '상태 조회에 실패했습니다' },
+      { status: 500 },
     );
   }
 }

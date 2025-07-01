@@ -1,15 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
-// GSAP 플러그인 등록
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// NOTE: 동적 렌더링 강제 (GSAP로 인한 SSR 문제 해결)
+export const dynamic = 'force-dynamic';
 
 export default function AboutPage() {
   const router = useRouter();
@@ -21,110 +17,126 @@ export default function AboutPage() {
   const ctaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // 히어로 섹션 애니메이션
-      const tl = gsap.timeline();
+    let ctx: ReturnType<typeof import('gsap').gsap.context>;
 
-      tl.from(".hero-title", {
-        y: 100,
-        opacity: 0,
-        duration: 1.2,
-        ease: "power3.out",
-      })
-        .from(
-          ".hero-subtitle",
-          {
-            y: 50,
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out",
-          },
-          "-=0.5"
-        )
-        .from(
-          ".hero-description",
-          {
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-            ease: "power3.out",
-          },
-          "-=0.3"
-        );
+    // GSAP를 동적으로 로드
+    const loadGSAP = async () => {
+      const { gsap } = await import('gsap');
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 
-      // 스크롤 기반 애니메이션
-      gsap.utils.toArray(".animate-on-scroll").forEach((element) => {
-        gsap.from(element as Element, {
+      gsap.registerPlugin(ScrollTrigger);
+
+      ctx = gsap.context(() => {
+        // 히어로 섹션 애니메이션
+        const tl = gsap.timeline();
+
+        tl.from('.hero-title', {
           y: 100,
           opacity: 0,
-          duration: 1,
-          ease: "power3.out",
+          duration: 1.2,
+          ease: 'power3.out',
+        })
+          .from(
+            '.hero-subtitle',
+            {
+              y: 50,
+              opacity: 0,
+              duration: 1,
+              ease: 'power3.out',
+            },
+            '-=0.5',
+          )
+          .from(
+            '.hero-description',
+            {
+              y: 30,
+              opacity: 0,
+              duration: 0.8,
+              ease: 'power3.out',
+            },
+            '-=0.3',
+          );
+
+        // 스크롤 기반 애니메이션
+        gsap.utils.toArray('.animate-on-scroll').forEach((element) => {
+          gsap.from(element as Element, {
+            y: 100,
+            opacity: 0,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: element as Element,
+              start: 'top 80%',
+              end: 'bottom 20%',
+              toggleActions: 'play none none reverse',
+            },
+          });
+        });
+
+        // 카드 애니메이션
+        gsap.utils.toArray('.example-card').forEach((card, index) => {
+          gsap.from(card as Element, {
+            x: index % 2 === 0 ? -100 : 100,
+            opacity: 0,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: card as Element,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          });
+        });
+
+        // 알림 섹션 특별 애니메이션
+        gsap.from('.notification-icon', {
+          scale: 0,
+          rotation: 180,
+          duration: 1.5,
+          ease: 'elastic.out(1, 0.3)',
           scrollTrigger: {
-            trigger: element as Element,
-            start: "top 80%",
-            end: "bottom 20%",
-            toggleActions: "play none none reverse",
+            trigger: '.notification-section',
+            start: 'top 70%',
           },
         });
-      });
 
-      // 카드 애니메이션
-      gsap.utils.toArray(".example-card").forEach((card, index) => {
-        gsap.from(card as Element, {
-          x: index % 2 === 0 ? -100 : 100,
+        // CTA 버튼 애니메이션
+        gsap.from('.cta-button', {
+          scale: 0.8,
           opacity: 0,
           duration: 1,
-          ease: "power3.out",
+          ease: 'back.out(1.7)',
           scrollTrigger: {
-            trigger: card as Element,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
+            trigger: '.cta-section',
+            start: 'top 80%',
           },
         });
-      });
+      }, containerRef);
+    };
 
-      // 알림 섹션 특별 애니메이션
-      gsap.from(".notification-icon", {
-        scale: 0,
-        rotation: 180,
-        duration: 1.5,
-        ease: "elastic.out(1, 0.3)",
-        scrollTrigger: {
-          trigger: ".notification-section",
-          start: "top 70%",
-        },
-      });
+    loadGSAP();
 
-      // CTA 버튼 애니메이션
-      gsap.from(".cta-button", {
-        scale: 0.8,
-        opacity: 0,
-        duration: 1,
-        ease: "back.out(1.7)",
-        scrollTrigger: {
-          trigger: ".cta-section",
-          start: "top 80%",
-        },
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
+    return () => {
+      if (ctx) {
+        ctx.revert();
+      }
+    };
   }, []);
 
   const handleGetStarted = async () => {
     try {
       // 세션 상태 확인을 위해 API 호출
-      const response = await fetch("/api/auth/session");
+      const response = await fetch('/api/auth/session');
       const session = await response.json();
 
       if (session?.user) {
-        router.push("/");
+        router.push('/');
       } else {
-        router.push("/auth/signin");
+        router.push('/auth/signin');
       }
     } catch {
       // 에러 시 로그인 페이지로 이동
-      router.push("/auth/signin");
+      router.push('/auth/signin');
     }
   };
 
