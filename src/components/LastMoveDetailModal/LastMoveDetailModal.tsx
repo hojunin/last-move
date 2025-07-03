@@ -27,6 +27,7 @@ import {
 import ActivityInfoSection from './ActivityInfoSection';
 import ExecutionCalendar from './ExecutionCalendar';
 import MovePopover from './MovePopover';
+import DetailModalSkeleton from './DetailModalSkeleton';
 import {
   LastMoveDetailModalProps,
   ActivityDetail,
@@ -215,9 +216,7 @@ export default function LastMoveDetailModal({
           <SheetHeader>
             <SheetTitle>활동 상세 정보</SheetTitle>
           </SheetHeader>
-          <div className="flex items-center justify-center p-8">
-            데이터를 불러오는 중입니다...
-          </div>
+          <DetailModalSkeleton />
         </SheetContent>
       </Sheet>
     );

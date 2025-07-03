@@ -27,9 +27,6 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  console.log('AddItemModal render:', { isOpen, isDesktop });
-
-  // NOTE: 폼 제출 핸들러
   const handleSubmit = async (data: NewActivityFormData) => {
     setError(null);
 

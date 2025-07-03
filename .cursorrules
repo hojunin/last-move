@@ -29,7 +29,34 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: AddItemModal 리팩토링 (Thinking in React 패턴 적용)
+## Current Task: LastMoveDetailModal 로딩 스켈레톤 구현
+
+**Task Overview:**
+LastMoveDetailModal 컴포넌트의 로딩 상태를 스켈레톤 UI로 개선
+1. 현재 "데이터를 불러오는 중입니다..." 텍스트를 실제 컴포넌트 구조를 반영한 스켈레톤으로 변경
+2. 활동 정보 섹션, 실행 캘린더 등 주요 UI 요소들의 스켈레톤 디자인
+3. 모바일/데스크톱 반응형 스켈레톤 구현
+
+**컴포넌트 구조 분석:**
+- Header: 제목 + 편집 버튼
+- ActivityInfoSection: 활동 제목, 카테고리 뱃지, 설명, 통계 (2개 항목)
+- ExecutionCalendar: 제목 + 달력 컴포넌트
+
+**구현 계획:**
+[X] 1. 스켈레톤 컴포넌트 생성
+[X] 2. 각 섹션별 스켈레톤 구현
+[X] 3. 반응형 디자인 적용
+[X] 4. 기존 로딩 상태 교체
+
+**완료된 구현사항:**
+- ✅ shadcn/ui 스타일 skeleton 컴포넌트 생성 (src/components/ui/skeleton.tsx)
+- ✅ DetailModalSkeleton 컴포넌트 생성 (src/components/LastMoveDetailModal/DetailModalSkeleton.tsx)
+- ✅ 활동 정보 섹션 스켈레톤 구현 (제목, 카테고리, 설명, 통계)
+- ✅ 실행 캘린더 스켈레톤 구현 (제목, 캘린더 헤더, 날짜 그리드)
+- ✅ 기존 "데이터를 불러오는 중입니다..." 텍스트를 스켈레톤으로 교체
+- ✅ 실제 컴포넌트 구조를 반영한 스켈레톤 디자인
+
+## Previous Task: AddItemModal 리팩토링 (Thinking in React 패턴 적용) - 완료
 
 **Task Overview:**
 AddItemModal 컴포넌트를 Thinking in React 패턴에 맞게 리팩토링
