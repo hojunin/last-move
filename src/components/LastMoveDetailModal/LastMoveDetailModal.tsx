@@ -19,7 +19,6 @@ import {
   getActivityMoves,
   getCategories,
   updateActivity,
-  updateMove,
   deleteMove,
   createMoveWithDate,
 } from '@/lib/actions';

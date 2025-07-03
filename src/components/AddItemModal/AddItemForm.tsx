@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormField } from '@/components/ui/form';
-import { getCategories, type Category } from '@/lib/actions';
+import { getCategories } from '@/lib/actions';
 import ActivityNameInput from './ActivityNameInput';
 import CategorySelect from './CategorySelect';
 import FormActions from './FormActions';
