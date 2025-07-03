@@ -212,6 +212,9 @@ export default function LastMoveDetailModal({
             side: isDesktop ? 'right' : 'bottom',
           })}
         >
+          <SheetHeader>
+            <SheetTitle>활동 상세 정보</SheetTitle>
+          </SheetHeader>
           <div className="flex items-center justify-center p-8">
             데이터를 불러오는 중입니다...
           </div>
@@ -230,6 +233,9 @@ export default function LastMoveDetailModal({
             side: isDesktop ? 'right' : 'bottom',
           })}
         >
+          <SheetHeader>
+            <SheetTitle>활동 상세 정보</SheetTitle>
+          </SheetHeader>
           <div className="flex items-center justify-center p-8">
             활동을 찾을 수 없습니다
           </div>
