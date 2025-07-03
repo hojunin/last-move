@@ -29,7 +29,36 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: 새로운 작업 대기 중
+## Current Task: LastMoveDetailModal 메모 기능 제거
+
+**Task Overview:**
+LastMoveDetailModal의 MovePopover 컴포넌트에서 메모 기능 제거
+- 메모 기능은 필요없고, 그날 했는지 안했는지만 중요함
+- MovePopover에서 메모 관련 표시 제거
+- MoveForm에서 메모 관련 입력 필드 제거
+
+**진행 계획:**
+[X] 1. MoveForm 컴포넌트 확인 및 메모 관련 부분 제거
+[X] 2. MovePopover 컴포넌트에서 메모 표시 부분 제거
+[X] 3. 타입 정의에서 메모 관련 필드 제거 (필요시)
+[X] 4. 테스트 및 확인
+
+**완료된 개선사항:**
+- ✅ MovePopover.tsx: 메모 표시 부분 제거, 단순히 "이미 완료한 날짜입니다" 표시
+- ✅ MoveForm.tsx: 메모 입력 필드 제거, 폼 초기화에서 메모 관련 코드 제거
+- ✅ MoveForm.tsx: 수정 기능 제거, 취소 버튼 제거 (추가/삭제만 가능)
+- ✅ types.ts: moveSchema에서 notes 필드 제거
+- ✅ lib/actions.ts: createMove, createMoveWithDate, updateMove 함수에서 notes 파라미터 제거
+- ✅ lib/actions.ts: updateMoveSchema에서 notes 필드 제거
+- ✅ LastMoveDetailModal.tsx: handleMoveUpdate 함수 제거
+- ✅ 단순화된 UX: 메모 없이 그날 했는지 안했는지만 체크하는 방식으로 개선
+
+**주요 변경사항:**
+1. **프론트엔드**: 메모 입력 필드 완전 제거, 기존 기록 표시 시 메모 내용 대신 "완료 여부"만 표시
+2. **백엔드**: 모든 Move 생성/수정 함수에서 notes 파라미터 제거 및 데이터베이스 쿼리 단순화
+3. **타입 시스템**: Zod 스키마에서 notes 필드 제거로 타입 안전성 확보
+4. **날짜 계산 로직**: lib/utils.ts의 daysSince 함수를 시간 기준에서 날짜 기준으로 변경 (startOf('day') 사용)
+5. **UI 단순화**: 수정 기능 제거, 취소 버튼 제거 (바깥 터치로 닫기), 추가/삭제만 가능한 깔끔한 UI
 
 ## Previous Task: LastMoveDetailModal 리팩토링 (Thinking in React 패턴 적용) - 완료
 

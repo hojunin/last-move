@@ -123,27 +123,7 @@ export default function LastMoveDetailModal({
     }
   };
 
-  // Move 업데이트 핸들러
-  const handleMoveUpdate = async (data: MoveFormData) => {
-    if (!popoverState.selectedMove) return;
-
-    setIsSubmitting(true);
-    try {
-      const result = await updateMove(popoverState.selectedMove.id, data);
-      if (result.success) {
-        toast.success('기록이 수정되었습니다');
-        setPopoverState((prev) => ({ ...prev, isOpen: false }));
-        await loadData();
-      } else {
-        toast.error(result.error || '기록 수정에 실패했습니다');
-      }
-    } catch (error) {
-      console.error('Failed to update move:', error);
-      toast.error('기록 수정 중 오류가 발생했습니다');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // Move 업데이트 핸들러 제거 - 수정 기능 제거됨
 
   // Move 생성 핸들러
   const handleMoveCreate = async (data: MoveFormData) => {
@@ -151,11 +131,7 @@ export default function LastMoveDetailModal({
 
     setIsSubmitting(true);
     try {
-      const result = await createMoveWithDate(
-        activityId,
-        data.executed_at,
-        data.notes || undefined,
-      );
+      const result = await createMoveWithDate(activityId, data.executed_at);
       if (result.success) {
         toast.success('기록이 추가되었습니다');
         setPopoverState((prev) => ({ ...prev, isOpen: false }));
@@ -308,7 +284,6 @@ export default function LastMoveDetailModal({
                 selectedDate={popoverState.selectedDate}
                 selectedMove={popoverState.selectedMove}
                 triggerPosition={popoverState.triggerPosition}
-                onMoveUpdate={handleMoveUpdate}
                 onMoveCreate={handleMoveCreate}
                 onMoveDelete={handleMoveDelete}
                 isSubmitting={isSubmitting}

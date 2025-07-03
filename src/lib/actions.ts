@@ -236,7 +236,7 @@ export async function createActivity(formData: FormData) {
 }
 
 // NOTE: 새 Move를 기록하는 서버 액션 (사용자별)
-export async function createMove(activityId: number, notes?: string) {
+export async function createMove(activityId: number) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -255,8 +255,8 @@ export async function createMove(activityId: number, notes?: string) {
     }
 
     await sql`
-      INSERT INTO moves (activity_id, notes, user_id)
-      VALUES (${activityId}, ${notes || null}, ${userId})
+      INSERT INTO moves (activity_id, user_id)
+      VALUES (${activityId}, ${userId})
     `;
 
     revalidatePath('/');
@@ -271,7 +271,6 @@ export async function createMove(activityId: number, notes?: string) {
 export async function createMoveWithDate(
   activityId: number,
   executedAt: string,
-  notes?: string,
 ) {
   try {
     const session = await auth();
@@ -303,8 +302,8 @@ export async function createMoveWithDate(
     }
 
     await sql`
-      INSERT INTO moves (activity_id, executed_at, notes, user_id)
-      VALUES (${activityId}, ${executedAt}, ${notes || null}, ${userId})
+      INSERT INTO moves (activity_id, executed_at, user_id)
+      VALUES (${activityId}, ${executedAt}, ${userId})
     `;
 
     revalidatePath('/');
@@ -538,7 +537,6 @@ export async function updateActivity(
 // NOTE: Move 기록을 수정하는 서버 액션
 const updateMoveSchema = z.object({
   executed_at: z.string(),
-  notes: z.string().optional(),
 });
 
 export async function updateMove(
@@ -568,8 +566,7 @@ export async function updateMove(
 
     await sql`
       UPDATE moves SET
-        executed_at = ${validatedData.executed_at},
-        notes = ${validatedData.notes || null}
+        executed_at = ${validatedData.executed_at}
       WHERE id = ${moveId} AND user_id = ${userId}
     `;
 

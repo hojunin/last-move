@@ -11,34 +11,29 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Save, Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus } from 'lucide-react';
 import { moveSchema, MoveFormData, type Move } from './types';
 import dayjs from 'dayjs';
 
 interface MoveFormProps {
   selectedDate: Date | null;
   selectedMove: Move | null;
-  onMoveUpdate: (data: MoveFormData) => Promise<void>;
   onMoveCreate: (data: MoveFormData) => Promise<void>;
   onMoveDelete: (moveId: number) => Promise<void>;
-  onCancel: () => void;
   isSubmitting: boolean;
 }
 
 export default function MoveForm({
   selectedDate,
   selectedMove,
-  onMoveUpdate,
   onMoveCreate,
   onMoveDelete,
-  onCancel,
   isSubmitting,
 }: MoveFormProps) {
   const form = useForm<MoveFormData>({
     resolver: zodResolver(moveSchema),
     defaultValues: {
       executed_at: '',
-      notes: '',
     },
   });
 
@@ -47,22 +42,17 @@ export default function MoveForm({
     if (selectedMove) {
       form.reset({
         executed_at: dayjs(selectedMove.executed_at).format('YYYY-MM-DD'),
-        notes: selectedMove.notes || '',
       });
     } else if (selectedDate) {
       form.reset({
         executed_at: dayjs(selectedDate).format('YYYY-MM-DD'),
-        notes: '',
       });
     }
   }, [selectedDate, selectedMove, form]);
 
   const handleSubmit = (data: MoveFormData) => {
-    if (selectedMove) {
-      return onMoveUpdate(data);
-    } else {
-      return onMoveCreate(data);
-    }
+    // 수정 기능 제거 - 추가만 가능
+    return onMoveCreate(data);
   };
 
   const handleDelete = () => {
@@ -82,48 +72,21 @@ export default function MoveForm({
           render={() => <input type="hidden" />}
         />
 
-        <FormField
-          control={form.control}
-          name="notes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>메모</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="메모를 입력하세요"
-                  disabled={isSubmitting}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* 메모 필드 제거 - 단순히 완료 여부만 중요 */}
 
         <div className="flex gap-2 flex-wrap">
           {selectedMove ? (
-            <>
-              <Button
-                type="submit"
-                size="sm"
-                disabled={isSubmitting}
-                className="flex-1"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                {isSubmitting ? '수정 중...' : '수정'}
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                disabled={isSubmitting}
-                className="flex-1"
-                onClick={handleDelete}
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                {isSubmitting ? '삭제 중...' : '삭제'}
-              </Button>
-            </>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              disabled={isSubmitting}
+              className="flex-1"
+              onClick={handleDelete}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {isSubmitting ? '삭제 중...' : '삭제'}
+            </Button>
           ) : (
             <Button
               type="submit"
@@ -135,15 +98,6 @@ export default function MoveForm({
               {isSubmitting ? '추가 중...' : '추가'}
             </Button>
           )}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={isSubmitting}
-            onClick={onCancel}
-          >
-            취소
-          </Button>
         </div>
       </form>
     </Form>

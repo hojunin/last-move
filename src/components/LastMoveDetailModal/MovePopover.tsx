@@ -13,7 +13,6 @@ export default function MovePopover({
   selectedDate,
   selectedMove,
   triggerPosition,
-  onMoveUpdate,
   onMoveCreate,
   onMoveDelete,
   isSubmitting,
@@ -35,7 +34,7 @@ export default function MovePopover({
           }}
         />
       </PopoverTrigger>
-      <PopoverContent className="w-72" side="right" align="center">
+      <PopoverContent className="w-44" side="right" align="center">
         <div className="space-y-4">
           <div className="space-y-2">
             <h4 className="font-medium">
@@ -43,33 +42,13 @@ export default function MovePopover({
                 ? dayjs(selectedDate).format('YYYY년 MM월 DD일')
                 : '날짜 선택됨'}
             </h4>
-            {selectedMove ? (
-              <div className="p-2 bg-muted rounded-md">
-                <p className="text-sm font-medium">기존 기록</p>
-                {selectedMove.notes ? (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    메모: {selectedMove.notes}
-                  </p>
-                ) : (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    메모 없음
-                  </p>
-                )}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                새 기록을 추가할 수 있습니다
-              </p>
-            )}
           </div>
 
           <MoveForm
             selectedDate={selectedDate}
             selectedMove={selectedMove}
-            onMoveUpdate={onMoveUpdate}
             onMoveCreate={onMoveCreate}
             onMoveDelete={onMoveDelete}
-            onCancel={() => onOpenChange(false)}
             isSubmitting={isSubmitting}
           />
         </div>

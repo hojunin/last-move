@@ -17,7 +17,6 @@ export const activitySchema = z.object({
 
 export const moveSchema = z.object({
   executed_at: z.string().min(1, '날짜는 필수입니다'),
-  notes: z.string().optional(),
 });
 
 // 타입 추론
@@ -52,7 +51,6 @@ export interface MovePopoverProps {
     width: number;
     height: number;
   } | null;
-  onMoveUpdate: (data: MoveFormData) => Promise<void>;
   onMoveCreate: (data: MoveFormData) => Promise<void>;
   onMoveDelete: (moveId: number) => Promise<void>;
   isSubmitting: boolean;
