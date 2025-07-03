@@ -2,15 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form, FormField } from '@/components/ui/form';
 import { Trash2, Plus } from 'lucide-react';
 import { moveSchema, MoveFormData, type Move } from './types';
 import dayjs from 'dayjs';
@@ -65,15 +57,11 @@ export default function MoveForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
-        {/* 날짜 필드 숨김 - 캘린더에서 이미 선택했으므로 */}
         <FormField
           control={form.control}
           name="executed_at"
           render={() => <input type="hidden" />}
         />
-
-        {/* 메모 필드 제거 - 단순히 완료 여부만 중요 */}
-
         <div className="flex gap-2 flex-wrap">
           {selectedMove ? (
             <Button
