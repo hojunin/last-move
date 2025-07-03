@@ -14,7 +14,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { createActivityAndMove } from '@/lib/actions';
+import { createActivity } from '@/lib/actions';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { toast } from 'sonner';
 import AddItemForm from './AddItemForm';
@@ -40,7 +40,11 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
           formData.append('title', data.title);
           formData.append('category_id', data.category_id.toString());
 
-          await createActivityAndMove(formData);
+          const result = await createActivity(formData);
+
+          if (!result.success) {
+            throw new Error(result.error);
+          }
 
           toast.success('활동이 추가되었습니다!');
           onClose();
