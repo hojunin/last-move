@@ -29,26 +29,70 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: LastMoveDetailModal 헤더 및 정보 섹션 개선
+## Current Task: Sheet 컴포넌트 Close 버튼 제어 기능 추가 (완료)
+
+**Task Overview:**
+사용자가 Sheet 컴포넌트에서 자동으로 렌더링되는 Close 버튼을 제어할 수 있도록 개선
+1. SheetContent 컴포넌트에 `showClose` props 추가
+2. 기본값은 true로 설정하여 기존 동작 유지
+3. showClose가 false일 때 Close 버튼 렌더링 하지 않음
+4. LastMoveDetailModal에서 해당 기능 활용
+
+**완료된 구현사항:**
+[X] 1. SheetContent 컴포넌트 수정
+  [X] showClose props 추가 (기본값: true)
+  [X] 조건부 렌더링으로 Close 버튼 제어
+  [X] TypeScript 타입 정의 업데이트
+[X] 2. LastMoveDetailModal에서 테스트
+  [X] 모든 SheetContent에 showClose={false} 적용
+  [X] 기본 Close 버튼이 렌더링되지 않는 것 확인
+[X] 3. 브라우저 테스트 완료
+  [X] Blog Writing 활동 모달 테스트
+  [X] English Study(Speek) 활동 모달 테스트
+  [X] ESC 키로 모달 닫기 정상 작동 확인
+
+**기술적 구현:**
+- SheetContent 컴포넌트에 `showClose?: boolean` props 추가
+- 기본값 `showClose = true`로 설정하여 기존 동작 유지
+- 조건부 렌더링: `{showClose && (<SheetPrimitive.Close>...)}`
+- TypeScript 타입 안전성 확보
+- 기존 코드와의 호환성 유지
+
+**사용 방법:**
+```tsx
+// Close 버튼 숨기기
+<SheetContent showClose={false}>
+  {/* 내용 */}
+</SheetContent>
+
+// 기본 동작 (Close 버튼 표시)
+<SheetContent>
+  {/* 내용 */}
+</SheetContent>
+```
+
+**테스트 결과:**
+- ✅ LastMoveDetailModal에서 기본 Close 버튼이 표시되지 않음
+- ✅ ESC 키로 모달 닫기 정상 작동
+- ✅ 기존 기능 모두 정상 작동
+- ✅ 타입 안전성 확보
+- ✅ 기존 코드와의 호환성 유지
+
+**사용자 요구사항 충족:**
+- ✅ Sheet 컴포넌트의 자동 Close 버튼 제어 가능
+- ✅ props를 통한 간편한 제어
+- ✅ 기본값 설정으로 기존 동작 유지
+- ✅ LastMoveDetailModal에서 성공적으로 적용
+
+## 작업 완료 ✅
+
+## Previous Task: LastMoveDetailModal 헤더 및 정보 섹션 개선 (완료)
 
 **Task Overview:**
 LastMoveDetailModal 컴포넌트의 헤더와 정보 섹션 구조 개선
 1. 헤더 제목을 "활동 상세 정보"에서 활동 제목(activity.title)으로 변경
 2. 컨텐츠 영역에 카테고리, 마지막 실행일, 총 횟수 정보 표시
 3. ActivityInfoSection과 ActivityEditForm 컴포넌트를 새로운 구조에 맞게 수정
-
-**구현 계획:**
-[X] 1. LastMoveDetailModal.tsx 수정
-  [X] SheetTitle을 activity.title로 변경
-  [X] 로딩 상태와 에러 상태에서도 적절한 제목 표시
-[X] 2. ActivityInfoSection.tsx 수정
-  [X] 제목 표시 부분 제거 (헤더로 이동)
-  [X] 카테고리, 마지막 실행일, 총 횟수만 표시
-[X] 3. ActivityEditForm.tsx 수정
-  [X] 편집 모드에서도 헤더 제목 유지
-  [X] 폼 구조 조정 (제목 편집 필드 제거)
-[X] 4. types.ts 수정
-  [X] activitySchema에서 title 필드 제거
 
 **완료된 개선사항:**
 - ✅ 헤더 제목을 activity.title로 변경 (동적 제목 표시)
@@ -59,6 +103,11 @@ LastMoveDetailModal 컴포넌트의 헤더와 정보 섹션 구조 개선
 - ✅ ActivityEditForm에서 제목 편집 필드 제거
 - ✅ 카테고리와 설명만 편집 가능하도록 단순화
 - ✅ 타입 시스템 업데이트 (ActivityFormData에서 title 제거)
+- ✅ 편집 모드에서 제목, 카테고리, 설명 모두 편집 가능
+- ✅ 제목 변경 시 헤더 제목도 즉시 반영
+- ✅ 제목 중복 검사 로직 포함
+- ✅ 폼 검증 및 에러 처리 완료
+- ✅ 모든 편집 기능이 완벽하게 작동함
 
 **현재 구조 분석:**
 - 헤더: "활동 상세 정보" + 편집 버튼
@@ -562,11 +611,7 @@ AddItemModal을 사용자 요청에 맞게 단순화 및 개선
 💪 건강, 📚 학습, 🏠 생활, 🎨 취미, 👥 인간관계, 💼 업무, 🌱 자기계발, 📝 기타
 
 **주요 파일:**
-- `src/components/AddItemModal.tsx`: 클라이언트 컴포넌트 (폼 상태 관리)
-- `src/components/CategorySelect.tsx`: 서버 컴포넌트 (카테고리 렌더링)
-- `src/lib/actions.ts`: Server Actions (createActivityAndMove 수정)
-- `sql/create-categories-table.sql`: 카테고리 테이블 스키마
-- `scripts/create-categories-table.js`: 카테고리 테이블 생성 스크립트
+- `src/components/AddItemModal.tsx`: useActionState → useTransition + useState 방식으로 완전 교체, CategorySelect 서버 컴포넌트 문제 해결
 
 **기존 완료된 작업:**
 - ✅ NextAuth.js v5 기반 사용자 인증 시스템

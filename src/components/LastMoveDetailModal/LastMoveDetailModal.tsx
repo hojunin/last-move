@@ -36,6 +36,7 @@ import {
   MoveFormData,
   MovePopoverState,
 } from "./types";
+import { Badge } from "../ui/badge";
 
 const sheetContentVariants = tv({
   base: "overflow-y-auto",
@@ -208,6 +209,7 @@ export default function LastMoveDetailModal({
       <Sheet open={isOpen} onOpenChange={onClose}>
         <SheetContent
           side={isDesktop ? "right" : "bottom"}
+          showClose={false}
           className={sheetContentVariants({
             side: isDesktop ? "right" : "bottom",
           })}
@@ -227,6 +229,7 @@ export default function LastMoveDetailModal({
       <Sheet open={isOpen} onOpenChange={onClose}>
         <SheetContent
           side={isDesktop ? "right" : "bottom"}
+          showClose={false}
           className={sheetContentVariants({
             side: isDesktop ? "right" : "bottom",
           })}
@@ -246,13 +249,23 @@ export default function LastMoveDetailModal({
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side={isDesktop ? "right" : "bottom"}
+        showClose={false}
         className={sheetContentVariants({
           side: isDesktop ? "right" : "bottom",
         })}
       >
         <SheetHeader>
           <div className="flex items-center justify-between">
-            <SheetTitle>{activity.title}</SheetTitle>
+            <SheetTitle>
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-lg font-semibold">{activity.title}</h3>
+                {activity.category_name && (
+                  <Badge variant="secondary">
+                    {activity.category_icon} {activity.category_name}
+                  </Badge>
+                )}
+              </div>
+            </SheetTitle>
             <Button variant="outline" size="sm" onClick={handleEditToggle}>
               {isEditing ? (
                 <X className="h-4 w-4" />

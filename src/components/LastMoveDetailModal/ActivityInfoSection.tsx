@@ -23,14 +23,6 @@ export default function ActivityInfoSection({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        {activity.category_name && (
-          <Badge variant="secondary">
-            {activity.category_icon} {activity.category_name}
-          </Badge>
-        )}
-      </div>
-
       <ActivityStats activity={activity} />
     </div>
   );
