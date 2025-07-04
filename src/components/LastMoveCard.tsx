@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ActivityWithLastMove, createMove } from '@/lib/actions';
-import { daysSince } from '@/lib/utils';
-import { Clock } from 'lucide-react';
-import { gsap } from 'gsap';
-import dayjs from 'dayjs';
-import LastMoveDetailModal from '@/components/LastMoveDetailModal';
+import { useState, useRef, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ActivityWithLastMove, createMove } from "@/lib/actions";
+import { daysSince } from "@/lib/utils";
+import { Clock } from "lucide-react";
+import { gsap } from "gsap";
+import dayjs from "dayjs";
+import LastMoveDetailModal from "@/components/LastMoveDetailModal";
 
 interface LastMoveCardProps {
   item: ActivityWithLastMove;
@@ -24,7 +24,7 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
 
   // NOTE: 오늘 이미 완료했는지 확인 (last_move_date 사용)
   const isCompletedToday = Boolean(
-    item.last_move_date && dayjs(item.last_move_date).isSame(dayjs(), 'day'),
+    item.last_move_date && dayjs(item.last_move_date).isSame(dayjs(), "day")
   );
 
   useEffect(() => {
@@ -41,8 +41,8 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
           y: 0,
           scale: 1,
           duration: 0.5,
-          ease: 'back.out(1.7)',
-        },
+          ease: "back.out(1.7)",
+        }
       );
     }
   }, []);
@@ -68,11 +68,11 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
     try {
       const result = await createMove(item.id);
       if (!result.success) {
-        alert(result.error || 'Move 기록에 실패했습니다');
+        alert(result.error || "Move 기록에 실패했습니다");
       }
     } catch (error) {
-      console.error('Failed to log action:', error);
-      alert('Move 기록 중 오류가 발생했습니다');
+      console.error("Failed to log action:", error);
+      alert("Move 기록 중 오류가 발생했습니다");
     } finally {
       setIsLoading(false);
     }
@@ -83,18 +83,18 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
   };
 
   const getDaysColor = (days: number | null) => {
-    if (days === null) return 'text-gray-600';
-    if (days === 0) return 'text-green-600';
-    if (days <= 3) return 'text-yellow-600';
-    if (days <= 7) return 'text-orange-600';
-    return 'text-red-600';
+    if (days === null) return "text-gray-600";
+    if (days === 0) return "text-green-600";
+    if (days <= 3) return "text-yellow-600";
+    if (days <= 7) return "text-orange-600";
+    return "text-red-600";
   };
 
   const getDaysText = (days: number | null) => {
-    if (days === null) return '기록 없음';
-    if (days === 0) return '오늘';
-    if (days === 1) return '1일 전';
-    return `${days}일 전`;
+    if (days === null) return "No record";
+    if (days === 0) return "Today";
+    if (days === 1) return "1 day ago";
+    return `${days} days ago`;
   };
 
   return (
@@ -132,11 +132,11 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
             <Button
               onClick={handleLogAction}
               disabled={isLoading || isCompletedToday}
-              variant={isCompletedToday ? 'secondary' : 'default'}
+              variant={isCompletedToday ? "secondary" : "default"}
               size="sm"
               className="h-5 px-2 text-xs"
             >
-              {isLoading ? '처리중' : isCompletedToday ? '완료됨' : '완료'}
+              {isLoading ? "Processing" : isCompletedToday ? "Done" : "✓"}
             </Button>
           </div>
         </div>
