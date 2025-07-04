@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-} from '@/components/ui/drawer';
-import { createActivity } from '@/lib/actions';
-import { useMediaQuery } from '@/hooks/use-media-query';
-import { toast } from 'sonner';
-import AddItemForm from './AddItemForm';
-import type { AddItemModalProps, NewActivityFormData } from './types';
+} from "@/components/ui/drawer";
+import { createActivity } from "@/lib/actions";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { toast } from "sonner";
+import AddItemForm from "./AddItemForm";
+import type { AddItemModalProps, NewActivityFormData } from "./types";
 
 export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
-  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   // NOTE: 폼 제출 상태 관리
   const [isPending, startTransition] = useTransition();
@@ -34,8 +34,8 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
       startTransition(async () => {
         try {
           const formData = new FormData();
-          formData.append('title', data.title);
-          formData.append('category_id', data.category_id.toString());
+          formData.append("title", data.title);
+          formData.append("category_id", data.category_id.toString());
 
           const result = await createActivity(formData);
 
@@ -43,14 +43,14 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
             throw new Error(result.error);
           }
 
-          toast.success('활동이 추가되었습니다!');
+          toast.success("활동이 추가되었습니다!");
           onClose();
           resolve();
         } catch (error: unknown) {
           const errorMessage =
             error instanceof Error
               ? error.message
-              : '알 수 없는 오류가 발생했습니다';
+              : "알 수 없는 오류가 발생했습니다";
           setError(errorMessage);
           reject(error);
         }
@@ -69,7 +69,7 @@ export default function AddItemModal({ isOpen, onClose }: AddItemModalProps) {
   );
 
   if (isDesktop) {
-    console.log('Rendering Dialog for desktop');
+    console.log("Rendering Dialog for desktop");
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="sm:max-w-[480px] p-0">
