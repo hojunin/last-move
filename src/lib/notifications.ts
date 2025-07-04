@@ -1,9 +1,10 @@
-'use server';
+"use server";
 
-import { sql } from './db';
-import { revalidatePath } from 'next/cache';
-import dayjs from 'dayjs';
-import { auth } from '@/lib/auth';
+import { sql } from "./db";
+import { revalidatePath } from "next/cache";
+import dayjs from "dayjs";
+import { auth } from "@/lib/auth";
+import * as Sentry from "@sentry/nextjs";
 
 // NOTE: 알림 관련 타입 정의
 export interface NotificationSettings {
@@ -28,14 +29,14 @@ export interface Notification {
   user_id: string;
   activity_id: number | null;
   type:
-    | 'daily_reminder'
-    | 'weekly_reminder'
-    | 'long_inactive'
-    | 'streak_celebration'
-    | 'goal_achievement'
-    | 'encouragement'
-    | 'custom';
-  priority: 'low' | 'normal' | 'high' | 'urgent';
+    | "daily_reminder"
+    | "weekly_reminder"
+    | "long_inactive"
+    | "streak_celebration"
+    | "goal_achievement"
+    | "encouragement"
+    | "custom";
+  priority: "low" | "normal" | "high" | "urgent";
   title: string;
   body: string;
   icon: string;
@@ -58,7 +59,6 @@ export async function getNotificationSettings(): Promise<NotificationSettings | 
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      console.log('인증되지 않은 사용자 - 기본 알림 설정 사용');
       return null;
     }
 
@@ -90,19 +90,23 @@ export async function getNotificationSettings(): Promise<NotificationSettings | 
 
     return result.rows[0] as NotificationSettings;
   } catch (error) {
-    console.error('Failed to get notification settings:', error);
+    Sentry.captureException(error, {
+      tags: {
+        function: "getNotificationSettings",
+      },
+    });
     return null;
   }
 }
 
 // NOTE: 알림 설정 업데이트
 export async function updateNotificationSettings(
-  settings: Partial<NotificationSettings>,
+  settings: Partial<NotificationSettings>
 ) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return { success: false, error: '인증되지 않은 사용자입니다' };
+      return { success: false, error: "인증되지 않은 사용자입니다" };
     }
 
     const userId = session.user.id;
@@ -145,38 +149,133 @@ export async function updateNotificationSettings(
       WHERE user_id = ${userId}
     `;
 
-    revalidatePath('/');
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
-    console.error('Failed to update notification settings:', error);
-    return { success: false, error: '알림 설정 업데이트에 실패했습니다' };
+    Sentry.captureException(error, {
+      tags: {
+        function: "updateNotificationSettings",
+      },
+      extra: {
+        userId: (await auth())?.user?.id,
+        settingsKeys: Object.keys(settings),
+      },
+    });
+    return { success: false, error: "알림 설정 업데이트에 실패했습니다" };
   }
 }
 
 // NOTE: 푸시 구독 정보 저장
 export async function savePushSubscription(
-  subscription: Record<string, unknown>,
+  subscription: Record<string, unknown>
 ) {
+  Sentry.addBreadcrumb({
+    message: "Saving push subscription",
+    category: "notification",
+    level: "info",
+    data: {
+      subscriptionKeys: Object.keys(subscription),
+    },
+  });
+
   try {
     const session = await auth();
+
     if (!session?.user?.id) {
-      return { success: false, error: '인증되지 않은 사용자입니다' };
+      Sentry.captureMessage(
+        "Unauthorized user attempting to save push subscription",
+        "warning"
+      );
+      return { success: false, error: "인증되지 않은 사용자입니다" };
     }
 
     const userId = session.user.id;
 
-    await sql`
+    // 구독 정보 상세 로깅
+    const subscriptionStr = JSON.stringify(subscription);
+
+    Sentry.addBreadcrumb({
+      message: "Push subscription details",
+      category: "notification",
+      level: "info",
+      data: {
+        userId,
+        subscriptionLength: subscriptionStr.length,
+        hasEndpoint: !!subscription.endpoint,
+        hasKeys: !!subscription.keys,
+      },
+    });
+
+    // endpoint 정보 확인
+    if (subscription.endpoint) {
+      try {
+        const endpointUrl = new URL(subscription.endpoint as string);
+        Sentry.addBreadcrumb({
+          message: "Push subscription endpoint",
+          category: "notification",
+          level: "info",
+          data: {
+            domain: endpointUrl.hostname,
+            protocol: endpointUrl.protocol,
+          },
+        });
+      } catch (urlError) {
+        Sentry.captureException(urlError, {
+          tags: {
+            function: "savePushSubscription",
+            issue: "invalid_endpoint_url",
+          },
+        });
+      }
+    }
+
+    const result = await sql`
       UPDATE user_notification_settings 
-      SET push_subscription = ${JSON.stringify(
-        subscription,
-      )}, updated_at = NOW()
+      SET push_subscription = ${subscriptionStr}, updated_at = NOW()
       WHERE user_id = ${userId}
     `;
 
+    if (result.rowCount === 0) {
+      Sentry.addBreadcrumb({
+        message: "No existing settings found, creating new record",
+        category: "notification",
+        level: "info",
+      });
+
+      // 사용자 설정이 없으면 생성
+      await sql`
+        INSERT INTO user_notification_settings (user_id, push_subscription) 
+        VALUES (${userId}, ${subscriptionStr})
+        ON CONFLICT (user_id) DO UPDATE SET 
+          push_subscription = ${subscriptionStr},
+          updated_at = NOW()
+      `;
+    }
+
+    Sentry.addBreadcrumb({
+      message: "Push subscription saved successfully",
+      category: "notification",
+      level: "info",
+    });
+
     return { success: true };
   } catch (error) {
-    console.error('Failed to save push subscription:', error);
-    return { success: false, error: '푸시 구독 저장에 실패했습니다' };
+    Sentry.captureException(error, {
+      tags: {
+        function: "savePushSubscription",
+      },
+      extra: {
+        userId: (await auth())?.user?.id,
+        subscriptionKeys: Object.keys(subscription),
+      },
+    });
+
+    return {
+      success: false,
+      error: `푸시 구독 저장에 실패했습니다: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    };
   }
 }
 
@@ -184,7 +283,7 @@ export async function savePushSubscription(
 export async function createNotification({
   activityId,
   type,
-  priority = 'normal',
+  priority = "normal",
   title,
   body,
   scheduledAt,
@@ -192,8 +291,8 @@ export async function createNotification({
   userId,
 }: {
   activityId?: number;
-  type: Notification['type'];
-  priority?: Notification['priority'];
+  type: Notification["type"];
+  priority?: Notification["priority"];
   title: string;
   body: string;
   scheduledAt: Date | string;
@@ -206,7 +305,7 @@ export async function createNotification({
     if (!effectiveUserId) {
       const session = await auth();
       if (!session?.user?.id) {
-        return { success: false, error: '인증되지 않은 사용자입니다' };
+        return { success: false, error: "인증되지 않은 사용자입니다" };
       }
       effectiveUserId = session.user.id;
     }
@@ -225,8 +324,8 @@ export async function createNotification({
 
     return { success: true, notificationId: result.rows[0].id };
   } catch (error) {
-    console.error('Failed to create notification:', error);
-    return { success: false, error: '알림 생성에 실패했습니다' };
+    console.error("Failed to create notification:", error);
+    return { success: false, error: "알림 생성에 실패했습니다" };
   }
 }
 
@@ -235,7 +334,7 @@ export async function createDailyReminders() {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return { success: false, error: '인증되지 않은 사용자입니다' };
+      return { success: false, error: "인증되지 않은 사용자입니다" };
     }
 
     const userId = session.user.id;
@@ -243,12 +342,12 @@ export async function createDailyReminders() {
     if (!settings?.daily_reminder_enabled) {
       return {
         success: true,
-        message: '일일 리마인더가 비활성화되어 있습니다',
+        message: "일일 리마인더가 비활성화되어 있습니다",
       };
     }
 
     // 오늘 완료되지 않은 활동 찾기 (사용자별)
-    const today = dayjs().format('YYYY-MM-DD');
+    const today = dayjs().format("YYYY-MM-DD");
     const incompleteTasks = await sql`
       SELECT a.id, a.title, a.category_id
       FROM activities a
@@ -260,17 +359,17 @@ export async function createDailyReminders() {
     `;
 
     if (incompleteTasks.rows.length === 0) {
-      return { success: true, message: '모든 활동이 완료되었습니다' };
+      return { success: true, message: "모든 활동이 완료되었습니다" };
     }
 
     // 알림 발송 시간 계산 (설정된 시간)
     const reminderTime =
-      dayjs().format('YYYY-MM-DD') + ' ' + settings.daily_reminder_time;
+      dayjs().format("YYYY-MM-DD") + " " + settings.daily_reminder_time;
     const scheduledAt = dayjs(reminderTime);
 
     // 이미 지난 시간이면 내일로 설정
     if (scheduledAt.isBefore(dayjs())) {
-      return { success: true, message: '오늘 알림 시간이 이미 지났습니다' };
+      return { success: true, message: "오늘 알림 시간이 이미 지났습니다" };
     }
 
     const createdNotifications = [];
@@ -278,9 +377,9 @@ export async function createDailyReminders() {
     for (const task of incompleteTasks.rows) {
       const result = await createNotification({
         activityId: task.id,
-        type: 'daily_reminder',
-        priority: 'normal',
-        title: '📅 일일 리마인더',
+        type: "daily_reminder",
+        priority: "normal",
+        title: "📅 일일 리마인더",
         body: `"${task.title}"을(를) 오늘 완료하지 않으셨네요. 하루를 마무리하기 전에 해보는 건 어떨까요?`,
         scheduledAt: scheduledAt.toDate(),
         userId: userId,
@@ -304,8 +403,8 @@ export async function createDailyReminders() {
       notificationIds: createdNotifications,
     };
   } catch (error) {
-    console.error('Failed to create daily reminders:', error);
-    return { success: false, error: '일일 리마인더 생성에 실패했습니다' };
+    console.error("Failed to create daily reminders:", error);
+    return { success: false, error: "일일 리마인더 생성에 실패했습니다" };
   }
 }
 
@@ -314,7 +413,7 @@ export async function createLongInactiveReminders() {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return { success: false, error: '인증되지 않은 사용자입니다' };
+      return { success: false, error: "인증되지 않은 사용자입니다" };
     }
 
     const userId = session.user.id;
@@ -322,14 +421,14 @@ export async function createLongInactiveReminders() {
     if (!settings?.long_inactive_enabled) {
       return {
         success: true,
-        message: '장기 미실행 알림이 비활성화되어 있습니다',
+        message: "장기 미실행 알림이 비활성화되어 있습니다",
       };
     }
 
     const inactiveDays = settings.long_inactive_days;
     const cutoffDate = dayjs()
-      .subtract(inactiveDays, 'day')
-      .format('YYYY-MM-DD');
+      .subtract(inactiveDays, "day")
+      .format("YYYY-MM-DD");
 
     // 장기간 미실행 활동 찾기 (사용자별)
     const inactiveTasks = await sql`
@@ -345,20 +444,20 @@ export async function createLongInactiveReminders() {
     `;
 
     if (inactiveTasks.rows.length === 0) {
-      return { success: true, message: '장기 미실행 활동이 없습니다' };
+      return { success: true, message: "장기 미실행 활동이 없습니다" };
     }
 
     const createdNotifications = [];
-    const scheduledAt = dayjs().add(1, 'hour'); // 1시간 후 발송
+    const scheduledAt = dayjs().add(1, "hour"); // 1시간 후 발송
 
     for (const task of inactiveTasks.rows) {
-      const daysSince = Math.floor(task.days_since_last) || '기록 없음';
+      const daysSince = Math.floor(task.days_since_last) || "기록 없음";
 
       const result = await createNotification({
         activityId: task.id,
-        type: 'long_inactive',
-        priority: 'normal',
-        title: '💪 다시 시작해보세요!',
+        type: "long_inactive",
+        priority: "normal",
+        title: "💪 다시 시작해보세요!",
         body: `"${task.title}"을(를) ${daysSince}일째 하지 않으셨네요. 작은 시작이 큰 변화를 만듭니다!`,
         scheduledAt: scheduledAt.toDate(),
         userId: userId,
@@ -383,8 +482,8 @@ export async function createLongInactiveReminders() {
       notificationIds: createdNotifications,
     };
   } catch (error) {
-    console.error('Failed to create long inactive reminders:', error);
-    return { success: false, error: '장기 미실행 알림 생성에 실패했습니다' };
+    console.error("Failed to create long inactive reminders:", error);
+    return { success: false, error: "장기 미실행 알림 생성에 실패했습니다" };
   }
 }
 
@@ -393,7 +492,7 @@ export async function createStreakCelebrationNotifications() {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return { success: false, error: '인증되지 않은 사용자입니다' };
+      return { success: false, error: "인증되지 않은 사용자입니다" };
     }
 
     const userId = session.user.id;
@@ -401,7 +500,7 @@ export async function createStreakCelebrationNotifications() {
     if (!settings?.streak_celebration_enabled) {
       return {
         success: true,
-        message: '연속 기록 축하 알림이 비활성화되어 있습니다',
+        message: "연속 기록 축하 알림이 비활성화되어 있습니다",
       };
     }
 
@@ -440,31 +539,31 @@ export async function createStreakCelebrationNotifications() {
     `;
 
     if (streakQuery.rows.length === 0) {
-      return { success: true, message: '축하할 연속 기록이 없습니다' };
+      return { success: true, message: "축하할 연속 기록이 없습니다" };
     }
 
     const createdNotifications = [];
-    const scheduledAt = dayjs().add(5, 'minute');
+    const scheduledAt = dayjs().add(5, "minute");
 
     for (const streak of streakQuery.rows) {
       const streakDays = streak.current_streak;
       let title, body;
 
       if (streakDays === 3) {
-        title = '🔥 3일 연속 달성!';
+        title = "🔥 3일 연속 달성!";
         body = `"${streak.title}"을(를) 3일 연속 완료하셨네요! 좋은 습관이 만들어지고 있어요!`;
       } else if (streakDays === 7) {
-        title = '🏆 1주일 연속 달성!';
+        title = "🏆 1주일 연속 달성!";
         body = `"${streak.title}"을(를) 일주일 연속 완료! 정말 대단해요! 이 습관을 계속 유지해보세요!`;
       } else if (streakDays === 30) {
-        title = '🎉 30일 연속 달성!';
+        title = "🎉 30일 연속 달성!";
         body = `"${streak.title}"을(를) 한 달 연속 완료! 이제 완전한 습관이 되었네요! 축하드려요!`;
       }
 
       const result = await createNotification({
         activityId: streak.id,
-        type: 'streak_celebration',
-        priority: 'high',
+        type: "streak_celebration",
+        priority: "high",
         title: title!,
         body: body!,
         scheduledAt: scheduledAt.toDate(),
@@ -489,8 +588,8 @@ export async function createStreakCelebrationNotifications() {
       notificationIds: createdNotifications,
     };
   } catch (error) {
-    console.error('Failed to create streak celebration notifications:', error);
-    return { success: false, error: '연속 기록 축하 알림 생성에 실패했습니다' };
+    console.error("Failed to create streak celebration notifications:", error);
+    return { success: false, error: "연속 기록 축하 알림 생성에 실패했습니다" };
   }
 }
 
@@ -508,7 +607,7 @@ export async function getPendingNotifications(): Promise<Notification[]> {
 
     return result.rows as Notification[];
   } catch (error) {
-    console.error('Failed to get pending notifications:', error);
+    console.error("Failed to get pending notifications:", error);
     return [];
   }
 }
@@ -517,7 +616,7 @@ export async function getPendingNotifications(): Promise<Notification[]> {
 export async function markNotificationAsSent(
   notificationId: number,
   success: boolean,
-  errorMessage?: string,
+  errorMessage?: string
 ) {
   try {
     if (success) {
@@ -538,7 +637,7 @@ export async function markNotificationAsSent(
 
     return { success: true };
   } catch (error) {
-    console.error('Failed to mark notification as sent:', error);
-    return { success: false, error: '알림 상태 업데이트에 실패했습니다' };
+    console.error("Failed to mark notification as sent:", error);
+    return { success: false, error: "알림 상태 업데이트에 실패했습니다" };
   }
 }

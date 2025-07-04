@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:https": "next dev --experimental-https",
+    "dev:mobile": "next dev --experimental-https -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -17,6 +19,7 @@
     "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.3",
+    "@sentry/nextjs": "^9.35.0",
     "@types/bcryptjs": "^3.0.0",
     "@vercel/postgres": "^0.10.0",
     "bcryptjs": "^3.0.2",
