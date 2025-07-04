@@ -29,7 +29,61 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Sentry 로깅 시스템 구축
+## Current Task: NotificationPermission 컴포넌트 영어 번역 (완료)
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[X] 1. 카드 헤더 및 설명 번역
+  [X] "알림 설정" → "Notification Settings"
+  [X] "활동 리마인더와 축하 메시지를 받아보세요" → "Get activity reminders and celebration messages"
+  [X] "알림 미지원" → "Notifications Not Supported"
+[X] 2. 상태 뱃지 텍스트 번역
+  [X] "알림 권한" → "Notification Permission"
+  [X] "허용됨/거부됨/미설정" → "Granted/Denied/Not Set"
+  [X] "푸시 알림" → "Push Notifications"
+  [X] "구독됨/미구독" → "Subscribed/Not Subscribed"
+[X] 3. 버튼 라벨 번역
+  [X] "알림 허용하기" → "Allow Notifications"
+  [X] "푸시 알림 구독" → "Subscribe to Push Notifications"
+  [X] "푸시 알림 테스트" → "Test Push Notification"
+  [X] "구독 해제" → "Unsubscribe"
+[X] 4. 에러 메시지 번역
+  [X] 권한 거부, 구독 실패 등 모든 에러 메시지 영어화
+  [X] 사용자 친화적인 구체적 에러 메시지 제공
+[X] 5. 토스트 메시지 번역
+  [X] "푸시 알림이 활성화되었습니다!" → "Push notifications have been enabled!"
+  [X] "테스트 알림을 발송했습니다!" → "Test notification sent!"
+[X] 6. 디버깅 정보 섹션 번역
+  [X] "디버깅 정보 (문제 해결용)" → "Debug Information (for troubleshooting)"
+  [X] 모든 브라우저 지원 상태 및 기술 정보 영어화
+[X] 7. iOS PWA 안내 문구 번역
+  [X] iOS 홈 화면 추가 안내 영어화
+
+**완료된 번역 내용:**
+- ✅ 모든 UI 텍스트 영어 번역 완료
+- ✅ 에러 메시지 영어화 및 사용자 친화적 메시지 개선
+- ✅ 토스트 메시지 영어 번역
+- ✅ 디버깅 정보 섹션 완전 영어화
+- ✅ 코드 주석까지 영어로 통일
+- ✅ 브라우저 지원 상태 표시 영어화
+- ✅ iOS PWA 안내 문구 영어 번역
+
+**기술적 개선사항:**
+- 에러 메시지를 더 구체적이고 사용자 친화적으로 개선
+- 브라우저별, 상황별 맞춤형 에러 메시지 제공
+- 디버깅 정보를 더 명확하게 표시
+- 일관된 영어 표현으로 전문성 향상
+
+## 작업 완료 ✅
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
 
 **Task Overview:**
 콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
@@ -78,701 +132,1579 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 **사용 방법:**
 배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
 
-## Previous Task: 푸시 알림 구독 실패 디버깅 환경 구축 (완료)
-
-**완료된 구현사항:**
-- ✅ NotificationPermission 컴포넌트에 상세한 디버깅 로그 추가
-- ✅ 각 단계별 에러 로깅 및 브라우저 호환성 확인
-- ✅ 서버 사이드 savePushSubscription 함수 로깅 강화
-- ✅ API 라우트에 상세한 요청/응답 로깅 추가
-- ✅ 디버깅 정보 UI 섹션 추가 (브라우저 지원 여부, HTTPS 상태 등)
-
-## Previous Task: Sheet 컴포넌트 Close 버튼 제어 기능 추가 (완료)
+## Current Task: NotificationPermission 컴포넌트 영어 번역
 
 **Task Overview:**
-사용자가 Sheet 컴포넌트에서 자동으로 렌더링되는 Close 버튼을 제어할 수 있도록 개선
-1. SheetContent 컴포넌트에 `showClose` props 추가
-2. 기본값은 true로 설정하여 기존 동작 유지
-3. showClose가 false일 때 Close 버튼 렌더링 하지 않음
-4. LastMoveDetailModal에서 해당 기능 활용
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
 
-**완료된 구현사항:**
-[X] 1. SheetContent 컴포넌트 수정
-  [X] showClose props 추가 (기본값: true)
-  [X] 조건부 렌더링으로 Close 버튼 제어
-  [X] TypeScript 타입 정의 업데이트
-[X] 2. LastMoveDetailModal에서 테스트
-  [X] 모든 SheetContent에 showClose={false} 적용
-  [X] 기본 Close 버튼이 렌더링되지 않는 것 확인
-[X] 3. 브라우저 테스트 완료
-  [X] Blog Writing 활동 모달 테스트
-  [X] English Study(Speek) 활동 모달 테스트
-  [X] ESC 키로 모달 닫기 정상 작동 확인
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
 
-**기술적 구현:**
-- SheetContent 컴포넌트에 `showClose?: boolean` props 추가
-- 기본값 `showClose = true`로 설정하여 기존 동작 유지
-- 조건부 렌더링: `{showClose && (<SheetPrimitive.Close>...)}`
-- TypeScript 타입 안전성 확보
-- 기존 코드와의 호환성 유지
-
-**사용 방법:**
-```tsx
-// Close 버튼 숨기기
-<SheetContent showClose={false}>
-  {/* 내용 */}
-</SheetContent>
-
-// 기본 동작 (Close 버튼 표시)
-<SheetContent>
-  {/* 내용 */}
-</SheetContent>
-```
-
-**테스트 결과:**
-- ✅ LastMoveDetailModal에서 기본 Close 버튼이 표시되지 않음
-- ✅ ESC 키로 모달 닫기 정상 작동
-- ✅ 기존 기능 모두 정상 작동
-- ✅ 타입 안전성 확보
-- ✅ 기존 코드와의 호환성 유지
-
-**사용자 요구사항 충족:**
-- ✅ Sheet 컴포넌트의 자동 Close 버튼 제어 가능
-- ✅ props를 통한 간편한 제어
-- ✅ 기본값 설정으로 기존 동작 유지
-- ✅ LastMoveDetailModal에서 성공적으로 적용
-
-## 작업 완료 ✅
-
-## Previous Task: LastMoveDetailModal 헤더 및 정보 섹션 개선 (완료)
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
 
 **Task Overview:**
-LastMoveDetailModal 컴포넌트의 헤더와 정보 섹션 구조 개선
-1. 헤더 제목을 "활동 상세 정보"에서 활동 제목(activity.title)으로 변경
-2. 컨텐츠 영역에 카테고리, 마지막 실행일, 총 횟수 정보 표시
-3. ActivityInfoSection과 ActivityEditForm 컴포넌트를 새로운 구조에 맞게 수정
-
-**완료된 개선사항:**
-- ✅ 헤더 제목을 activity.title로 변경 (동적 제목 표시)
-- ✅ 로딩 상태: "로딩 중..." 표시
-- ✅ 에러 상태: "활동을 찾을 수 없습니다" 표시
-- ✅ ActivityInfoSection에서 제목 표시 제거
-- ✅ 카테고리 뱃지를 상단에 표시
-- ✅ ActivityEditForm에서 제목 편집 필드 제거
-- ✅ 카테고리와 설명만 편집 가능하도록 단순화
-- ✅ 타입 시스템 업데이트 (ActivityFormData에서 title 제거)
-- ✅ 편집 모드에서 제목, 카테고리, 설명 모두 편집 가능
-- ✅ 제목 변경 시 헤더 제목도 즉시 반영
-- ✅ 제목 중복 검사 로직 포함
-- ✅ 폼 검증 및 에러 처리 완료
-- ✅ 모든 편집 기능이 완벽하게 작동함
-
-**현재 구조 분석:**
-- 헤더: "활동 상세 정보" + 편집 버튼
-- ActivityInfoSection: 활동 제목 + 카테고리 뱃지 + 통계
-- ExecutionCalendar: 캘린더 표시
-
-**추가 요구사항:**
-- 편집 모드에서 헤더의 제목(activity.title)도 편집 가능해야 함
-- 현재는 카테고리와 설명만 편집 가능한 상태
-
-**수정 완료:**
-[X] ActivityEditForm에 제목 편집 필드 다시 추가
-[X] types.ts의 activitySchema에 title 필드 다시 추가
-[X] lib/actions.ts의 updateActivitySchema에 title 필드 다시 추가
-[X] updateActivity 함수에 제목 중복 검사 로직 다시 추가
-
-**최종 구현사항:**
-- ✅ 편집 모드에서 제목, 카테고리, 설명 모두 편집 가능
-- ✅ 제목 변경 시 헤더 제목도 즉시 반영
-- ✅ 제목 중복 검사 로직 포함
-- ✅ 폼 검증 및 에러 처리 완료
-
-**최종 테스트 결과:**
-- ✅ Blog Writing 활동: 헤더 "Blog Writing", 제목 편집 성공
-- ✅ English Study(Speek) 활동: 헤더 "English Study(Speek)", 제목 편집 성공
-- ✅ 모든 편집 기능이 완벽하게 작동함
-- ✅ 헤더 제목 동적 변경 및 즉시 반영 완료
-- ✅ 타입 안전성 및 에러 처리 완료
-
-## 작업 완료 ✅
-
-## Previous Task: AddItemModal 리팩토링 (Thinking in React 패턴 적용) - 완료
-
-**Task Overview:**
-AddItemModal 컴포넌트를 Thinking in React 패턴에 맞게 리팩토링
-1. 현재 단일 컴포넌트에 집중된 상태와 로직을 계층적으로 분리
-2. 단일 책임 원칙에 따라 각 컴포넌트를 작은 단위로 분할
-3. AddItemModal 폴더 생성하고 내부에 세부 컴포넌트들 구성
-4. UI 디자인 문제 해결 (폼 레이아웃, 간격 조정)
-5. 루트 컴포넌트만 barrel pattern으로 export
-
-**완료된 리팩토링:**
-[X] 1. 폴더 구조 생성: src/components/AddItemModal/
-[X] 2. UI 컴포넌트 계층 분석 및 설계
-[X] 3. 컴포넌트 분할:
-  [X] types.ts: 공통 타입 및 인터페이스 정의
-  [X] ActivityNameInput.tsx: 활동명 입력 (한글 IME 처리)
-  [X] CategorySelect.tsx: 카테고리 선택 드롭다운
-  [X] FormActions.tsx: 취소/추가 버튼
-  [X] AddItemForm.tsx: 폼 로직 통합 컴포넌트
-  [X] AddItemModal.tsx: 리팩토링된 루트 컴포넌트 (상태 관리)
-  [X] index.ts: Barrel pattern export
-[X] 4. UI 디자인 문제 해결 (폼 간격, 레이아웃 조정)
-[X] 5. 기존 파일 백업 및 테스트
-
-**컴포넌트 계층 구조 설계:**
-```
-AddItemModal (루트 - 상태 관리, 모달 형태 결정)
-└── AddItemForm (폼 로직 관리)
-    ├── ActivityNameInput (활동명 입력 + 한글 IME)
-    ├── CategorySelect (카테고리 선택)
-    └── FormActions (버튼 섹션)
-```
-
-**완료된 개선사항:**
-- ✅ 단일 책임 원칙: 각 컴포넌트가 명확한 하나의 역할만 담당
-- ✅ 상태 관리 최적화: 폼 상태를 AddItemForm에서 관리, 루트는 모달 상태만
-- ✅ 재사용성 향상: 개별 입력 컴포넌트들을 독립적으로 재사용 가능
-- ✅ 타입 안전성: 모든 props와 상태에 TypeScript 타입 적용
-- ✅ UI/UX 개선: 폼 레이아웃 개선, 적절한 패딩과 간격 적용
-- ✅ 코드 가독성: 각 컴포넌트 30-100줄 내외로 관리 용이
-- ✅ 기존 호환성: 기존 import 경로 유지 (barrel pattern)
-- ✅ 한글 IME 처리: ActivityNameInput에서 완전히 분리 처리
-- ✅ 디자인 시스템 통일: 높이(h-11), 포커스 링, 간격(space-y-2/5) 일관성 확보
-- ✅ 접근성 개선: 적절한 색상 대비, 포커스 인디케이터, 에러 메시지 스타일링
-- ✅ 접근성 버그 수정: 모든 SheetContent와 DialogContent에 Title 추가하여 스크린 리더 지원
-
-**리팩토링 결과:**
-1. **컴포넌트 분할**: 276줄의 단일 컴포넌트를 6개의 작은 컴포넌트로 분리
-2. **상태 분산**: 루트 컴포넌트는 모달/로딩 상태만, 폼 상태는 AddItemForm에서 관리
-3. **코드 재사용성**: ActivityNameInput, CategorySelect 등 독립적 재사용 가능
-4. **타입 체계**: types.ts에서 모든 인터페이스 중앙 관리
-5. **UI 일관성**: 데스크톱/모바일 모두 동일한 FormComponent 사용
-6. **개발자 경험**: 각 컴포넌트가 명확한 책임을 가져 유지보수 용이
-7. **디자인 시스템**: 일관된 높이(h-11), 간격(space-y-2/5), 포커스 상태, 색상 사용
-8. **사용자 경험**: 깔끔한 레이아웃, 적절한 패딩, 직관적인 에러 표시
-9. **접근성 준수**: 모든 모달과 시트 컴포넌트에 Title 추가로 스크린 리더 지원 완료
-10. **UX 개선**: 활동 생성 시 자동 Move 생성 제거 - 활동만 생성하고 실행 기록은 별도 추가
-
-## Previous Task: LastMoveDetailModal 메모 기능 제거 (완료)
-
-**Task Overview:**
-LastMoveDetailModal의 MovePopover 컴포넌트에서 메모 기능 제거
-- 메모 기능은 필요없고, 그날 했는지 안했는지만 중요함
-- MovePopover에서 메모 관련 표시 제거
-- MoveForm에서 메모 관련 입력 필드 제거
-
-**완료된 개선사항:**
-- ✅ MovePopover.tsx: 메모 표시 부분 제거, 단순히 "이미 완료한 날짜입니다" 표시
-- ✅ MoveForm.tsx: 메모 입력 필드 제거, 폼 초기화에서 메모 관련 코드 제거
-- ✅ MoveForm.tsx: 수정 기능 제거, 취소 버튼 제거 (추가/삭제만 가능)
-- ✅ types.ts: moveSchema에서 notes 필드 제거
-- ✅ lib/actions.ts: createMove, createMoveWithDate, updateMove 함수에서 notes 파라미터 제거
-- ✅ lib/actions.ts: updateMoveSchema에서 notes 필드 제거
-- ✅ LastMoveDetailModal.tsx: handleMoveUpdate 함수 제거
-- ✅ 단순화된 UX: 메모 없이 그날 했는지 안했는지만 체크하는 방식으로 개선
-
-**주요 변경사항:**
-1. **프론트엔드**: 메모 입력 필드 완전 제거, 기존 기록 표시 시 메모 내용 대신 "완료 여부"만 표시
-2. **백엔드**: 모든 Move 생성/수정 함수에서 notes 파라미터 제거 및 데이터베이스 쿼리 단순화
-3. **타입 시스템**: Zod 스키마에서 notes 필드 제거로 타입 안전성 확보
-4. **날짜 계산 로직**: lib/utils.ts의 daysSince 함수를 시간 기준에서 날짜 기준으로 변경 (startOf('day') 사용)
-5. **UI 단순화**: 수정 기능 제거, 취소 버튼 제거 (바깥 터치로 닫기), 추가/삭제만 가능한 깔끔한 UI
-
-## Previous Task: LastMoveDetailModal 리팩토링 (Thinking in React 패턴 적용) - 완료
-
-**Task Overview:**
-LastMoveDetailModal 컴포넌트를 React의 "Thinking in React" 패턴에 맞게 리팩토링
-1. 현재 루트 컴포넌트에 집중된 상태와 로직을 계층적으로 분리
-2. 단일 책임 원칙에 따라 각 컴포넌트를 작은 단위로 분할
-3. LastMoveDetailModal 폴더를 생성하고 내부에 세부 컴포넌트들 구성
-4. 루트 컴포넌트만 barrel pattern으로 export
-
-**완료된 리팩토링:**
-- ✅ src/components/LastMoveDetailModal/ 폴더 구조 생성
-- ✅ types.ts: 공통 타입 및 인터페이스 정의
-- ✅ ActivityStats.tsx: 활동 통계 정보 표시 (가장 독립적)
-- ✅ ActivityEditForm.tsx: 활동 편집 폼 (React Hook Form 통합)
-- ✅ ActivityInfoSection.tsx: 활동 정보 표시/편집 모드 관리
-- ✅ ExecutionCalendar.tsx: 실행 기록 캘린더 표시
-- ✅ MoveForm.tsx: Move 추가/수정/삭제 폼
-- ✅ MovePopover.tsx: 날짜 클릭 시 Move 관리 팝오버
-- ✅ LastMoveDetailModal.tsx: 리팩토링된 루트 컴포넌트 (상태 관리만 담당)
-- ✅ index.ts: Barrel pattern export
-- ✅ 기존 파일 백업 (LastMoveDetailModal.tsx.backup)
-
-**리팩토링 결과:**
-1. **단일 책임 원칙**: 각 컴포넌트가 명확한 하나의 역할만 담당
-2. **상태 분산**: 루트 컴포넌트의 상태를 MovePopoverState로 그룹화
-3. **재사용성 향상**: 각 컴포넌트가 독립적으로 재사용 가능
-4. **타입 안전성**: 모든 props와 상태에 TypeScript 타입 적용
-5. **데이터 흐름 최적화**: props drilling 최소화, 콜백 함수를 통한 단방향 데이터 흐름
-6. **코드 가독성**: 각 컴포넌트 100-150줄 내외로 관리 용이
-
-**컴포넌트 계층 구조:**
-```
-LastMoveDetailModal (루트)
-├── ActivityInfoSection
-│   ├── ActivityStats (통계 표시)
-│   └── ActivityEditForm (편집 폼)
-├── ExecutionCalendar (캘린더)
-└── MovePopover (팝오버)
-    └── MoveForm (Move 관리 폼)
-```
-
-## Previous Task: LastMoveDetailModal 캘린더 인터렉션 개선 (완료)
-
-**Task Overview:**
-LastMoveDetailModal 컴포넌트의 캘린더 기능 개선
-1. 최근 기록 섹션 제거
-2. 캘린더 날짜 클릭 시 추가/수정/삭제 가능하도록 개선
-3. 현재 모달 방식을 Popover로 변경하여 UX 개선
-
-**완료된 UX 개선사항:**
-- ✅ 날짜 필드 숨김 처리 (캘린더에서 이미 선택했으므로 중복 제거)
-- ✅ 기존 Move 정보 개선 표시 (메모 내용 미리 보기)
-- ✅ 로딩 상태 추가 (생성/수정/삭제 중 상태 표시)
-- ✅ Popover 크기 최적화 (w-80 → w-72)
-- ✅ 버튼 레이아웃 개선 (flex-1 적용, 로딩 상태 반영)
-- ✅ 입력 필드 비활성화 (로딩 중 편집 방지)
-- ✅ Popover 위치 최적화 (클릭된 날짜 버튼 옆에 정확히 표시)
-- ✅ tailwind-variants 도입 및 조건부 스타일 개선
-
-## Previous Task: iOS PWA 아이콘 및 스플래시 스크린 구현 (완료)
-
-**Task Overview:**
-iOS PWA 지원을 위한 앱 아이콘과 스플래시 스크린 구현
-- lastmove.jpg 이미지를 다양한 크기의 아이콘으로 변환
-- iOS 디바이스별 스플래시 이미지 생성
-- iOS PWA 메타 태그 추가
-- manifest.json 업데이트
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
 
 **구현 계획:**
-[X] 1. 아이콘 이미지 생성
-  [X] macOS sips 도구로 다양한 크기 PNG 아이콘 생성
-  [X] 180x180 (iOS 앱 아이콘)
-  [X] 192x192 (PWA 표준)
-  [X] 512x512 (PWA 표준)
-[X] 2. iOS 스플래시 이미지 생성
-  [X] iPhone 8: 750x1334
-  [X] iPhone XR: 828x1792
-  [X] iPhone X/XS: 1125x2436
-  [X] iPhone 12/13/14: 1170x2532
-  [X] iPad: 1536x2048
-  [X] iPad Pro: 2048x2732
-[X] 3. iOS PWA 메타 태그 구현
-  [X] IOSPWAMeta 컴포넌트 생성
-  [X] 디바이스별 미디어 쿼리 적용
-  [X] layout.tsx에 컴포넌트 통합
-[X] 4. manifest.json 업데이트
-  [X] 생성된 아이콘들 등록
-  [X] 앱 바로가기 메뉴 추가
-  [X] 카테고리 및 언어 정보 추가
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
 
 **완료된 구현사항:**
-- ✅ macOS sips 도구로 9개 이미지 파일 생성
-  * 3개 아이콘: icon-180x180.png, icon-192x192.png, icon-512x512.png
-  * 6개 스플래시: splash-750x1334.png, splash-828x1792.png, splash-1125x2436.png, splash-1170x2532.png, splash-1536x2048.png, splash-2048x2732.png
-- ✅ IOSPWAMeta 컴포넌트 구현:
-  * 디바이스별 apple-touch-startup-image 링크 태그
-  * 정확한 미디어 쿼리로 디바이스 타게팅
-  * iPhone 8, XR, X/XS, 12/13/14, iPad, iPad Pro 지원
-- ✅ layout.tsx 업데이트:
-  * iOS PWA 메타데이터 추가 (appleWebApp 설정)
-  * apple-touch-icon 등록
-  * IOSPWAMeta 컴포넌트 통합
-- ✅ manifest.json 개선:
-  * 3개 아이콘 등록 (purpose: any, maskable any)
-  * "새 활동 추가" 바로가기 메뉴 추가
-  * 카테고리: lifestyle, productivity
-  * 언어: ko, 방향: ltr
-
-**iOS PWA 기능:**
-1. **앱 설치**: Safari에서 "홈 화면에 추가" 지원
-2. **스플래시 스크린**: 앱 실행 시 디바이스별 최적화된 스플래시 표시
-3. **앱 아이콘**: 홈 화면에 표시될 고품질 아이콘
-4. **독립 실행**: 브라우저 UI 없이 네이티브 앱처럼 실행
-5. **바로가기**: 앱 아이콘 길게 눌러서 "새 활동 추가" 빠른 접근
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
 
 **기술적 구현:**
-- macOS sips 명령어로 이미지 변환 (JPG → PNG)
-- Next.js App Router 메타데이터 API 활용
-- 디바이스 픽셀 비율 및 해상도 기반 미디어 쿼리
-- PWA 표준 준수 (manifest.json, service worker 기존 유지)
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
 
-**지원 디바이스:**
-- iPhone 8 (375×667, 2x)
-- iPhone XR (414×896, 2x)
-- iPhone X/XS (375×812, 3x)
-- iPhone 12/13/14 (390×844, 3x)
-- iPad (768×1024, 2x)
-- iPad Pro (1024×1366, 2x)
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
 
-## Previous Task: LastMove Detail 모달 구현 (완료)
-
-## Previous Task: 로그인 성공 후 About 페이지 리다이렉트 문제 해결 (완료)
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
 
 **Task Overview:**
-로그인 성공 후에도 about 페이지로 이동하는 문제와 Service Worker 에러 해결
-- 로그인 성공 후 메인 페이지로 이동하지 않는 문제
-- Service Worker에서 ReferenceError: _ref is not defined 에러
-- PWA 관련 workbox 에러
-- Push notification user_id 타입 에러
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
 
-**완료된 해결 방법:**
-- ✅ Node.js 버전 업그레이드 (v16 → v20)
-- ✅ GSAP 서버사이드 렌더링 문제 해결
-- ✅ Service Worker 새로 생성 시도
-- ✅ NextAuth 환경변수 문제 해결
-- ✅ Push notification user_id 타입 에러 해결
-- ✅ 모든 알림 함수에서 실제 정수 타입 user_id 사용
-
-## Previous Task: LastMoveCard 모바일 컴팩트 디자인 개선 (완료)
-
-**Task Overview:**
-LastMoveCard 컴포넌트를 모바일에서 더 컴팩트하게 만들기
-
-**완료된 개선사항:**
-- ✅ shadcn Card 컴포넌트 제거하고 커스텀 div 기반 카드 구현
-- ✅ 모바일 친화적 컴팩트 레이아웃 적용
-- ✅ 불필요한 회수 정보 제거
-- ✅ 완료 버튼에서 아이콘 제거하고 텍스트만 표시
-- ✅ 카드 패딩과 간격 최적화로 화면 공간 효율성 향상
-- ✅ GSAP 애니메이션 효과 유지
-
-## Previous Task: GSAP 기반 About 랜딩페이지 구현 (완료)
-
-**Task Overview:**
-GSAP를 활용한 화려한 About 랜딩페이지 생성 및 라우팅 로직 구현
-- 로그인하지 않은 사용자를 위한 About 페이지 (/about)
-- 로그인하지 않은 상태로 다른 페이지 접근 시 About 페이지로 리다이렉트
-- 마지막에 "시작하기" 버튼으로 로그인/루트 페이지 연결
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
 
 **완료된 구현사항:**
-- ✅ GSAP + ScrollTrigger 기반 화려한 애니메이션
-- ✅ 히어로 섹션: 타이틀, 서브타이틀, 설명 순차 애니메이션
-- ✅ 스크롤 기반 섹션별 애니메이션 (fade in + slide up)
-- ✅ 카드 애니메이션: 좌우 교대로 슬라이드 인
-- ✅ 알림 섹션: 아이콘 회전 + 탄성 애니메이션
-- ✅ CTA 버튼: 백바운스 효과
-- ✅ 그라데이션 배경 + 블러 효과
-- ✅ 반응형 디자인 (md: 브레이크포인트)
-- ✅ 미들웨어 수정: 인증되지 않은 사용자 /about으로 리다이렉트
-- ✅ 세션 확인 후 적절한 페이지로 이동하는 "시작하기" 버튼
-- ✅ 린터 에러 수정 완료
-
-## Previous Task: LastMoveList 카테고리별 섹션 표시 기능 구현 (완료)
-
-**Task Overview:**
-LastMoveList 컴포넌트를 카테고리별로 섹션을 나누어 표시하도록 개선
-
-**완료된 개선사항:**
-- ✅ ActivityWithLastMove 타입 확장: category_id, category_name, category_icon, category_sort_order 필드 추가
-- ✅ getActivitiesWithLastMove 함수 수정: categories 테이블 조인으로 카테고리 정보 포함
-- ✅ 카테고리별 그룹화: Map을 사용한 효율적인 그룹화 로직
-- ✅ 카테고리 정렬: sort_order 기준 정렬, 기타 카테고리는 마지막 배치
-- ✅ 섹션 헤더: 카테고리 아이콘, 이름, 항목 수 표시
-- ✅ 반응형 그리드: 각 섹션 내 카드들의 반응형 배치
-- ✅ 빈 상태 처리: 활동이 없을 때 안내 메시지 유지
-
-## Previous Task: AddItemModal POST 무한 요청 문제 해결 (완료)
-
-**Task Overview:**
-+ 아이콘을 누르면 POST 요청이 무한으로 발생하는 문제 해결
-
-**해결 방법:**
-[X] 1. Server Action 정리
-  [X] useActionState 내부에서 onClose()와 form.reset() 제거
-  [X] 순수한 상태 반환만 처리
-[X] 2. useEffect로 성공 처리 분리 (실패)
-  [X] useEffect로 state.success 감지 시 모달 닫기 처리
-  [X] toast.success로 성공 메시지 표시
-  [X] form.reset()과 onClose() 분리 실행
-  [X] 의존성 배열 문제로 여전히 무한 루프 발생
-[X] 3. useActionState를 useTransition으로 교체
-  [X] useActionState 대신 useState + useTransition 사용
-  [X] form.handleSubmit으로 폼 처리 변경
-  [X] Server Action을 직접 호출하는 방식으로 변경
-  [X] hidden input 제거 (불필요해짐)
-  [X] isPending 상태로 로딩 UI 개선
-[X] 4. CategorySelect 서버/클라이언트 컴포넌트 문제 해결
-  [X] CategorySelect 서버 컴포넌트를 클라이언트 컴포넌트에서 사용 불가 문제 발견
-  [X] AddItemModal에서 직접 카테고리 데이터 가져오도록 변경
-  [X] useEffect로 getCategories() 호출
-  [X] SelectContent와 SelectItem을 직접 렌더링
-
-**수정된 파일:**
-- `src/components/AddItemModal.tsx`: useActionState → useTransition + useState 방식으로 완전 교체, CategorySelect 서버 컴포넌트 문제 해결
-
-## Previous Task: 모바일 로그인 세션 문제 해결 (완료)
-
-**Task Overview:**
-모바일에서 로그인 성공 토스트 메시지가 표시되지만 새로고침 시 다시 로그인 페이지로 돌아가는 문제 해결
-
-**문제 분석:**
-- Server Action에서 `redirect: false` 옵션으로 NextAuth signIn 호출
-- 클라이언트에서 수동으로 리다이렉트 처리
-- 세션이 제대로 생성되지 않아 미들웨어에서 인증 실패로 판단
-
-**해결 방법:**
-[X] 1. Server Action 수정
-  [X] signInAction에서 `redirectTo: "/"` 옵션 사용
-  [X] NEXT_REDIRECT 에러 처리 추가 (정상적인 리다이렉트)
-  [X] TypeScript 타입 안전성 확보 (unknown 타입 사용)
-[X] 2. 로그인 페이지 수정
-  [X] 클라이언트 수동 리다이렉트 로직 제거
-  [X] NEXT_REDIRECT 에러 무시 처리
-  [X] 에러 시에만 toast 표시
-[X] 3. 회원가입 페이지 수정
-  [X] 동일한 방식으로 자동 로그인 처리
-  [X] 클라이언트 수동 리다이렉트 로직 제거
-  [X] NEXT_REDIRECT 에러 무시 처리
-
-**수정된 파일:**
-- `src/lib/auth-actions.ts`: Server Action에서 서버 사이드 리다이렉트 처리
-- `src/app/auth/signin/page.tsx`: 클라이언트 리다이렉트 로직 제거
-- `src/app/auth/signup/page.tsx`: 클라이언트 리다이렉트 로직 제거
-
-**핵심 개선사항:**
-- ✅ NextAuth의 서버 사이드 리다이렉트 활용
-- ✅ NEXT_REDIRECT 에러 올바른 처리 (digest 속성 체크)
-- ✅ 세션 생성 후 즉시 리다이렉트로 안정성 확보
-- ✅ TypeScript 타입 안전성 유지 (any 타입 사용 금지)
-- ✅ NextAuth v5와 Next.js 15 호환성 확보
-- ✅ PWA 패키지를 @ducanh2912/next-pwa로 업그레이드 (Next.js 15 호환)
-
-## Previous Task: User Authentication System Implementation
-
-**Task Overview:**
-LastMove 애플리케이션에 사용자 인증 시스템 추가
-- 사용자 테이블 생성 및 관리
-- 회원가입/로그인 기능 구현
-- 미들웨어 기반 접근 제어
-- 1년간 세션 유지
-- 기존 알림 시스템과 연동
-
-**Authentication Plan:**
-[X] 1. 데이터베이스 스키마 확장
-  [X] users 테이블 생성
-  [X] 기존 테이블과 사용자 연동 (FK 추가)
-[X] 2. 인증 라이브러리 설정
-  [X] NextAuth.js 설치 및 설정
-  [X] 세션 관리 구성
-[X] 3. 인증 페이지 구현
-  [X] 로그인 페이지
-  [X] 회원가입 페이지
-  [X] 인증 폼 컴포넌트
-[X] 4. 미들웨어 구현
-  [X] 인증 체크 미들웨어
-  [X] 보호된 라우트 설정
-[X] 5. 기존 기능 연동
-  [X] 사용자별 활동 관리
-  [X] 사용자별 알림 설정
-
-**인증 시스템 구현 완료:**
-- ✅ NextAuth.js v5 설치 및 설정 완료
-- ✅ users, accounts, sessions, verification_tokens 테이블 생성
-- ✅ 기존 테이블에 user_id 컬럼 추가 (activities, moves, notifications, user_notification_settings)
-- ✅ 회원가입/로그인 페이지 구현 (bcryptjs 비밀번호 해싱)
-- ✅ 미들웨어 기반 인증 체크 (인증되지 않은 사용자는 로그인 페이지로 리다이렉트)
-- ✅ 1년간 세션 유지 설정 (JWT maxAge: 365일)
-- ✅ 사용자별 데이터 분리 (Server Actions 수정)
-- ✅ GlobalNav에 사용자 정보 표시 및 로그아웃 기능
-- ✅ 서버/클라이언트 컴포넌트 분리 구조
-
-**주요 파일:**
-- `src/lib/auth.ts`: NextAuth.js 설정
-- `src/lib/auth-actions.ts`: 회원가입/로그인 Server Actions
-- `middleware.ts`: 인증 체크 미들웨어
-- `src/app/auth/signin/page.tsx`: 로그인 페이지
-- `src/app/auth/signup/page.tsx`: 회원가입 페이지
-- `src/components/GlobalNav.tsx`: 서버 컴포넌트 (세션 체크)
-- `src/components/GlobalNavClient.tsx`: 클라이언트 컴포넌트 (UI 상태 관리)
-
-**현재 진행 중:**
-- 🔄 데스크톱에서도 Sheet 컴포넌트 사용하도록 변경
-  - 모바일: Sheet side="bottom"
-  - 데스크톱: Sheet side="right"
-  - Dialog 컴포넌트 완전 제거
-
-**기술 스택:**
-- React Hook Form: 폼 상태 관리 ✅
-- Shadcn/ui: Dialog, Form 컴포넌트 ✅
-- 커스텀 달력 UI: 실행 날짜 표시 (dayjs 기반) ✅
-- GSAP: 애니메이션 효과 (기존 유지) ✅
-- dayjs: 날짜 처리 ✅
-
-**주요 기능:**
-1. **활동 정보 표시**: 제목, 카테고리 (아이콘+이름), 마지막 실행일, 총 실행 회수
-2. **편집 모드**: 활동 제목, 카테고리, 설명 수정 가능
-3. **달력 UI**: 실행한 날짜들을 파란색으로 하이라이트, 클릭 시 해당 Move 수정 모드
-4. **Move 관리**: 개별 Move의 날짜/메모 수정, 삭제 기능
-5. **반응형**: 모든 화면에서 1컬럼 세로 레이아웃 (활동정보 → 달력 순서)
-6. **사용자 인증**: 모든 액션에서 세션 기반 사용자 확인 및 권한 체크
-
-**TypeScript 타입 안전성:**
-- ActivityDetail, Move, Category 인터페이스 정의
-- zod 스키마로 폼 유효성 검사 (activitySchema, moveSchema)
-- react-hook-form과 zod resolver 통합
-- Server Actions 리턴 타입 명시
-
-## Current Task: AddItemModal 단순화 및 개선 (완료)
-
-**Task Overview:**
-AddItemModal을 사용자 요청에 맞게 단순화 및 개선
-1. 한글 입력 IME 문제 해결 (자음/모음 분리 현상)
-2. 카테고리를 Select 컴포넌트로 변경 + DB 테이블 관리
-3. 설명 필드 제거
-4. 반복 주기 필드 제거
-
-**개선 계획:**
-[X] 1. 한글 입력 IME 처리
-  [X] onCompositionStart/End 이벤트 추가
-  [X] 입력 상태 관리 개선
-  [X] 제출 버튼 비활성화 조건에 isComposing 추가
-[X] 2. 카테고리 DB 테이블 설계 및 생성
-  [X] categories 테이블 생성
-  [X] 기본 카테고리 데이터 삽입 (8개 카테고리)
-  [X] activities 테이블과 FK 관계 설정
-[X] 3. 카테고리 Select 컴포넌트 구현
-  [X] 카테고리 조회 Server Action 추가 (getCategories)
-  [X] Select UI 컴포넌트로 변경
-  [X] 아이콘과 이름 표시
-  [X] CategorySelect 서버 컴포넌트 분리
-[X] 4. 폼 스키마 단순화
-  [X] description 필드 제거
-  [X] frequency 관련 필드 제거
-  [X] Zod 스키마 업데이트 (category_id 필수)
-[X] 5. UI 단순화
-  [X] 불필요한 필드 제거
-  [X] 폼 레이아웃 정리
-  [X] Drawer 설명 텍스트 업데이트
-[X] 6. Server Action 폼 처리
-  [X] useActionState로 Server Action 처리 (React 19)
-  [X] isLoading 상태 제거
-  [X] 에러 처리 개선
-  [X] TypeScript 타입 안전성 확보
-
-**완료된 개선사항:**
-- ✅ 한글 IME 처리: onCompositionStart/End 이벤트로 입력 상태 관리
-- ✅ 카테고리 DB 테이블: 8개 기본 카테고리 (건강, 학습, 생활, 취미, 인간관계, 업무, 자기계발, 기타)
-- ✅ 카테고리 Select: 아이콘과 이름이 표시되는 드롭다운
-- ✅ 폼 단순화: 활동명과 카테고리만 입력받는 깔끔한 UI
-- ✅ Server Actions 기반 폼 처리: useActionState 사용 (React 19)
-- ✅ 서버/클라이언트 컴포넌트 분리: CategorySelect 서버 컴포넌트
-- ✅ 중복 활동 체크 유지
-- ✅ TypeScript 타입 안전성 확보
-- ✅ 구문 오류 수정 완료
-
-**카테고리 목록:**
-💪 건강, 📚 학습, 🏠 생활, 🎨 취미, 👥 인간관계, 💼 업무, 🌱 자기계발, 📝 기타
-
-**주요 파일:**
-- `src/components/AddItemModal.tsx`: useActionState → useTransition + useState 방식으로 완전 교체, CategorySelect 서버 컴포넌트 문제 해결
-
-**기존 완료된 작업:**
-- ✅ NextAuth.js v5 기반 사용자 인증 시스템
-- ✅ 사용자별 활동 및 Move 관리
-- ✅ Toast 기반 에러 처리
-- ✅ Responsive Dialog/Drawer 패턴
-
-## Previous Task: Toast 기반 로그인 에러 처리 구현 (완료)
-
-**Task Overview:**
-로그인 실패 시 구체적인 실패 이유를 shadcn/ui toast로 표시하도록 개선
-
-**Toast 기반 에러 처리 구현:**
-[X] 1. shadcn/ui sonner 컴포넌트 설치
-[X] 2. layout.tsx에 Toaster 전역 설정
-[X] 3. auth-actions.ts 로그인 에러 처리 개선
-  [X] 사용자 존재 여부 확인
-  [X] 계정 활성화 상태 확인
-  [X] 비밀번호 검증
-  [X] 구체적인 에러 메시지 제공
-[X] 4. 로그인 페이지 toast 적용
-  [X] 에러 상태 표시 제거
-  [X] toast.error로 실패 메시지 표시
-  [X] toast.success로 성공 메시지 표시
-  [X] 성공 시 1초 지연 후 리다이렉트
-[X] 5. 회원가입 페이지 toast 적용
-  [X] 에러 상태 및 성공 페이지 제거
-  [X] toast 기반 피드백으로 통일
-
-**구현된 에러 메시지:**
-- "등록되지 않은 이메일 주소입니다"
-- "비밀번호가 올바르지 않습니다"
-- "비활성화된 계정입니다. 관리자에게 문의하세요"
-- "로그인 처리 중 오류가 발생했습니다"
-- 폼 검증 오류 (Zod 스키마 기반)
-
-**UX 개선 사항:**
-- 인라인 에러 표시 제거로 깔끔한 UI
-- Toast로 일관된 피드백 제공
-- 성공 시 적절한 지연으로 사용자 경험 개선
-- 에러와 성공 메시지 구분된 스타일링
-
-**최신 업데이트 (데이터 구조 개선):**
-- ✅ activities와 moves 테이블로 데이터 구조 분리
-- ✅ 활동 검색 및 선택 기능 구현
-- ✅ 새 활동 생성 및 즉시 실행 기록 기능
-- ✅ 디바운싱을 통한 실시간 검색
-- ✅ 기존 활동 선택 시 즉시 Move 기록
-- ✅ 새 활동 생성 시 활동과 Move 동시 생성
-- ✅ 모든 Server Actions async 함수로 수정
-- ✅ TypeScript 타입 안전성 유지
-- ✅ 기존 호환성 유지 (별칭 함수 제공) 
-
-## Current Task: Favicon 업데이트 (완료)
-
-**Task Overview:**
-lastmove.jpg 이미지를 기반으로 favicon을 생성하고 모든 사용 위치를 업데이트
-
-**완료된 작업:**
-[X] 1. 다양한 크기의 favicon 생성
-  [X] 16x16, 32x32 PNG 파일 생성 (sips 사용)
-  [X] 고품질 favicon.ico 생성 (Python Pillow 사용, 16/32/48/64 사이즈)
-[X] 2. favicon 사용 위치 업데이트
-  [X] src/app/favicon.ico - Next.js App Router 기본 favicon
-  [X] src/app/layout.tsx - metadata icons 설정
-  [X] public/manifest.json - PWA 아이콘 목록에 작은 사이즈 추가
-[X] 3. 파일 정리
-  [X] 불필요한 임시 파일 제거
-  [X] 빌드 성공 확인
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
 
 **기술적 구현:**
-- macOS sips 도구로 PNG 파일 생성
-- Python Pillow 라이브러리로 고품질 ICO 파일 생성 (다중 사이즈)
-- Next.js metadata API 활용한 favicon 설정
-- PWA manifest.json 아이콘 목록 확장
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
 
-**생성된 파일:**
-- src/app/favicon.ico (487 bytes, 16/32/48/64 사이즈)
-- public/favicon-16x16.png (955 bytes)
-- public/favicon-32x32.png (1,184 bytes)
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
 
-## Previous Task: LastMoveDetailModal 빌드 에러 해결 (완료)
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
 
 **Task Overview:**
-LastMoveDetailModal.tsx에서 발생한 TypeScript ESLint 빌드 에러 해결
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
 
-**해결된 문제들:**
-[X] 1. 사용하지 않는 import 제거
-  [X] SheetDescription, SheetClose 제거
-  [X] Label 제거
-[X] 2. React Hook useEffect 의존성 문제 해결
-  [X] loadData 함수를 useCallback으로 감싸기
-  [X] useCallback import 추가
-  [X] loadData 의존성 배열에 추가
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
 
-**기술적 해결 방법:**
-- TypeScript ESLint @typescript-eslint/no-unused-vars 에러 해결
-- React Hook react-hooks/exhaustive-deps 경고 해결
-- useCallback 훅으로 loadData 함수 메모이제이션
-- 의존성 배열에 activityId 추가로 적절한 재실행 보장
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
 
-**빌드 결과:**
-- ✅ 빌드 성공 (pnpm build)
-- ✅ 모든 TypeScript 에러 해결
-- ✅ 모든 ESLint 에러 해결
-- ⚠️ VAPID keys 경고는 푸시 알림 관련이므로 무관 
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨텍스트 정보 추가
+  [X] 사용자별 로깅 태그 설정
+  [X] 브레드크럼을 통한 단계별 추적
+
+**완료된 구현사항:**
+- ✅ Sentry Next.js 패키지 설치 (v9.35.0)
+- ✅ 클라이언트/서버 설정 파일 생성
+- ✅ next.config.ts에 PWA와 함께 Sentry 통합
+- ✅ NotificationPermission 컴포넌트 Sentry 로깅 전환
+  * 브레드크럼을 통한 단계별 추적
+  * 에러 캡처 및 컨텍스트 정보 추가
+  * 사용자 에이전트, 브라우저 지원 여부 등 디버깅 정보 포함
+- ✅ notifications.ts 서버 함수 Sentry 로깅 전환
+  * savePushSubscription 함수 상세 로깅
+  * 에러 추적 및 사용자 컨텍스트 정보
+- ✅ API 라우트 Sentry 로깅 전환
+  * 요청/응답 추적
+  * 사용자 인증 상태 로깅
+  * 에러 캡처 및 컨텍스트 정보
+
+**기술적 구현:**
+- Sentry 브레드크럼을 통한 실행 흐름 추적
+- 에러 발생 시 컨텍스트 정보 자동 수집
+- 사용자별 태그 설정 (setUser)
+- 환경별 샘플링 비율 설정 (개발: 100%, 프로덕션: 10%)
+- 푸시 알림 관련 에러 우선 필터링
+
+**사용 방법:**
+배포 환경에서 SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN 환경 변수 설정 필요
+
+## Current Task: NotificationPermission 컴포넌트 영어 번역
+
+**Task Overview:**
+NotificationPermission 컴포넌트의 모든 한글 안내 표현을 영어로 변경
+1. UI 텍스트 (제목, 설명, 버튼 라벨) 영어 번역
+2. 에러 메시지 영어 번역
+3. 상태 표시 텍스트 영어 번역
+4. 디버깅 정보 섹션 영어 번역
+5. 토스트 메시지 영어 번역
+
+**번역 계획:**
+[ ] 1. 카드 헤더 및 설명 번역
+[ ] 2. 상태 뱃지 텍스트 번역
+[ ] 3. 버튼 라벨 번역
+[ ] 4. 에러 메시지 번역
+[ ] 5. 토스트 메시지 번역
+[ ] 6. 디버깅 정보 섹션 번역
+[ ] 7. iOS PWA 안내 문구 번역
+
+## Previous Task: Sentry 로깅 시스템 구축 (완료)
+
+**Task Overview:**
+콘솔 로그를 제거하고 Sentry를 설치하여 전문적인 에러 추적 및 로깅 시스템 구축
+1. Sentry 패키지 설치 및 설정
+2. 기존 console.log 제거
+3. Sentry로 에러 추적 및 로깅 구현
+4. 푸시 알림 구독 실패 원인 분석을 위한 구조화된 로깅
+
+**구현 계획:**
+[X] 1. Sentry 설치 및 설정
+  [X] @sentry/nextjs 패키지 설치
+  [X] sentry.client.config.ts, sentry.server.config.ts 설정
+  [X] next.config.ts에 Sentry 통합
+[X] 2. 기존 콘솔 로그 제거
+  [X] NotificationPermission.tsx의 console.log 제거
+  [X] notifications.ts의 console.log 제거
+  [X] API 라우트의 console.log 제거
+[X] 3. Sentry 로깅 구현
+  [X] 에러 추적 및 컨

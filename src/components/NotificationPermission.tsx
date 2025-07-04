@@ -15,7 +15,7 @@ import { savePushSubscription } from "@/lib/notifications";
 import { toast } from "sonner";
 import * as Sentry from "@sentry/nextjs";
 
-// NOTE: VAPID 공개 키 (환경 변수에서 가져와야 함)
+// NOTE: VAPID public key (should be loaded from environment variables)
 const VAPID_PUBLIC_KEY =
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
   "BEl62iUYgUivxIkv69yViEuiBIa40HcCWLWw6MXB5xYKkxUcCjNUfkWgXX7iYAKQNFcJIHuTKXLxZJVF8vVNxKY";
@@ -34,9 +34,9 @@ export default function NotificationPermission({
   const [error, setError] = useState<string | null>(null);
   const [isSupported, setIsSupported] = useState(false);
 
-  // 알림 권한 상태 확인
+  // Check notification permission status
   useEffect(() => {
-    // 브라우저 지원 여부 확인
+    // Check browser support
     const supported =
       "Notification" in window &&
       "serviceWorker" in navigator &&
@@ -61,7 +61,7 @@ export default function NotificationPermission({
     }
   }, []);
 
-  // 푸시 구독 상태 확인
+  // Check push subscription status
   const checkSubscription = async () => {
     try {
       if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -74,7 +74,7 @@ export default function NotificationPermission({
     }
   };
 
-  // 알림 권한 요청
+  // Request notification permission
   const requestPermission = async () => {
     Sentry.addBreadcrumb({
       message: "Requesting notification permission",
@@ -97,11 +97,11 @@ export default function NotificationPermission({
           level: "info",
         });
 
-        // 권한이 허용되면 자동으로 구독 설정
+        // Automatically set up subscription when permission is granted
         await subscribeToPush();
       } else {
         Sentry.captureMessage("Notification permission denied", "warning");
-        setError("알림 권한이 거부되었습니다");
+        setError("Notification permission was denied");
       }
     } catch (error) {
       const errorMessage =
@@ -116,13 +116,13 @@ export default function NotificationPermission({
           currentPermission: permission,
         },
       });
-      setError(`권한 요청 실패: ${errorMessage}`);
+      setError(`Permission request failed: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 푸시 구독 설정
+  // Set up push subscription
   const subscribeToPush = async () => {
     Sentry.addBreadcrumb({
       message: "Starting push subscription",
@@ -133,15 +133,15 @@ export default function NotificationPermission({
     setError(null);
 
     try {
-      // 1. 브라우저 지원 여부 확인
+      // 1. Check browser support
       if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-        const errorMsg = `브라우저 지원 부족: serviceWorker=${
+        const errorMsg = `Browser support insufficient: serviceWorker=${
           "serviceWorker" in navigator
         }, PushManager=${"PushManager" in window}`;
         throw new Error(errorMsg);
       }
 
-      // 2. 서비스 워커 등록 확인
+      // 2. Check service worker registration
       let registration;
       try {
         registration = await navigator.serviceWorker.ready;
@@ -163,16 +163,16 @@ export default function NotificationPermission({
         });
         const errorMessage =
           swError instanceof Error ? swError.message : String(swError);
-        throw new Error(`서비스 워커 등록 실패: ${errorMessage}`);
+        throw new Error(`Service worker registration failed: ${errorMessage}`);
       }
 
-      // 3. VAPID 공개 키 가져오기
+      // 3. Get VAPID public key
       const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
       if (!vapidPublicKey) {
-        throw new Error("VAPID 공개 키가 설정되지 않았습니다");
+        throw new Error("VAPID public key is not configured");
       }
 
-      // 4. 푸시 구독 생성
+      // 4. Create push subscription
       let subscription;
       try {
         subscription = await registration.pushManager.subscribe({
@@ -204,10 +204,10 @@ export default function NotificationPermission({
           subscribeError instanceof Error
             ? subscribeError.message
             : String(subscribeError);
-        throw new Error(`구독 생성 실패: ${errorMessage}`);
+        throw new Error(`Subscription creation failed: ${errorMessage}`);
       }
 
-      // 5. 서버에 구독 정보 저장
+      // 5. Save subscription info to server
       try {
         const subscriptionObject = {
           endpoint: subscription.endpoint,
@@ -237,10 +237,10 @@ export default function NotificationPermission({
             category: "notification",
             level: "info",
           });
-          toast.success("푸시 알림이 활성화되었습니다!");
+          toast.success("Push notifications have been enabled!");
           setIsSubscribed(true);
         } else {
-          throw new Error(result.error || "구독 저장 실패");
+          throw new Error(result.error || "Failed to save subscription");
         }
       } catch (saveError) {
         Sentry.captureException(saveError, {
@@ -251,7 +251,7 @@ export default function NotificationPermission({
         });
         const errorMessage =
           saveError instanceof Error ? saveError.message : String(saveError);
-        throw new Error(`서버 저장 오류: ${errorMessage}`);
+        throw new Error(`Server save error: ${errorMessage}`);
       }
     } catch (error) {
       Sentry.captureException(error, {
@@ -267,21 +267,21 @@ export default function NotificationPermission({
         },
       });
 
-      // 사용자에게 더 구체적인 에러 메시지 제공
-      let userMessage = "푸시 알림 구독에 실패했습니다";
+      // Provide more specific error messages to users
+      let userMessage = "Failed to subscribe to push notifications";
 
       if (error instanceof Error) {
-        if (error.message.includes("브라우저 지원")) {
-          userMessage = "이 브라우저는 푸시 알림을 지원하지 않습니다";
-        } else if (error.message.includes("서비스 워커")) {
+        if (error.message.includes("Browser support")) {
+          userMessage = "This browser does not support push notifications";
+        } else if (error.message.includes("Service worker")) {
           userMessage =
-            "서비스 워커 등록에 실패했습니다. 네트워크를 확인해주세요";
-        } else if (error.message.includes("구독 생성")) {
+            "Service worker registration failed. Please check your network connection";
+        } else if (error.message.includes("Subscription creation")) {
           userMessage =
-            "푸시 구독 생성에 실패했습니다. 브라우저 설정을 확인해주세요";
-        } else if (error.message.includes("서버")) {
+            "Failed to create push subscription. Please check your browser settings";
+        } else if (error.message.includes("Server")) {
           userMessage =
-            "서버와의 통신에 실패했습니다. 잠시 후 다시 시도해주세요";
+            "Failed to communicate with server. Please try again later";
         }
       }
 
@@ -290,7 +290,7 @@ export default function NotificationPermission({
     }
   };
 
-  // 푸시 구독 해제
+  // Unsubscribe from push notifications
   const unsubscribeFromPush = async () => {
     try {
       if ("serviceWorker" in navigator) {
@@ -314,11 +314,11 @@ export default function NotificationPermission({
           action: "unsubscribeFromPush",
         },
       });
-      setError("푸시 알림 구독 해제에 실패했습니다");
+      setError("Failed to unsubscribe from push notifications");
     }
   };
 
-  // 테스트 알림 발송
+  // Send test notification
   const sendTestNotification = async () => {
     Sentry.addBreadcrumb({
       message: "Sending test notification",
@@ -337,8 +337,8 @@ export default function NotificationPermission({
         body: JSON.stringify({
           type: "immediate",
           notification: {
-            title: "테스트 알림",
-            body: "LastMove 푸시 알림이 정상적으로 작동합니다! 🎉",
+            title: "Test Notification",
+            body: "LastMove push notifications are working properly! 🎉",
             icon: "/icon-192x192.png",
             priority: "normal",
           },
@@ -353,9 +353,9 @@ export default function NotificationPermission({
           category: "notification",
           level: "info",
         });
-        toast.success("테스트 알림을 발송했습니다!");
+        toast.success("Test notification sent!");
       } else {
-        throw new Error(result.error || "알림 발송 실패");
+        throw new Error(result.error || "Failed to send notification");
       }
     } catch (error) {
       Sentry.captureException(error, {
@@ -366,23 +366,23 @@ export default function NotificationPermission({
       });
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      toast.error(`테스트 알림 발송 실패: ${errorMessage}`);
+      toast.error(`Failed to send test notification: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 알림 지원 여부 확인
+  // Check notification support
   if (!isSupported) {
     return (
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BellOff className="h-5 w-5" />
-            알림 미지원
+            Notifications Not Supported
           </CardTitle>
           <CardDescription>
-            이 브라우저는 푸시 알림을 지원하지 않습니다.
+            This browser does not support push notifications.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -394,16 +394,16 @@ export default function NotificationPermission({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Bell className="h-5 w-5" />
-          알림 설정
+          Notification Settings
         </CardTitle>
         <CardDescription>
-          활동 리마인더와 축하 메시지를 받아보세요
+          Get activity reminders and celebration messages
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* 권한 상태 표시 */}
+        {/* Permission status display */}
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">알림 권한</span>
+          <span className="text-sm font-medium">Notification Permission</span>
           <Badge
             variant={
               permission === "granted"
@@ -414,31 +414,31 @@ export default function NotificationPermission({
             }
           >
             {permission === "granted"
-              ? "허용됨"
+              ? "Granted"
               : permission === "denied"
-              ? "거부됨"
-              : "미설정"}
+              ? "Denied"
+              : "Not Set"}
           </Badge>
         </div>
 
-        {/* 구독 상태 표시 */}
+        {/* Subscription status display */}
         {permission === "granted" && (
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">푸시 알림</span>
+            <span className="text-sm font-medium">Push Notifications</span>
             <Badge variant={isSubscribed ? "default" : "secondary"}>
-              {isSubscribed ? "구독됨" : "미구독"}
+              {isSubscribed ? "Subscribed" : "Not Subscribed"}
             </Badge>
           </div>
         )}
 
-        {/* 오류 메시지 */}
+        {/* Error message */}
         {error && (
           <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
             {error}
           </div>
         )}
 
-        {/* 액션 버튼들 */}
+        {/* Action buttons */}
         <div className="space-y-2">
           {permission === "default" && (
             <Button
@@ -446,7 +446,7 @@ export default function NotificationPermission({
               disabled={isLoading}
               className="w-full"
             >
-              {isLoading ? "요청 중..." : "알림 허용하기"}
+              {isLoading ? "Requesting..." : "Allow Notifications"}
             </Button>
           )}
 
@@ -456,7 +456,7 @@ export default function NotificationPermission({
               disabled={isLoading}
               className="w-full"
             >
-              {isLoading ? "구독 중..." : "푸시 알림 구독"}
+              {isLoading ? "Subscribing..." : "Subscribe to Push Notifications"}
             </Button>
           )}
 
@@ -467,7 +467,7 @@ export default function NotificationPermission({
                 variant="outline"
                 className="w-full"
               >
-                로컬 테스트 알림
+                Local Test Notification
               </Button>
               <Button
                 onClick={sendTestNotification}
@@ -475,58 +475,64 @@ export default function NotificationPermission({
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? "발송 중..." : "푸시 알림 테스트"}
+                {isLoading ? "Sending..." : "Test Push Notification"}
               </Button>
               <Button
                 onClick={unsubscribeFromPush}
                 variant="outline"
                 className="w-full"
               >
-                구독 해제
+                Unsubscribe
               </Button>
             </div>
           )}
 
           {permission === "denied" && (
             <div className="text-sm text-gray-600 text-center">
-              브라우저 설정에서 알림을 허용한 후<br />
-              페이지를 새로고침해주세요.
+              Please allow notifications in your browser settings
+              <br />
+              and refresh the page.
             </div>
           )}
         </div>
 
-        {/* iOS PWA 안내 */}
+        {/* iOS PWA guide */}
         {navigator.userAgent.includes("iPhone") && (
           <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
-            💡 iOS에서 알림을 받으려면 홈 화면에 앱을 추가해주세요.
+            💡 To receive notifications on iOS, please add this app to your home
+            screen.
           </div>
         )}
 
-        {/* 디버깅 정보 */}
+        {/* Debugging information */}
         <details className="text-xs text-gray-500">
           <summary className="cursor-pointer hover:text-gray-700">
-            🔍 디버깅 정보 (문제 해결용)
+            🔍 Debug Information (for troubleshooting)
           </summary>
           <div className="mt-2 space-y-1 bg-gray-50 p-2 rounded">
             <div>
-              브라우저: {navigator.userAgent.split(" ").slice(-2).join(" ")}
+              Browser: {navigator.userAgent.split(" ").slice(-2).join(" ")}
             </div>
             <div>
               HTTPS: {window.location.protocol === "https:" ? "✅" : "❌"}
             </div>
             <div>
-              Service Worker 지원: {"serviceWorker" in navigator ? "✅" : "❌"}
+              Service Worker Support:{" "}
+              {"serviceWorker" in navigator ? "✅" : "❌"}
             </div>
             <div>
-              Push Manager 지원: {"PushManager" in window ? "✅" : "❌"}
+              Push Manager Support: {"PushManager" in window ? "✅" : "❌"}
             </div>
             <div>
-              Notification 지원: {"Notification" in window ? "✅" : "❌"}
+              Notification Support: {"Notification" in window ? "✅" : "❌"}
             </div>
-            <div>현재 권한: {permission}</div>
-            <div>구독 상태: {isSubscribed ? "구독됨" : "미구독"}</div>
-            <div>VAPID 키 길이: {VAPID_PUBLIC_KEY.length}</div>
-            <div>현재 URL: {window.location.href}</div>
+            <div>Current Permission: {permission}</div>
+            <div>
+              Subscription Status:{" "}
+              {isSubscribed ? "Subscribed" : "Not Subscribed"}
+            </div>
+            <div>VAPID Key Length: {VAPID_PUBLIC_KEY.length}</div>
+            <div>Current URL: {window.location.href}</div>
           </div>
         </details>
       </CardContent>

@@ -64,12 +64,13 @@ export default function GlobalNavClient({ user }: GlobalNavClientProps) {
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
-                  <SheetTitle>알림 설정</SheetTitle>
+                  <SheetTitle>Alarm Settings</SheetTitle>
                   <SheetDescription>
-                    활동 리마인더와 축하 메시지 설정을 관리하세요.
+                    Manage alarm settings for activity reminders and celebration
+                    messages.
                   </SheetDescription>
                 </SheetHeader>
-                <div className="mt-6">
+                <div className="px-4">
                   <NotificationPermission />
                 </div>
               </SheetContent>
@@ -84,16 +85,16 @@ export default function GlobalNavClient({ user }: GlobalNavClientProps) {
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
-                  <SheetTitle>사용자 설정</SheetTitle>
+                  <SheetTitle>User Settings</SheetTitle>
                   <SheetDescription>
-                    계정 정보 및 설정을 관리하세요.
+                    Manage account information and settings.
                   </SheetDescription>
                 </SheetHeader>
-                <div className="mt-6 space-y-4">
+                <div className="px-4 space-y-4">
                   {user && (
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <h3 className="font-medium text-sm text-gray-600">
-                        로그인 정보
+                        Login Information
                       </h3>
                       <p className="font-semibold">{user.name}</p>
                       <p className="text-sm text-gray-500">{user.email}</p>
@@ -106,7 +107,7 @@ export default function GlobalNavClient({ user }: GlobalNavClientProps) {
                     onClick={handleSignOut}
                   >
                     <LogOut className="h-4 w-4 mr-2" />
-                    로그아웃
+                    Logout
                   </Button>
                 </div>
               </SheetContent>
