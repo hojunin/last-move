@@ -1,15 +1,15 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -17,14 +17,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Save } from 'lucide-react';
+} from "@/components/ui/form";
+import { Save } from "lucide-react";
 import {
   activitySchema,
   ActivityFormData,
   type Category,
   type ActivityDetail,
-} from './types';
+} from "./types";
 
 interface ActivityEditFormProps {
   activity: ActivityDetail;
@@ -40,9 +40,9 @@ export default function ActivityEditForm({
   const form = useForm<ActivityFormData>({
     resolver: zodResolver(activitySchema),
     defaultValues: {
-      title: '',
+      title: "",
       category_id: undefined,
-      description: '',
+      description: "",
     },
   });
 
@@ -51,7 +51,7 @@ export default function ActivityEditForm({
     form.reset({
       title: activity.title,
       category_id: activity.category_id || undefined,
-      description: activity.description || '',
+      description: activity.description || "",
     });
   }, [activity, form]);
 

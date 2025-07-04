@@ -29,32 +29,66 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: LastMoveDetailModal 로딩 스켈레톤 구현
+## Current Task: LastMoveDetailModal 헤더 및 정보 섹션 개선
 
 **Task Overview:**
-LastMoveDetailModal 컴포넌트의 로딩 상태를 스켈레톤 UI로 개선
-1. 현재 "데이터를 불러오는 중입니다..." 텍스트를 실제 컴포넌트 구조를 반영한 스켈레톤으로 변경
-2. 활동 정보 섹션, 실행 캘린더 등 주요 UI 요소들의 스켈레톤 디자인
-3. 모바일/데스크톱 반응형 스켈레톤 구현
-
-**컴포넌트 구조 분석:**
-- Header: 제목 + 편집 버튼
-- ActivityInfoSection: 활동 제목, 카테고리 뱃지, 설명, 통계 (2개 항목)
-- ExecutionCalendar: 제목 + 달력 컴포넌트
+LastMoveDetailModal 컴포넌트의 헤더와 정보 섹션 구조 개선
+1. 헤더 제목을 "활동 상세 정보"에서 활동 제목(activity.title)으로 변경
+2. 컨텐츠 영역에 카테고리, 마지막 실행일, 총 횟수 정보 표시
+3. ActivityInfoSection과 ActivityEditForm 컴포넌트를 새로운 구조에 맞게 수정
 
 **구현 계획:**
-[X] 1. 스켈레톤 컴포넌트 생성
-[X] 2. 각 섹션별 스켈레톤 구현
-[X] 3. 반응형 디자인 적용
-[X] 4. 기존 로딩 상태 교체
+[X] 1. LastMoveDetailModal.tsx 수정
+  [X] SheetTitle을 activity.title로 변경
+  [X] 로딩 상태와 에러 상태에서도 적절한 제목 표시
+[X] 2. ActivityInfoSection.tsx 수정
+  [X] 제목 표시 부분 제거 (헤더로 이동)
+  [X] 카테고리, 마지막 실행일, 총 횟수만 표시
+[X] 3. ActivityEditForm.tsx 수정
+  [X] 편집 모드에서도 헤더 제목 유지
+  [X] 폼 구조 조정 (제목 편집 필드 제거)
+[X] 4. types.ts 수정
+  [X] activitySchema에서 title 필드 제거
 
-**완료된 구현사항:**
-- ✅ shadcn/ui 스타일 skeleton 컴포넌트 생성 (src/components/ui/skeleton.tsx)
-- ✅ DetailModalSkeleton 컴포넌트 생성 (src/components/LastMoveDetailModal/DetailModalSkeleton.tsx)
-- ✅ 활동 정보 섹션 스켈레톤 구현 (제목, 카테고리, 설명, 통계)
-- ✅ 실행 캘린더 스켈레톤 구현 (제목, 캘린더 헤더, 날짜 그리드)
-- ✅ 기존 "데이터를 불러오는 중입니다..." 텍스트를 스켈레톤으로 교체
-- ✅ 실제 컴포넌트 구조를 반영한 스켈레톤 디자인
+**완료된 개선사항:**
+- ✅ 헤더 제목을 activity.title로 변경 (동적 제목 표시)
+- ✅ 로딩 상태: "로딩 중..." 표시
+- ✅ 에러 상태: "활동을 찾을 수 없습니다" 표시
+- ✅ ActivityInfoSection에서 제목 표시 제거
+- ✅ 카테고리 뱃지를 상단에 표시
+- ✅ ActivityEditForm에서 제목 편집 필드 제거
+- ✅ 카테고리와 설명만 편집 가능하도록 단순화
+- ✅ 타입 시스템 업데이트 (ActivityFormData에서 title 제거)
+
+**현재 구조 분석:**
+- 헤더: "활동 상세 정보" + 편집 버튼
+- ActivityInfoSection: 활동 제목 + 카테고리 뱃지 + 통계
+- ExecutionCalendar: 캘린더 표시
+
+**추가 요구사항:**
+- 편집 모드에서 헤더의 제목(activity.title)도 편집 가능해야 함
+- 현재는 카테고리와 설명만 편집 가능한 상태
+
+**수정 완료:**
+[X] ActivityEditForm에 제목 편집 필드 다시 추가
+[X] types.ts의 activitySchema에 title 필드 다시 추가
+[X] lib/actions.ts의 updateActivitySchema에 title 필드 다시 추가
+[X] updateActivity 함수에 제목 중복 검사 로직 다시 추가
+
+**최종 구현사항:**
+- ✅ 편집 모드에서 제목, 카테고리, 설명 모두 편집 가능
+- ✅ 제목 변경 시 헤더 제목도 즉시 반영
+- ✅ 제목 중복 검사 로직 포함
+- ✅ 폼 검증 및 에러 처리 완료
+
+**최종 테스트 결과:**
+- ✅ Blog Writing 활동: 헤더 "Blog Writing", 제목 편집 성공
+- ✅ English Study(Speek) 활동: 헤더 "English Study(Speek)", 제목 편집 성공
+- ✅ 모든 편집 기능이 완벽하게 작동함
+- ✅ 헤더 제목 동적 변경 및 즉시 반영 완료
+- ✅ 타입 안전성 및 에러 처리 완료
+
+## 작업 완료 ✅
 
 ## Previous Task: AddItemModal 리팩토링 (Thinking in React 패턴 적용) - 완료
 

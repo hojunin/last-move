@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { ActivityDetail, Move, Category } from '@/lib/actions';
+import { z } from "zod";
+import { ActivityDetail, Move, Category } from "@/lib/actions";
 
 // 루트 컴포넌트 Props
 export interface LastMoveDetailModalProps {
@@ -10,13 +10,13 @@ export interface LastMoveDetailModalProps {
 
 // Zod 스키마
 export const activitySchema = z.object({
-  title: z.string().min(1, '제목은 필수입니다'),
+  title: z.string().min(1, "제목은 필수입니다"),
   category_id: z.number().optional(),
   description: z.string().optional(),
 });
 
 export const moveSchema = z.object({
-  executed_at: z.string().min(1, '날짜는 필수입니다'),
+  executed_at: z.string().min(1, "날짜는 필수입니다"),
 });
 
 // 타입 추론
@@ -71,4 +71,4 @@ export interface MovePopoverState {
 }
 
 // 재사용 타입들
-export type { ActivityDetail, Move, Category } from '@/lib/actions';
+export type { ActivityDetail, Move, Category } from "@/lib/actions";

@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { Edit2, X } from 'lucide-react';
-import { tv } from 'tailwind-variants';
-import { useMediaQuery } from '@/hooks/use-media-query';
-import { toast } from 'sonner';
-import dayjs from 'dayjs';
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Edit2, X } from "lucide-react";
+import { tv } from "tailwind-variants";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { toast } from "sonner";
+import dayjs from "dayjs";
 
 import {
   getActivityDetail,
@@ -21,12 +21,12 @@ import {
   updateActivity,
   deleteMove,
   createMoveWithDate,
-} from '@/lib/actions';
+} from "@/lib/actions";
 
-import ActivityInfoSection from './ActivityInfoSection';
-import ExecutionCalendar from './ExecutionCalendar';
-import MovePopover from './MovePopover';
-import DetailModalSkeleton from './DetailModalSkeleton';
+import ActivityInfoSection from "./ActivityInfoSection";
+import ExecutionCalendar from "./ExecutionCalendar";
+import MovePopover from "./MovePopover";
+import DetailModalSkeleton from "./DetailModalSkeleton";
 import {
   LastMoveDetailModalProps,
   ActivityDetail,
@@ -35,18 +35,18 @@ import {
   ActivityFormData,
   MoveFormData,
   MovePopoverState,
-} from './types';
+} from "./types";
 
 const sheetContentVariants = tv({
-  base: 'overflow-y-auto',
+  base: "overflow-y-auto",
   variants: {
     side: {
-      right: '',
-      bottom: 'h-auto max-h-[65vh]',
+      right: "",
+      bottom: "h-auto max-h-[65vh]",
     },
   },
   defaultVariants: {
-    side: 'bottom',
+    side: "bottom",
   },
 });
 
@@ -72,7 +72,7 @@ export default function LastMoveDetailModal({
     triggerPosition: null,
   });
 
-  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   // 데이터 로드 함수
   const loadData = useCallback(async () => {
@@ -90,8 +90,8 @@ export default function LastMoveDetailModal({
       setMoves(movesData);
       setCategories(categoriesData);
     } catch (error) {
-      console.error('Failed to load data:', error);
-      toast.error('데이터 로드에 실패했습니다');
+      console.error("Failed to load data:", error);
+      toast.error("데이터 로드에 실패했습니다");
     } finally {
       setIsLoading(false);
     }
@@ -111,15 +111,15 @@ export default function LastMoveDetailModal({
     try {
       const result = await updateActivity(activityId, data);
       if (result.success) {
-        toast.success('활동이 수정되었습니다');
+        toast.success("활동이 수정되었습니다");
         setIsEditing(false);
         await loadData();
       } else {
-        toast.error(result.error || '활동 수정에 실패했습니다');
+        toast.error(result.error || "활동 수정에 실패했습니다");
       }
     } catch (error) {
-      console.error('Failed to update activity:', error);
-      toast.error('활동 수정 중 오류가 발생했습니다');
+      console.error("Failed to update activity:", error);
+      toast.error("활동 수정 중 오류가 발생했습니다");
     }
   };
 
@@ -133,15 +133,15 @@ export default function LastMoveDetailModal({
     try {
       const result = await createMoveWithDate(activityId, data.executed_at);
       if (result.success) {
-        toast.success('기록이 추가되었습니다');
+        toast.success("기록이 추가되었습니다");
         setPopoverState((prev) => ({ ...prev, isOpen: false }));
         await loadData();
       } else {
-        toast.error(result.error || '기록 추가에 실패했습니다');
+        toast.error(result.error || "기록 추가에 실패했습니다");
       }
     } catch (error) {
-      console.error('Failed to create move:', error);
-      toast.error('기록 추가 중 오류가 발생했습니다');
+      console.error("Failed to create move:", error);
+      toast.error("기록 추가 중 오류가 발생했습니다");
     } finally {
       setIsSubmitting(false);
     }
@@ -153,15 +153,15 @@ export default function LastMoveDetailModal({
     try {
       const result = await deleteMove(moveId);
       if (result.success) {
-        toast.success('기록이 삭제되었습니다');
+        toast.success("기록이 삭제되었습니다");
         setPopoverState((prev) => ({ ...prev, isOpen: false }));
         await loadData();
       } else {
-        toast.error(result.error || '기록 삭제에 실패했습니다');
+        toast.error(result.error || "기록 삭제에 실패했습니다");
       }
     } catch (error) {
-      console.error('Failed to delete move:', error);
-      toast.error('기록 삭제 중 오류가 발생했습니다');
+      console.error("Failed to delete move:", error);
+      toast.error("기록 삭제 중 오류가 발생했습니다");
     } finally {
       setIsSubmitting(false);
     }
@@ -170,10 +170,10 @@ export default function LastMoveDetailModal({
   // 캘린더 날짜 클릭 핸들러
   const handleCalendarDateClick = (
     date: Date,
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     const moveOnDate = moves.find((move) =>
-      dayjs(move.executed_at).isSame(dayjs(date), 'day'),
+      dayjs(move.executed_at).isSame(dayjs(date), "day")
     );
 
     // 클릭된 버튼의 위치 계산
@@ -207,13 +207,13 @@ export default function LastMoveDetailModal({
     return (
       <Sheet open={isOpen} onOpenChange={onClose}>
         <SheetContent
-          side={isDesktop ? 'right' : 'bottom'}
+          side={isDesktop ? "right" : "bottom"}
           className={sheetContentVariants({
-            side: isDesktop ? 'right' : 'bottom',
+            side: isDesktop ? "right" : "bottom",
           })}
         >
           <SheetHeader>
-            <SheetTitle>활동 상세 정보</SheetTitle>
+            <SheetTitle>로딩 중...</SheetTitle>
           </SheetHeader>
           <DetailModalSkeleton />
         </SheetContent>
@@ -226,13 +226,13 @@ export default function LastMoveDetailModal({
     return (
       <Sheet open={isOpen} onOpenChange={onClose}>
         <SheetContent
-          side={isDesktop ? 'right' : 'bottom'}
+          side={isDesktop ? "right" : "bottom"}
           className={sheetContentVariants({
-            side: isDesktop ? 'right' : 'bottom',
+            side: isDesktop ? "right" : "bottom",
           })}
         >
           <SheetHeader>
-            <SheetTitle>활동 상세 정보</SheetTitle>
+            <SheetTitle>활동을 찾을 수 없습니다</SheetTitle>
           </SheetHeader>
           <div className="flex items-center justify-center p-8">
             활동을 찾을 수 없습니다
@@ -245,26 +245,26 @@ export default function LastMoveDetailModal({
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
-        side={isDesktop ? 'right' : 'bottom'}
+        side={isDesktop ? "right" : "bottom"}
         className={sheetContentVariants({
-          side: isDesktop ? 'right' : 'bottom',
+          side: isDesktop ? "right" : "bottom",
         })}
       >
         <SheetHeader>
           <div className="flex items-center justify-between">
-            <SheetTitle>활동 상세 정보</SheetTitle>
+            <SheetTitle>{activity.title}</SheetTitle>
             <Button variant="outline" size="sm" onClick={handleEditToggle}>
               {isEditing ? (
                 <X className="h-4 w-4" />
               ) : (
                 <Edit2 className="h-4 w-4" />
               )}
-              {isEditing ? '취소' : '편집'}
+              {isEditing ? "취소" : "편집"}
             </Button>
           </div>
         </SheetHeader>
 
-        <div className="p-4 space-y-6">
+        <div className="px-4 space-y-6">
           {/* 활동 정보 섹션 */}
           <ActivityInfoSection
             activity={activity}
