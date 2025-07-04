@@ -277,7 +277,7 @@ export default function LastMoveDetailModal({
           </div>
         </SheetHeader>
 
-        <div className="px-4 space-y-6">
+        <div className="px-4 pb-4 space-y-6">
           {/* 활동 정보 섹션 */}
           <ActivityInfoSection
             activity={activity}
