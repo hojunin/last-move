@@ -6,6 +6,7 @@ import {
   getPendingNotifications,
   markNotificationAsSent,
 } from "./notifications";
+import * as Sentry from "@sentry/nextjs";
 
 // VAPID 키 설정
 const vapidPublicKey = process.env.VAPID_PUBLIC_KEY;
@@ -43,9 +44,31 @@ export async function sendPushNotification(
     priority?: "low" | "normal" | "high" | "urgent";
   }
 ) {
+  Sentry.addBreadcrumb({
+    message: "Starting push notification send",
+    category: "push-notification",
+    level: "info",
+    data: {
+      title: payload.title,
+      priority: payload.priority || "normal",
+      hasNotificationId: !!payload.notificationId,
+    },
+  });
+
   try {
     if (!vapidPublicKey || !vapidPrivateKey) {
-      throw new Error("VAPID keys not configured");
+      const error = new Error("VAPID keys not configured");
+      Sentry.captureException(error, {
+        tags: {
+          component: "push-service",
+          action: "sendPushNotification",
+        },
+        extra: {
+          hasVapidPublic: !!vapidPublicKey,
+          hasVapidPrivate: !!vapidPrivateKey,
+        },
+      });
+      throw error;
     }
 
     const pushPayload = JSON.stringify({
@@ -81,15 +104,49 @@ export async function sendPushNotification(
       },
     };
 
+    Sentry.addBreadcrumb({
+      message: "Sending notification to web push service",
+      category: "push-notification",
+      level: "info",
+      data: {
+        endpoint: validatedSubscription.endpoint,
+        payloadSize: pushPayload.length,
+        ttl: options.TTL,
+        urgency: options.urgency,
+      },
+    });
+
     const result = await webpush.sendNotification(
       validatedSubscription,
       pushPayload,
       options
     );
 
+    Sentry.addBreadcrumb({
+      message: "Push notification sent successfully",
+      category: "push-notification",
+      level: "info",
+      data: {
+        statusCode: result.statusCode,
+        title: payload.title,
+      },
+    });
+
     console.log("✅ Push notification sent successfully:", result.statusCode);
     return { success: true, statusCode: result.statusCode };
   } catch (error) {
+    Sentry.captureException(error, {
+      tags: {
+        component: "push-service",
+        action: "sendPushNotification",
+      },
+      extra: {
+        title: payload.title,
+        priority: payload.priority,
+        endpoint: (subscription as PushSubscriptionData).endpoint,
+      },
+    });
+
     console.error("❌ Failed to send push notification:", error);
     return {
       success: false,
@@ -100,21 +157,53 @@ export async function sendPushNotification(
 
 // NOTE: 대기 중인 모든 알림 발송
 export async function sendPendingNotifications() {
+  Sentry.addBreadcrumb({
+    message: "Starting pending notifications send",
+    category: "push-notification",
+    level: "info",
+  });
+
   try {
     console.log("🚀 Checking for pending notifications...");
+
+    Sentry.addBreadcrumb({
+      message: "Fetching pending notifications",
+      category: "push-notification",
+      level: "info",
+    });
 
     const pendingNotifications = await getPendingNotifications();
 
     if (pendingNotifications.length === 0) {
+      Sentry.addBreadcrumb({
+        message: "No pending notifications found",
+        category: "push-notification",
+        level: "info",
+      });
       console.log("📭 No pending notifications found");
       return { success: true, sent: 0, message: "발송할 알림이 없습니다" };
     }
+
+    Sentry.addBreadcrumb({
+      message: "Pending notifications found",
+      category: "push-notification",
+      level: "info",
+      data: {
+        count: pendingNotifications.length,
+      },
+    });
 
     console.log(
       `📬 Found ${pendingNotifications.length} pending notifications`
     );
 
     // 사용자별 구독 정보 가져오기
+    Sentry.addBreadcrumb({
+      message: "Fetching user subscriptions",
+      category: "push-notification",
+      level: "info",
+    });
+
     const subscriptions = await sql`
       SELECT user_id, push_subscription 
       FROM user_notification_settings 
@@ -123,9 +212,23 @@ export async function sendPendingNotifications() {
     `;
 
     if (subscriptions.rows.length === 0) {
+      Sentry.addBreadcrumb({
+        message: "No active subscriptions found",
+        category: "push-notification",
+        level: "warning",
+      });
       console.log("📭 No active push subscriptions found");
       return { success: true, sent: 0, message: "활성 구독이 없습니다" };
     }
+
+    Sentry.addBreadcrumb({
+      message: "Active subscriptions found",
+      category: "push-notification",
+      level: "info",
+      data: {
+        subscriptionCount: subscriptions.rows.length,
+      },
+    });
 
     let sentCount = 0;
     let errorCount = 0;
@@ -188,6 +291,17 @@ export async function sendPendingNotifications() {
       `📊 Push notification summary: ${sentCount} sent, ${errorCount} failed`
     );
 
+    Sentry.addBreadcrumb({
+      message: "Pending notifications processing completed",
+      category: "push-notification",
+      level: "info",
+      data: {
+        sentCount,
+        errorCount,
+        totalProcessed: sentCount + errorCount,
+      },
+    });
+
     return {
       success: true,
       sent: sentCount,
@@ -195,6 +309,13 @@ export async function sendPendingNotifications() {
       message: `${sentCount}개 알림 발송 완료, ${errorCount}개 실패`,
     };
   } catch (error) {
+    Sentry.captureException(error, {
+      tags: {
+        component: "push-service",
+        action: "sendPendingNotifications",
+      },
+    });
+
     console.error("❌ Failed to send pending notifications:", error);
     return {
       success: false,
@@ -215,8 +336,26 @@ export async function sendImmediateNotification(
     priority?: "low" | "normal" | "high" | "urgent";
   }
 ) {
+  Sentry.addBreadcrumb({
+    message: "Starting immediate notification send",
+    category: "push-notification",
+    level: "info",
+    data: {
+      userId,
+      notificationTitle: notification.title,
+      priority: notification.priority || "normal",
+    },
+  });
+
   try {
     // 사용자 구독 정보 가져오기
+    Sentry.addBreadcrumb({
+      message: "Fetching user subscription",
+      category: "push-notification",
+      level: "info",
+      data: { userId },
+    });
+
     const result = await sql`
       SELECT push_subscription 
       FROM user_notification_settings 
@@ -226,19 +365,87 @@ export async function sendImmediateNotification(
     `;
 
     if (result.rows.length === 0) {
+      Sentry.captureMessage("No subscription found for user", {
+        level: "warning",
+        tags: {
+          component: "push-service",
+          action: "sendImmediateNotification",
+        },
+        extra: {
+          userId,
+          notificationTitle: notification.title,
+        },
+      });
+
       return { success: false, error: "사용자 구독 정보를 찾을 수 없습니다" };
     }
 
+    Sentry.addBreadcrumb({
+      message: "User subscription found",
+      category: "push-notification",
+      level: "info",
+      data: {
+        userId,
+        subscriptionExists: true,
+      },
+    });
+
     const subscription = JSON.parse(result.rows[0].push_subscription);
+
+    Sentry.addBreadcrumb({
+      message: "Subscription parsed successfully",
+      category: "push-notification",
+      level: "info",
+      data: {
+        userId,
+        hasEndpoint: !!subscription.endpoint,
+        hasKeys: !!(subscription.keys?.p256dh && subscription.keys?.auth),
+      },
+    });
 
     const pushResult = await sendPushNotification(subscription, notification);
 
     if (pushResult.success) {
+      Sentry.addBreadcrumb({
+        message: "Immediate notification sent successfully",
+        category: "push-notification",
+        level: "info",
+        data: {
+          userId,
+          notificationTitle: notification.title,
+          statusCode: pushResult.statusCode,
+        },
+      });
       console.log(`✅ Immediate notification sent to user ${userId}`);
+    } else {
+      Sentry.captureMessage("Failed to send push notification", {
+        level: "error",
+        tags: {
+          component: "push-service",
+          action: "sendPushNotification",
+        },
+        extra: {
+          userId,
+          notificationTitle: notification.title,
+          error: pushResult.error,
+        },
+      });
     }
 
     return pushResult;
   } catch (error) {
+    Sentry.captureException(error, {
+      tags: {
+        component: "push-service",
+        action: "sendImmediateNotification",
+      },
+      extra: {
+        userId,
+        notificationTitle: notification.title,
+        priority: notification.priority,
+      },
+    });
+
     console.error("❌ Failed to send immediate notification:", error);
     return {
       success: false,

@@ -37,27 +37,33 @@ export default function NotificationPermission({
   // Check notification permission status
   useEffect(() => {
     // Check browser support
-    const supported =
-      "Notification" in window &&
-      "serviceWorker" in navigator &&
-      "PushManager" in window;
+    const hasNotification = "Notification" in window;
+    const hasServiceWorker = "serviceWorker" in navigator;
+    const hasPushManager = "PushManager" in window;
+
+    const supported = hasNotification && hasServiceWorker && hasPushManager;
+
     setIsSupported(supported);
+
+    // Always log browser support details
+    Sentry.addBreadcrumb({
+      message: "Browser support check",
+      category: "notification",
+      level: "info",
+      data: {
+        hasNotification,
+        hasServiceWorker,
+        hasPushManager,
+        supported,
+        userAgent: navigator.userAgent,
+        protocol: window.location.protocol,
+        hostname: window.location.hostname,
+      },
+    });
 
     if (supported) {
       setPermission(Notification.permission);
       checkSubscription();
-    } else {
-      Sentry.addBreadcrumb({
-        message: "Push notifications not supported",
-        category: "notification",
-        level: "info",
-        data: {
-          hasNotification: "Notification" in window,
-          hasServiceWorker: "serviceWorker" in navigator,
-          hasPushManager: "PushManager" in window,
-          userAgent: navigator.userAgent,
-        },
-      });
     }
   }, []);
 
@@ -372,6 +378,39 @@ export default function NotificationPermission({
     }
   };
 
+  // Send local browser notification test
+  const sendLocalNotification = () => {
+    Sentry.addBreadcrumb({
+      message: "Sending local browser notification",
+      category: "notification",
+      level: "info",
+    });
+
+    try {
+      if (permission === "granted") {
+        new Notification("Local Test Notification", {
+          body: "This is a local browser notification test! 🎉",
+          icon: "/icon-192x192.png",
+          badge: "/badge-72x72.png",
+          tag: "local-test",
+        });
+        toast.success("Local notification sent!");
+      } else {
+        toast.error("Notification permission not granted");
+      }
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: {
+          component: "NotificationPermission",
+          action: "sendLocalNotification",
+        },
+      });
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      toast.error(`Failed to send local notification: ${errorMessage}`);
+    }
+  };
+
   // Check notification support
   if (!isSupported) {
     return (
@@ -385,6 +424,33 @@ export default function NotificationPermission({
             This browser does not support push notifications.
           </CardDescription>
         </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Debugging information */}
+          <details className="text-xs text-gray-500">
+            <summary className="cursor-pointer hover:text-gray-700">
+              🔍 Debug Information (for troubleshooting)
+            </summary>
+            <div className="mt-2 space-y-1 bg-gray-50 p-2 rounded">
+              <div>
+                Browser: {navigator.userAgent.split(" ").slice(-2).join(" ")}
+              </div>
+              <div>
+                HTTPS: {window.location.protocol === "https:" ? "✅" : "❌"}
+              </div>
+              <div>
+                Service Worker Support:{" "}
+                {"serviceWorker" in navigator ? "✅" : "❌"}
+              </div>
+              <div>
+                Push Manager Support: {"PushManager" in window ? "✅" : "❌"}
+              </div>
+              <div>
+                Notification Support: {"Notification" in window ? "✅" : "❌"}
+              </div>
+              <div>Current URL: {window.location.href}</div>
+            </div>
+          </details>
+        </CardContent>
       </Card>
     );
   }
@@ -463,7 +529,7 @@ export default function NotificationPermission({
           {permission === "granted" && isSubscribed && (
             <div className="space-y-2">
               <Button
-                onClick={sendTestNotification}
+                onClick={sendLocalNotification}
                 variant="outline"
                 className="w-full"
               >
@@ -475,7 +541,7 @@ export default function NotificationPermission({
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? "Sending..." : "Test Push Notification"}
+                {isLoading ? "Sending..." : "Server Push Notification"}
               </Button>
               <Button
                 onClick={unsubscribeFromPush}
