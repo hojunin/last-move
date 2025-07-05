@@ -136,7 +136,7 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
               size="sm"
               className="h-5 px-2 text-xs"
             >
-              {isLoading ? "Processing" : isCompletedToday ? "Done" : "✓"}
+              {isLoading ? "Processing" : isCompletedToday ? "✓" : "Done"}
             </Button>
           </div>
         </div>
