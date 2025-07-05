@@ -229,27 +229,38 @@ export async function savePushSubscription(
       }
     }
 
-    const result = await sql`
-      UPDATE user_notification_settings 
-      SET push_subscription = ${subscriptionStr}, updated_at = NOW()
+    // 먼저 기존 레코드가 있는지 확인
+    const existingRecord = await sql`
+      SELECT id FROM user_notification_settings 
       WHERE user_id = ${userId}
+      LIMIT 1
     `;
 
-    if (result.rowCount === 0) {
+    if (existingRecord.rows.length > 0) {
+      // 기존 레코드가 있으면 업데이트
+      await sql`
+        UPDATE user_notification_settings 
+        SET push_subscription = ${subscriptionStr}, updated_at = NOW()
+        WHERE user_id = ${userId}
+      `;
+
       Sentry.addBreadcrumb({
-        message: "No existing settings found, creating new record",
+        message: "Push subscription updated for existing user",
         category: "notification",
         level: "info",
       });
-
-      // 사용자 설정이 없으면 생성
+    } else {
+      // 기존 레코드가 없으면 새로 생성
       await sql`
         INSERT INTO user_notification_settings (user_id, push_subscription) 
         VALUES (${userId}, ${subscriptionStr})
-        ON CONFLICT (user_id) DO UPDATE SET 
-          push_subscription = ${subscriptionStr},
-          updated_at = NOW()
       `;
+
+      Sentry.addBreadcrumb({
+        message: "Push subscription created for new user",
+        category: "notification",
+        level: "info",
+      });
     }
 
     Sentry.addBreadcrumb({
