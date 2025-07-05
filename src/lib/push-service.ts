@@ -56,6 +56,18 @@ export async function sendPushNotification(
   });
 
   try {
+    Sentry.addBreadcrumb({
+      message: "Checking VAPID configuration",
+      category: "push-notification",
+      level: "debug",
+      data: {
+        hasVapidPublic: !!vapidPublicKey,
+        hasVapidPrivate: !!vapidPrivateKey,
+        vapidPublicLength: vapidPublicKey?.length || 0,
+        vapidPrivateLength: vapidPrivateKey?.length || 0,
+      },
+    });
+
     if (!vapidPublicKey || !vapidPrivateKey) {
       const error = new Error("VAPID keys not configured");
       Sentry.captureException(error, {
@@ -96,6 +108,21 @@ export async function sendPushNotification(
     };
 
     // 구독 데이터 타입 검증 및 변환
+    Sentry.addBreadcrumb({
+      message: "Validating subscription data",
+      category: "push-notification",
+      level: "debug",
+      data: {
+        hasEndpoint: !!(subscription as PushSubscriptionData).endpoint,
+        hasKeys: !!(subscription as PushSubscriptionData).keys,
+        hasP256dh: !!(subscription as PushSubscriptionData).keys?.p256dh,
+        hasAuth: !!(subscription as PushSubscriptionData).keys?.auth,
+        endpointDomain: (subscription as PushSubscriptionData).endpoint
+          ? new URL((subscription as PushSubscriptionData).endpoint).hostname
+          : "unknown",
+      },
+    });
+
     const validatedSubscription: webpush.PushSubscription = {
       endpoint: (subscription as PushSubscriptionData).endpoint,
       keys: {
@@ -107,12 +134,13 @@ export async function sendPushNotification(
     Sentry.addBreadcrumb({
       message: "Sending notification to web push service",
       category: "push-notification",
-      level: "info",
+      level: "debug",
       data: {
         endpoint: validatedSubscription.endpoint,
         payloadSize: pushPayload.length,
         ttl: options.TTL,
         urgency: options.urgency,
+        title: payload.title,
       },
     });
 
@@ -123,17 +151,53 @@ export async function sendPushNotification(
     );
 
     Sentry.addBreadcrumb({
-      message: "Push notification sent successfully",
+      message: "Web push service response received",
       category: "push-notification",
-      level: "info",
+      level: "debug",
       data: {
         statusCode: result.statusCode,
         title: payload.title,
+        hasBody: !!result.body,
+        headers: result.headers || {},
       },
     });
 
-    console.log("✅ Push notification sent successfully:", result.statusCode);
-    return { success: true, statusCode: result.statusCode };
+    if (result.statusCode >= 200 && result.statusCode < 300) {
+      Sentry.addBreadcrumb({
+        message: "Push notification sent successfully",
+        category: "push-notification",
+        level: "info",
+        data: {
+          statusCode: result.statusCode,
+          title: payload.title,
+        },
+      });
+      console.log("✅ Push notification sent successfully:", result.statusCode);
+      return { success: true, statusCode: result.statusCode };
+    } else {
+      Sentry.captureMessage(
+        "Push notification failed with non-success status",
+        {
+          level: "error",
+          tags: {
+            component: "push-service",
+            action: "sendPushNotification",
+          },
+          extra: {
+            statusCode: result.statusCode,
+            title: payload.title,
+            endpoint: validatedSubscription.endpoint,
+            responseBody: result.body,
+            responseHeaders: result.headers,
+          },
+        }
+      );
+      return {
+        success: false,
+        statusCode: result.statusCode,
+        error: `Push service returned status ${result.statusCode}`,
+      };
+    }
   } catch (error) {
     Sentry.captureException(error, {
       tags: {
@@ -352,7 +416,7 @@ export async function sendImmediateNotification(
     Sentry.addBreadcrumb({
       message: "Fetching user subscription",
       category: "push-notification",
-      level: "info",
+      level: "debug",
       data: { userId },
     });
 
@@ -364,6 +428,17 @@ export async function sendImmediateNotification(
         AND push_subscription != ''
     `;
 
+    Sentry.addBreadcrumb({
+      message: "Database query completed",
+      category: "push-notification",
+      level: "debug",
+      data: {
+        userId,
+        rowCount: result.rows.length,
+        hasSubscription: result.rows.length > 0,
+      },
+    });
+
     if (result.rows.length === 0) {
       Sentry.captureMessage("No subscription found for user", {
         level: "warning",
@@ -374,6 +449,7 @@ export async function sendImmediateNotification(
         extra: {
           userId,
           notificationTitle: notification.title,
+          queryResult: "no rows returned",
         },
       });
 
@@ -383,27 +459,70 @@ export async function sendImmediateNotification(
     Sentry.addBreadcrumb({
       message: "User subscription found",
       category: "push-notification",
-      level: "info",
+      level: "debug",
       data: {
         userId,
         subscriptionExists: true,
+        subscriptionLength: result.rows[0].push_subscription.length,
       },
     });
 
-    const subscription = JSON.parse(result.rows[0].push_subscription);
+    let subscription;
+    try {
+      subscription = JSON.parse(result.rows[0].push_subscription);
+    } catch (parseError) {
+      Sentry.captureException(parseError, {
+        tags: {
+          component: "push-service",
+          action: "parseSubscription",
+        },
+        extra: {
+          userId,
+          subscriptionData: result.rows[0].push_subscription,
+        },
+      });
+      return { success: false, error: "구독 정보 파싱에 실패했습니다" };
+    }
 
     Sentry.addBreadcrumb({
       message: "Subscription parsed successfully",
       category: "push-notification",
-      level: "info",
+      level: "debug",
       data: {
         userId,
         hasEndpoint: !!subscription.endpoint,
         hasKeys: !!(subscription.keys?.p256dh && subscription.keys?.auth),
+        endpointDomain: subscription.endpoint
+          ? new URL(subscription.endpoint).hostname
+          : "unknown",
+      },
+    });
+
+    Sentry.addBreadcrumb({
+      message: "Calling sendPushNotification",
+      category: "push-notification",
+      level: "debug",
+      data: {
+        userId,
+        notificationTitle: notification.title,
+        subscriptionEndpoint: subscription.endpoint,
       },
     });
 
     const pushResult = await sendPushNotification(subscription, notification);
+
+    Sentry.addBreadcrumb({
+      message: "sendPushNotification completed",
+      category: "push-notification",
+      level: "debug",
+      data: {
+        userId,
+        notificationTitle: notification.title,
+        success: pushResult.success,
+        statusCode: pushResult.statusCode,
+        error: pushResult.error || "none",
+      },
+    });
 
     if (pushResult.success) {
       Sentry.addBreadcrumb({
@@ -428,9 +547,22 @@ export async function sendImmediateNotification(
           userId,
           notificationTitle: notification.title,
           error: pushResult.error,
+          statusCode: pushResult.statusCode,
+          fullResult: pushResult,
         },
       });
     }
+
+    Sentry.addBreadcrumb({
+      message: "Returning immediate notification result",
+      category: "push-notification",
+      level: "debug",
+      data: {
+        userId,
+        success: pushResult.success,
+        resultData: pushResult,
+      },
+    });
 
     return pushResult;
   } catch (error) {

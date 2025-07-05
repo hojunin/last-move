@@ -60,11 +60,34 @@ export async function POST(request: NextRequest) {
       });
 
       // 세션에서 user_id 가져오기
+      Sentry.addBreadcrumb({
+        message: "Checking user authentication",
+        category: "api",
+        level: "debug",
+      });
+
       const session = await auth();
+
+      Sentry.addBreadcrumb({
+        message: "Authentication check completed",
+        category: "api",
+        level: "debug",
+        data: {
+          hasSession: !!session,
+          hasUser: !!session?.user,
+          hasUserId: !!session?.user?.id,
+          userEmail: session?.user?.email || "not available",
+        },
+      });
 
       if (!session?.user?.id) {
         Sentry.captureMessage("Unauthorized immediate notification request", {
           level: "warning",
+          extra: {
+            sessionExists: !!session,
+            userExists: !!session?.user,
+            userIdExists: !!session?.user?.id,
+          },
         });
         return NextResponse.json(
           { success: false, error: "인증되지 않은 사용자입니다" },
@@ -74,23 +97,76 @@ export async function POST(request: NextRequest) {
 
       const userId = session.user.id;
 
-      Sentry.setUser({ id: userId });
+      Sentry.setUser({
+        id: userId,
+        email: session.user.email || undefined,
+      });
       Sentry.addBreadcrumb({
         message: "User authenticated for immediate notification",
         category: "api",
         level: "info",
-        data: { userId },
+        data: {
+          userId,
+          userEmail: session.user.email,
+          notificationTitle: notification.title,
+        },
       });
 
       // 즉시 알림 발송
+      Sentry.addBreadcrumb({
+        message: "Calling sendImmediateNotification",
+        category: "api",
+        level: "debug",
+        data: {
+          userId,
+          notificationData: {
+            title: notification.title,
+            body: notification.body,
+            priority: notification.priority,
+          },
+        },
+      });
+
       const result = await sendImmediateNotification(userId, notification);
 
       Sentry.addBreadcrumb({
         message: "Immediate notification processed",
         category: "api",
         level: "info",
-        data: result,
+        data: {
+          result,
+          success: result.success,
+          error: result.error || "none",
+        },
       });
+
+      // 결과에 따른 추가 디버그 로깅
+      if (result.success) {
+        Sentry.addBreadcrumb({
+          message: "Notification API returning success",
+          category: "api",
+          level: "debug",
+          data: {
+            userId,
+            notificationTitle: notification.title,
+            resultData: result,
+          },
+        });
+      } else {
+        Sentry.captureMessage("Immediate notification failed", {
+          level: "error",
+          tags: {
+            component: "api-route",
+            action: "immediate-notification",
+          },
+          extra: {
+            userId,
+            notificationTitle: notification.title,
+            error: result.error,
+            fullResult: result,
+          },
+        });
+      }
 
       return NextResponse.json(result);
     } else {
