@@ -1,0 +1,148 @@
+# Instructions
+
+During you interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the `.cursorrules` file so you will not make the same mistake again. 
+
+You should also use the `.cursorrules` file as a scratchpad to organize your thoughts. Especially when you receive a new task, you should first review the content of the scratchpad, clear old different task if necessary, first explain the task, and plan the steps you need to take to complete the task. You can use todo markers to indicate the progress, e.g.
+[X] Task 1
+[ ] Task 2
+
+Also update the progress of the task in the Scratchpad when you finish a subtask.
+Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the scratchpad to reflect and plan.
+The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
+
+# Lessons
+
+## User Specified Lessons
+
+- You have a python venv in ./venv. Use it.
+- Include info useful for debugging in the program output.
+- Read the file before you try to edit it.
+- Due to Cursor's limit, when you use `git` and `gh` and need to submit a multiline commit message, first write the message in a file, and then use `git commit -F <filename>` or similar command to commit. And then remove the file. Include "[Cursor] " in the commit message and PR title.
+
+## Cursor learned
+
+- For search results, ensure proper handling of different character encodings (UTF-8) for international queries
+- Add debug information to stderr while keeping the main output clean in stdout for better pipeline integration
+- When using seaborn styles in matplotlib, use 'seaborn-v0_8' instead of 'seaborn' as the style name due to recent seaborn version changes
+- Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
+- For Korean input in React, use onCompositionStart/End events to prevent character separation during IME input
+- **Node.js 16에서 Neon PostgreSQL 사용 시 fetch 에러 발생**: Node.js 16에서는 fetch가 기본 지원되지 않아 Neon serverless 패키지 사용 시 에러 발생. Node.js 18 이상 필요.
+- **PL/pgSQL DO $$ 블록과 세미콜론 분리 문제**: DO $$ 블록은 하나의 완전한 문이므로 세미콜론으로 분리하면 안 됨. 개별 SQL 문으로 작성하고 각각 try-catch로 처리하는 것이 안전.
+- **tailwind-variants 사용법**: 조건부 스타일링에서 문자열 보간 및 삼항 연산자 대신 tv 함수를 사용하면 더 깔끔하고 유지보수하기 쉬운 코드 작성 가능. base 스타일과 variants 정의를 분리하여 타입 안전성과 가독성 향상.
+- **스마트 알림 시스템 구현**: 활동 주기별 맞춤형 알림 정책 설계 시 각 주기(일/주/월/분기/년)별로 다른 임계값 적용. 일단위는 당일 23시, 주/월/분기/년 단위는 주기의 80-95% 경과 시 알림 발송.
+- **푸시 알림 사용자 ID 타입 불일치 문제**: 스마트 알림 시스템에서 user_id를 문자열로 변환하여 알림 생성하지만, 푸시 서비스에서 구독 정보 매칭 시 타입 불일치로 실패. String() 변환을 통한 안전한 비교로 해결.
+
+# Scratchpad
+
+## Current Task: 스마트 알림 시스템 구현 (완료! ✅)
+
+**Task Overview:**
+활동 주기에 따른 맞춤형 알림 시스템 구현
+- 매일 오후 7시, 9시, 11시에 정기 알림 발송
+- 활동 주기별 임박 알림 정책 구현
+- GitHub Actions cron을 사용한 자동화 스케줄링
+- 활동 상태 기반 인텔리전트 알림 로직
+
+**알림 정책 설계:**
+1. **정기 알림 시간**: 매일 오후 7시, 9시, 11시 (KST)
+2. **주기별 임박 알림 규칙**:
+   - 일단위: 당일 오후 11시에 미완료시 알림
+   - 주단위: 주기의 80% 경과 시 알림 (예: 주1회 → 5일 경과시)
+   - 월단위: 주기의 90% 경과 시 알림 (예: 월1회 → 27일 경과시)
+   - 분기단위: 주기의 85% 경과 시 알림 (예: 분기1회 → 77일 경과시)
+   - 년단위: 주기의 95% 경과 시 알림 (예: 년1회 → 347일 경과시)
+
+**구현 계획:**
+[X] 1. 데이터베이스 스키마 설계
+  [X] notification_schedules 테이블 생성 (이미 존재)
+  [X] notification_history 테이블 생성 (이미 존재)
+  [X] 알림 상태 및 메타데이터 저장
+[X] 2. 알림 로직 구현
+  [X] 활동 상태 분석 함수 구현 (smart-notification-service.ts)
+  [X] 주기별 임박도 계산 로직 (calculateUrgencyPercentage)
+  [X] 알림 우선순위 결정 알고리즘 (shouldNotifyForActivity)
+  [X] 중복 알림 방지 로직 (기존 notifications 시스템 활용)
+[X] 3. 스케줄러 구현
+  [X] GitHub Actions cron 설정 (smart-notifications.yml)
+  [X] 알림 발송 API 엔드포인트 구현 (smart-check/route.ts)
+  [X] 에러 핸들링 및 재시도 로직 (Sentry 통합)
+[X] 4. 알림 메시지 개선
+  [X] 주기별 맞춤형 메시지 생성 (generateNotificationMessage)
+  [X] 활동 상태 기반 메시지 개인화
+  [X] 한국어 지원 (다국어 지원 추후 확장 가능)
+[X] 5. 모니터링 및 관리
+  [X] 알림 발송 통계 대시보드 (SmartNotificationManager)
+  [X] 사용자별 알림 설정 관리 (기존 시스템 활용)
+  [X] 알림 효과 분석 기능 (getUserNotificationStats)
+[X] 6. 시스템 테스트 및 검증
+  [X] 사용자 ID 타입 불일치 문제 발견 및 해결
+  [X] 푸시 알림 발송 로직 수정 (String 변환 비교)
+  [X] 실제 알림 발송 테스트 성공
+
+**기술적 구현 완료:**
+✅ **smart-notification-service.ts**: 핵심 알림 로직
+  - 주기별 임박도 계산 (calculateUrgencyPercentage)
+  - 알림 정책 매칭 (shouldNotifyForActivity)
+  - 메시지 생성 (generateNotificationMessage)
+  - 정기 알림 시간 체크 (checkScheduledNotifications)
+  - 수동 트리거 (triggerManualNotificationCheck)
+
+✅ **API 엔드포인트**: /api/notifications/smart-check
+  - POST: 알림 체크, 수동 트리거
+  - GET: 사용자별 알림 통계 조회
+
+✅ **GitHub Actions**: .github/workflows/smart-notifications.yml
+  - 매일 19시, 21시, 23시 (KST) 정기 알림
+  - 매시간 체크 (임박 알림용)
+  - 수동 실행 가능 (workflow_dispatch)
+
+✅ **관리 대시보드**: 
+  - SmartNotificationManager 컴포넌트
+  - /admin/notifications 페이지
+  - 실시간 통계 조회 및 수동 트리거 기능
+
+✅ **타입 불일치 문제 해결**:
+  - push-service.ts의 사용자 매칭 로직 수정
+  - String() 변환을 통한 안전한 비교
+  - 3개 알림 발송 완료, 0개 실패 확인
+
+**데이터베이스 활용:**
+- 기존 notifications 테이블 활용
+- 기존 user_notification_settings 테이블 활용
+- 기존 activities 테이블의 frequency 정보 활용
+
+**GitHub Actions 스케줄:**
+- 매일 오후 7시, 9시, 11시 (KST): 정기 알림 체크
+- 매시간: 임박 알림 체크 및 발송
+- 수동 실행: workflow_dispatch 지원
+
+**최종 상태:**
+🎉 **스마트 알림 시스템 구현 완료!**
+✅ 스마트 알림 시스템 핵심 기능 구현 완료
+✅ 주기별 맞춤형 알림 정책 적용
+✅ 자동화된 스케줄링 시스템 구현
+✅ 관리 대시보드 및 모니터링 기능 완성
+✅ 기존 푸시 알림 인프라와 완전 통합
+✅ 사용자 ID 타입 불일치 문제 해결
+✅ 실제 푸시 알림 발송 검증 완료
+
+**기술적 우수성:**
+- 한국 시간대 (KST) 정확한 처리
+- 주기별 세분화된 알림 정책
+- Sentry 통합 에러 추적 및 로깅
+- 기존 시스템과의 완벽한 호환성
+- 확장 가능한 아키텍처 설계
+- 타입 안전한 사용자 매칭 로직
+
+## Previous Tasks (완료됨)
+
+### GlobalNav 상단 고정 및 Apple Glass UI 효과 구현 ✅
+### 활동 주기 기능 구현 ✅
+### 푸시 알림 구독 저장 ON CONFLICT 에러 수정 ✅
+### PWA 스플래시 화면 구현 ✅
+### Sentry 로깅 시스템 구축 ✅
+### FrequencySelector 컴포넌트 조건부 스타일 tailwind-variants로 변경 ✅
+### 활동 주기별 위험도 평가 시스템 구현 ✅
+### ActivityEditForm Select 컴포넌트 카테고리 표시 문제 해결 ✅
+### Sheet 닫기 시 Edit 모드 상태 초기화 ✅
+### 스마트 알림 시스템 구현 ✅

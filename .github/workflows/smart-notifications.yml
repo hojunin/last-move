@@ -1,0 +1,139 @@
+name: Smart Notifications
+
+on:
+  schedule:
+    # 매일 오후 7시 (KST 19:00 = UTC 10:00)
+    - cron: '0 10 * * *'
+    # 매일 오후 9시 (KST 21:00 = UTC 12:00)
+    - cron: '0 12 * * *'
+    # 매일 오후 11시 (KST 23:00 = UTC 14:00)
+    - cron: '0 14 * * *'
+    # 매시간 체크 (임박 알림용)
+    - cron: '0 * * * *'
+
+  # 수동 실행 가능
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'check'
+        type: choice
+        options:
+          - check
+          - trigger
+      force_send:
+        description: 'Force send notifications even if not regular time'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  smart-notifications:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check smart notifications
+        env:
+          # 데이터베이스 연결 정보
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+          # VAPID 키 (푸시 알림용)
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+
+          # Sentry 설정
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+
+          # NextAuth 설정
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+
+          # 배포 URL
+          DEPLOYMENT_URL: ${{ secrets.DEPLOYMENT_URL }}
+
+        run: |
+          # 현재 시간 확인
+          echo "🕐 Current time (UTC): $(date -u)"
+          echo "🇰🇷 Current time (KST): $(TZ=Asia/Seoul date)"
+
+          # 액션 결정
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            ACTION="${{ github.event.inputs.action }}"
+            FORCE_SEND="${{ github.event.inputs.force_send }}"
+          else
+            ACTION="check"
+            FORCE_SEND="false"
+          fi
+
+          echo "📋 Action: $ACTION"
+          echo "⚡ Force send: $FORCE_SEND"
+
+          # API 엔드포인트 호출
+          if [ -n "$DEPLOYMENT_URL" ]; then
+            API_URL="$DEPLOYMENT_URL/api/notifications/smart-check"
+          else
+            API_URL="https://last-move.vercel.app/api/notifications/smart-check"
+          fi
+
+          echo "🌐 API URL: $API_URL"
+
+          # 알림 체크 및 발송
+          RESPONSE=$(curl -s -X POST "$API_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"action\":\"$ACTION\",\"forceSend\":$FORCE_SEND}" \
+            -w "HTTP_STATUS:%{http_code}")
+
+          # HTTP 상태 코드 추출
+          HTTP_STATUS=$(echo "$RESPONSE" | grep -o "HTTP_STATUS:[0-9]*" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | sed 's/HTTP_STATUS:[0-9]*$//')
+
+          echo "📊 HTTP Status: $HTTP_STATUS"
+          echo "📄 Response Body: $BODY"
+
+          # 결과 처리
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "✅ Smart notifications check completed successfully"
+            
+            # 결과 파싱 및 출력
+            if command -v jq &> /dev/null; then
+              echo "📈 Analysis Result:"
+              echo "$BODY" | jq '.'
+            else
+              echo "📈 Raw Response: $BODY"
+            fi
+          else
+            echo "❌ Smart notifications check failed with status $HTTP_STATUS"
+            echo "❌ Response: $BODY"
+            exit 1
+          fi
+
+      - name: Send status to Sentry
+        if: always()
+        run: |
+          # Sentry에 실행 상태 보고 (선택적)
+          if [ -n "$SENTRY_DSN" ]; then
+            echo "📤 Sending status to Sentry..."
+            
+            # 여기서 Sentry SDK를 사용하여 실행 상태를 보고할 수 있음
+            # 현재는 단순히 로그만 출력
+            echo "Sentry DSN configured, status reporting available"
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          echo "🧹 Cleanup completed"
+          echo "⏰ Workflow finished at: $(date -u)"

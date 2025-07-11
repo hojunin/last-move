@@ -1,0 +1,89 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Filename: cursorrules.md
+
+# Rule: Overall Objective
+
+The goal is to build the 'LastMove' application, a "days since" tracker app. This file outlines the specific implementation steps for each part of the application, from the data layer to the final UI polish.
+
+**Core Feature Requirements:**
+
+1.  **D-Day List:** A view that displays a list of items showing how many days have passed since the last action. It uses a Card UI. The layout must be responsive: full-width single-column cells on mobile, and a multi-column grid on desktop. Each card must contain the item's name, the last action date, the total action count, and an action button that immediately updates the item's last action date to the current date when clicked.
+
+2.  **D-Day Detail:** A detail view for a single item, showing its title, category, last action date, and total action count.
+
+3.  **D-Day Create/Edit:** A form that allows users to create new items or edit all the information present in the detail view.
+
+4.  **Cycle Management:** The ability for users to define a recurrence cycle for an item. This should support rules such as "every 3 days," "once a week," or "on specific days of the week" (e.g., every Monday and Friday).
+
+---
+
+## Rule: Backend & Data Layer Setup
+
+1.  **Database Schema**: Access the Vercel Postgres database associated with this project. Execute the SQL provided in the initial design document to create the `last_move_items` table, the `reminder_rule_type` ENUM, and the `trigger_set_timestamp` function and trigger. This schema must support all the core feature requirements.
+
+2.  **Database Client**: Create the file `app/lib/db.ts`. In this file, import the `sql` object from `@vercel/postgres` and export it for use in server-side modules.
+
+3.  **Server Actions**: Create the file `app/lib/actions.ts`. This file must be marked with `'use server'`.
+    - Define and export a TypeScript type named `LastMoveItem` that matches the structure of the `last_move_items` table for type safety across the application.
+    - Implement and export the `getItems` async function to query and return all items from the database, ordered by `last_action_at`.
+    - Implement and export the `createItem` async function, which accepts `FormData`, validates it using Zod, and inserts a new record into the database. It must call `revalidatePath('/')` upon success.
+    - Implement and export the `logAction` async function, which accepts an item `id`, updates its `last_action_at` to `NOW()`, and increments the `action_count`. It must also call `revalidatePath('/')`.
+
+---
+
+## Rule: Core Structure & Utilities
+
+1.  **Utilities**: Create the file `app/lib/utils.ts`.
+    - Implement a `cn` function for conditionally merging Tailwind CSS classes (you can copy this from `shadcn/ui` documentation).
+    - Implement a `daysSince` function that takes a date string and returns the number of days that have passed since that date.
+
+2.  **Root Layout**: In `app/layout.tsx`, configure the root layout.
+    - Set up the primary font (e.g., Inter) from `next/font/google`.
+    - Ensure the `<html>` and `<body>` tags are structured correctly and apply base background colors and font styles for light and dark modes.
+
+---
+
+## Rule: UI Component Implementation - Data Display
+
+1.  **Main Page**: The file `app/page.tsx` should be a Server Component. It must call the `getItems()` server action to fetch the initial data and pass the resulting array as a prop to the `LastMoveList` component.
+
+2.  **Item List Component**: Create the `app/components/LastMoveList.tsx` file as a Server Component.
+    - It should accept an `items` array prop.
+    - It must map over the `items` array and render a `LastMoveCard` component for each item.
+    - Implement an "empty state" UI that displays a user-friendly message when the `items` array is empty.
+    - The layout should be a responsive grid (e.g., 1 column on mobile, 2 on tablet, 3 on desktop).
+
+3.  **Item Card Component**: Create the `app/components/LastMoveCard.tsx` file as a Client Component (`'use client'`).
+    - It must accept a single `item` object as a prop.
+    - Display all necessary item information: title, the calculated "days ago" value, the last action date, and the total action count.
+    - Create a "Log Action Now" button. This button's `onClick` handler must use the `useTransition` hook to call the `logAction(item.id)` server action without blocking the UI. The button should show a "Logging..." state while the transition is pending.
+
+---
+
+## Rule: UI Component Implementation - Interactivity
+
+1.  **Global Navigation**: Create the `app/components/GlobalNav.tsx` file as a Client Component.
+    - Implement the top navigation bar containing the app title, a "+" icon button for adding new items, and a settings icon button.
+    - Use the `useState` hook to manage the visibility state of the "Add Item" modal. The "+" button should toggle this state to `true`.
+
+2.  **Add Item Modal**: Create the `app/components/AddItemModal.tsx` file as a Client Component.
+    - Use the `<Dialog>` and `<Transition>` components from `@headlessui/react` to build an accessible and smoothly animated modal.
+    - The modal should contain a `<form>` element with input fields for `title`, `category`, and `last_action_at` (as a `datetime-local` input). This form should also contain UI elements for setting the **Cycle Management** rules.
+    - The form's `action` attribute should be linked to the `createItem` server action.
+    - Upon successful submission, the form should be cleared, and the modal's `onClose` function should be called.
+
+---
+
+## Rule: Final Polish - Styling & Animation
+
+1.  **Styling**: Apply Tailwind CSS classes across all created components to match the minimalist, clean design aesthetic. Ensure consistent spacing, typography, and color usage for both light and dark modes.
+
+2.  **Responsiveness**: Verify that the entire application, especially the grid layout in `LastMoveList`, is fully responsive and usable on all screen sizes from mobile to desktop.
+
+3.  **Animation**:
+    - In `LastMoveCard.tsx`, integrate GSAP. After the `logAction` server action successfully completes (within the `startTransition` callback), trigger a brief animation on the card element (e.g., a background color flash) to give the user immediate visual feedback.
+    - Ensure the enter/leave animations for the `AddItemModal` are configured correctly using the Headless UI `<Transition>` props for a polished user experience.
