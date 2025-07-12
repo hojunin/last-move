@@ -83,7 +83,7 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
   };
 
   // NOTE: 주기별 위험도 평가 함수
-  const getRiskColor = (
+  const getRiskClasses = (
     days: number | null,
     frequency: { type: string; value: number; unit: string },
   ) => {
@@ -181,11 +181,11 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
       ];
     }
 
-    // 색상 결정
+    // 색상 결정 및 애니메이션 추가
     if (hoursElapsed < colorSteps[0]) {
-      return 'text-green-600'; // 안전
+      return 'text-green-600 safe-glow'; // 안전 + 초록 glow
     } else if (hoursElapsed < colorSteps[1]) {
-      return 'text-yellow-500'; // 주의
+      return 'text-yellow-500 caution-glow'; // 주의 + 노랑 glow
     } else if (hoursElapsed < colorSteps[2]) {
       return 'text-orange-500'; // 경고
     } else if (colorSteps.length > 3 && hoursElapsed < colorSteps[3]) {
@@ -197,9 +197,9 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
     } else if (colorSteps.length > 6 && hoursElapsed < colorSteps[6]) {
       return 'text-red-600'; // 진한 위험
     } else if (colorSteps.length > 7 && hoursElapsed < colorSteps[7]) {
-      return 'text-red-700'; // 매우 위험
+      return 'text-red-700 animate-pulse'; // 매우 위험 + pulse (glow 제거)
     } else {
-      return 'text-red-800'; // 극도로 위험
+      return 'text-red-800 animate-pulse'; // 극도로 위험 + pulse (glow 제거)
     }
   };
 
@@ -227,7 +227,7 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
             <div className="flex items-center gap-1">
               <Clock className="h-3 w-3 text-muted-foreground" />
               <span
-                className={`text-xs font-medium ${getRiskColor(days, {
+                className={`text-xs font-medium ${getRiskClasses(days, {
                   type: item.frequency_type,
                   value: item.frequency_value,
                   unit: item.frequency_unit,

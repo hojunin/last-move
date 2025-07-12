@@ -187,8 +187,6 @@ export async function POST(request: NextRequest) {
           timestamp: new Date().toISOString(),
         });
       }
-
-      return NextResponse.json(result);
     } else {
       Sentry.captureMessage('Invalid notification request format', {
         level: 'warning',

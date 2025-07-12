@@ -214,3 +214,63 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
   transform: translateY(-1px) !important;
 }
+
+/* 위험도 애니메이션 효과 */
+.danger-glow {
+  /* 쉐도우 제거 - 색상만 유지 */
+}
+
+.extreme-danger-glow {
+  /* 쉐도우 제거 - 색상만 유지 */
+}
+
+/* 안전/주의 레벨 glow 효과 */
+.safe-glow {
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.6), 0 0 16px rgba(34, 197, 94, 0.4),
+    0 0 24px rgba(34, 197, 94, 0.2);
+}
+
+.caution-glow {
+  text-shadow: 0 0 8px rgba(234, 179, 8, 0.6), 0 0 16px rgba(234, 179, 8, 0.4),
+    0 0 24px rgba(234, 179, 8, 0.2);
+}
+
+/* 안전/주의 레벨 산뜻한 애니메이션 효과 - 제거 */
+.safe-bounce {
+  /* 애니메이션 제거 */
+}
+
+.caution-wiggle {
+  /* 애니메이션 제거 */
+}
+
+@keyframes safeBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes cautionWiggle {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  75% {
+    transform: translateX(1px);
+  }
+}
+
+/* 접근성 고려: 모션 감소 설정 시 애니메이션 비활성화 */
+@media (prefers-reduced-motion: reduce) {
+  .safe-glow,
+  .caution-glow {
+    text-shadow: none;
+  }
+}

@@ -34,108 +34,46 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: 스마트 알림 시스템 구현 (완료! ✅)
+## Current Task: LastMoveCard 위험도 색상 시스템 애니메이션 추가
 
 **Task Overview:**
-활동 주기에 따른 맞춤형 알림 시스템 구현
-- 매일 오후 7시, 9시, 11시에 정기 알림 발송
-- 활동 주기별 임박 알림 정책 구현
-- GitHub Actions cron을 사용한 자동화 스케줄링
-- 활동 상태 기반 인텔리전트 알림 로직
+LastMoveCard.tsx 컴포넌트의 위험도 색상 시스템에 애니메이션 효과 추가
+- 매우 위험한 수준(text-red-700)에 pulse 애니메이션 적용 ✅
+- 극도로 위험한 수준(text-red-800)에 glow 애니메이션 적용 ✅
+- **안전/주의 레벨에 산뜻한 애니메이션 추가** (진행 중)
+- TailwindCSS 애니메이션 클래스 활용
+- 사용자 경험 개선을 위한 시각적 강조 효과
 
-**알림 정책 설계:**
-1. **정기 알림 시간**: 매일 오후 7시, 9시, 11시 (KST)
-2. **주기별 임박 알림 규칙**:
-   - 일단위: 당일 오후 11시에 미완료시 알림
-   - 주단위: 주기의 80% 경과 시 알림 (예: 주1회 → 5일 경과시)
-   - 월단위: 주기의 90% 경과 시 알림 (예: 월1회 → 27일 경과시)
-   - 분기단위: 주기의 85% 경과 시 알림 (예: 분기1회 → 77일 경과시)
-   - 년단위: 주기의 95% 경과 시 알림 (예: 년1회 → 347일 경과시)
+**추가 작업 - 안전/주의 레벨 애니메이션:**
+[X] 1. 안전 레벨 (text-green-600) 산뜻한 애니메이션 설계
+[X] 2. 주의 레벨 (text-yellow-500) 부드러운 애니메이션 설계
+[X] 3. 쉐도우 없는 순수한 애니메이션 구현
+[X] 4. LastMoveCard.tsx 적용 및 테스트
 
-**구현 계획:**
-[X] 1. 데이터베이스 스키마 설계
-  [X] notification_schedules 테이블 생성 (이미 존재)
-  [X] notification_history 테이블 생성 (이미 존재)
-  [X] 알림 상태 및 메타데이터 저장
-[X] 2. 알림 로직 구현
-  [X] 활동 상태 분석 함수 구현 (smart-notification-service.ts)
-  [X] 주기별 임박도 계산 로직 (calculateUrgencyPercentage)
-  [X] 알림 우선순위 결정 알고리즘 (shouldNotifyForActivity)
-  [X] 중복 알림 방지 로직 (기존 notifications 시스템 활용)
-[X] 3. 스케줄러 구현
-  [X] GitHub Actions cron 설정 (smart-notifications.yml)
-  [X] 알림 발송 API 엔드포인트 구현 (smart-check/route.ts)
-  [X] 에러 핸들링 및 재시도 로직 (Sentry 통합)
-[X] 4. 알림 메시지 개선
-  [X] 주기별 맞춤형 메시지 생성 (generateNotificationMessage)
-  [X] 활동 상태 기반 메시지 개인화
-  [X] 한국어 지원 (다국어 지원 추후 확장 가능)
-[X] 5. 모니터링 및 관리
-  [X] 알림 발송 통계 대시보드 (SmartNotificationManager)
-  [X] 사용자별 알림 설정 관리 (기존 시스템 활용)
-  [X] 알림 효과 분석 기능 (getUserNotificationStats)
-[X] 6. 시스템 테스트 및 검증
-  [X] 사용자 ID 타입 불일치 문제 발견 및 해결
-  [X] 푸시 알림 발송 로직 수정 (String 변환 비교)
-  [X] 실제 알림 발송 테스트 성공
+**전체 구현 완료 ✅**
+- **안전 레벨**: `text-green-600 safe-glow` 적용
+  - 부드러운 초록색 glow 효과 (bounce 애니메이션 제거)
+- **주의 레벨**: `text-yellow-500 caution-glow` 적용
+  - 부드러운 노랑색 glow 효과 (wiggle 애니메이션 제거)
+- **매우 위험**: `text-red-700 animate-pulse` 적용 (glow 제거)
+- **극도로 위험**: `text-red-800 animate-pulse` 적용 (glow 제거)
+- **globals.css**: 새로운 glow 효과 클래스 추가
+  - `.safe-glow`: 초록색 glow 효과
+  - `.caution-glow`: 노랑색 glow 효과
+  - `.danger-glow`, `.extreme-danger-glow`: 쉐도우 제거
+- **접근성 지원**: `prefers-reduced-motion` 미디어 쿼리로 glow 효과 비활성화
 
-**기술적 구현 완료:**
-✅ **smart-notification-service.ts**: 핵심 알림 로직
-  - 주기별 임박도 계산 (calculateUrgencyPercentage)
-  - 알림 정책 매칭 (shouldNotifyForActivity)
-  - 메시지 생성 (generateNotificationMessage)
-  - 정기 알림 시간 체크 (checkScheduledNotifications)
-  - 수동 트리거 (triggerManualNotificationCheck)
-
-✅ **API 엔드포인트**: /api/notifications/smart-check
-  - POST: 알림 체크, 수동 트리거
-  - GET: 사용자별 알림 통계 조회
-
-✅ **GitHub Actions**: .github/workflows/smart-notifications.yml
-  - 매일 19시, 21시, 23시 (KST) 정기 알림
-  - 매시간 체크 (임박 알림용)
-  - 수동 실행 가능 (workflow_dispatch)
-
-✅ **관리 대시보드**: 
-  - SmartNotificationManager 컴포넌트
-  - /admin/notifications 페이지
-  - 실시간 통계 조회 및 수동 트리거 기능
-
-✅ **타입 불일치 문제 해결**:
-  - push-service.ts의 사용자 매칭 로직 수정
-  - String() 변환을 통한 안전한 비교
-  - 3개 알림 발송 완료, 0개 실패 확인
-
-**데이터베이스 활용:**
-- 기존 notifications 테이블 활용
-- 기존 user_notification_settings 테이블 활용
-- 기존 activities 테이블의 frequency 정보 활용
-
-**GitHub Actions 스케줄:**
-- 매일 오후 7시, 9시, 11시 (KST): 정기 알림 체크
-- 매시간: 임박 알림 체크 및 발송
-- 수동 실행: workflow_dispatch 지원
-
-**최종 상태:**
-🎉 **스마트 알림 시스템 구현 완료!**
-✅ 스마트 알림 시스템 핵심 기능 구현 완료
-✅ 주기별 맞춤형 알림 정책 적용
-✅ 자동화된 스케줄링 시스템 구현
-✅ 관리 대시보드 및 모니터링 기능 완성
-✅ 기존 푸시 알림 인프라와 완전 통합
-✅ 사용자 ID 타입 불일치 문제 해결
-✅ 실제 푸시 알림 발송 검증 완료
-
-**기술적 우수성:**
-- 한국 시간대 (KST) 정확한 처리
-- 주기별 세분화된 알림 정책
-- Sentry 통합 에러 추적 및 로깅
-- 기존 시스템과의 완벽한 호환성
-- 확장 가능한 아키텍처 설계
-- 타입 안전한 사용자 매칭 로직
+**최종 애니메이션 효과:**
+- **안전**: 초록색 glow 효과 (산뜻한 빛남)
+- **주의**: 노랑색 glow 효과 (부드러운 빛남)
+- **위험**: 단순 Pulse 애니메이션 (쉐도우 제거)
+- **극도 위험**: 단순 Pulse 애니메이션 (쉐도우 제거)
+- **산뜻하고 긍정적인 느낌**: 안전/주의 레벨 glow 효과
+- **성능 최적화**: 가벼운 glow 효과와 pulse 애니메이션
 
 ## Previous Tasks (완료됨)
 
+### 스마트 알림 시스템 구현 ✅
 ### GlobalNav 상단 고정 및 Apple Glass UI 효과 구현 ✅
 ### 활동 주기 기능 구현 ✅
 ### 푸시 알림 구독 저장 ON CONFLICT 에러 수정 ✅
@@ -145,4 +83,3 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 ### 활동 주기별 위험도 평가 시스템 구현 ✅
 ### ActivityEditForm Select 컴포넌트 카테고리 표시 문제 해결 ✅
 ### Sheet 닫기 시 Edit 모드 상태 초기화 ✅
-### 스마트 알림 시스템 구현 ✅
