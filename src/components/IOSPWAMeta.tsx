@@ -69,6 +69,19 @@ export default function IOSPWAMeta() {
         media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
       />
 
+      {/* iPhone 15 Alternative media queries for better compatibility */}
+      <link
+        rel="apple-touch-startup-image"
+        href="/splash_screens/iPhone_16__iPhone_15_Pro__iPhone_15__iPhone_14_Pro_portrait.png"
+        media="(width: 393px) and (height: 852px) and (-webkit-device-pixel-ratio: 3)"
+      />
+
+      <link
+        rel="apple-touch-startup-image"
+        href="/splash_screens/iPhone_16__iPhone_15_Pro__iPhone_15__iPhone_14_Pro_portrait.png"
+        media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"
+      />
+
       {/* iPhone 14 Pro Max, 15 Plus, 15 Pro Max (430x932) */}
       <link
         rel="apple-touch-startup-image"
@@ -153,7 +166,8 @@ export default function IOSPWAMeta() {
         media="(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
       />
 
-      {/* iOS 17+ Dynamic Splash Support */}
+      {/* iOS 17+ Enhanced PWA Support */}
+      <meta name="apple-mobile-web-app-title" content="LastMove" />
       <meta
         name="theme-color"
         content="#1e293b"
@@ -164,6 +178,8 @@ export default function IOSPWAMeta() {
         content="#1e293b"
         media="(prefers-color-scheme: dark)"
       />
+      <meta name="apple-touch-fullscreen" content="yes" />
+      <meta name="format-detection" content="telephone=no" />
 
       {/* 기본 폴백 이미지 */}
       <link

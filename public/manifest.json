@@ -9,6 +9,18 @@
   "orientation": "portrait-primary",
   "icons": [
     {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "/icon-180x180.png",
       "sizes": "180x180",
       "type": "image/png",
@@ -16,15 +28,31 @@
     },
     {
       "src": "/icon-192x192.png",
-      "sizes": "192x192",
+      "sizes": "256x256",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
     },
     {
       "src": "/icon-512x512.png",
-      "sizes": "512x512",
+      "sizes": "256x256",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/splash_screens/iPhone_16__iPhone_15_Pro__iPhone_15__iPhone_14_Pro_portrait.png",
+      "sizes": "1179x2556",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "iPhone 스크린샷"
+    },
+    {
+      "src": "/splash_screens/13__iPad_Pro_M4_portrait.png",
+      "sizes": "2064x2752",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "iPad 스크린샷"
     }
   ],
   "shortcuts": [
@@ -36,7 +64,7 @@
       "icons": [
         {
           "src": "/icon-192x192.png",
-          "sizes": "192x192"
+          "sizes": "256x256"
         }
       ]
     }
