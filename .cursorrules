@@ -31,48 +31,39 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 - **tailwind-variants 사용법**: 조건부 스타일링에서 문자열 보간 및 삼항 연산자 대신 tv 함수를 사용하면 더 깔끔하고 유지보수하기 쉬운 코드 작성 가능. base 스타일과 variants 정의를 분리하여 타입 안전성과 가독성 향상.
 - **스마트 알림 시스템 구현**: 활동 주기별 맞춤형 알림 정책 설계 시 각 주기(일/주/월/분기/년)별로 다른 임계값 적용. 일단위는 당일 23시, 주/월/분기/년 단위는 주기의 80-95% 경과 시 알림 발송.
 - **푸시 알림 사용자 ID 타입 불일치 문제**: 스마트 알림 시스템에서 user_id를 문자열로 변환하여 알림 생성하지만, 푸시 서비스에서 구독 정보 매칭 시 타입 불일치로 실패. String() 변환을 통한 안전한 비교로 해결.
+- **PWA 스플래시 화면 구현**: manifest.json에서 splash_pages null 제거, 14개 해상도별 스플래시 이미지 생성, iOS 메타 태그 최적화로 모든 주요 디바이스에서 스플래시 화면 지원. Node.js 18+ 버전 필요.
 
 # Scratchpad
 
-## Current Task: LastMoveCard 위험도 색상 시스템 애니메이션 추가
+## Current Task: PWA 스플래시 화면 미표시 문제 분석 및 수정
 
 **Task Overview:**
-LastMoveCard.tsx 컴포넌트의 위험도 색상 시스템에 애니메이션 효과 추가
-- 매우 위험한 수준(text-red-700)에 pulse 애니메이션 적용 ✅
-- 극도로 위험한 수준(text-red-800)에 glow 애니메이션 적용 ✅
-- **안전/주의 레벨에 산뜻한 애니메이션 추가** (진행 중)
-- TailwindCSS 애니메이션 클래스 활용
-- 사용자 경험 개선을 위한 시각적 강조 효과
+PWA 앱이 적용되어 있지만 스플래시 화면이 표시되지 않는 문제 분석
+- PWA 설정 확인
+- 스플래시 이미지 파일 검증
+- 매니페스트 설정 점검
+- iOS/Android 별 스플래시 화면 요구사항 확인
+- 메타 태그 설정 검토
 
-**추가 작업 - 안전/주의 레벨 애니메이션:**
-[X] 1. 안전 레벨 (text-green-600) 산뜻한 애니메이션 설계
-[X] 2. 주의 레벨 (text-yellow-500) 부드러운 애니메이션 설계
-[X] 3. 쉐도우 없는 순수한 애니메이션 구현
-[X] 4. LastMoveCard.tsx 적용 및 테스트
+**진단 결과:**
+[X] 1. manifest.json에 스플래시 관련 설정 부족 ✅
+[X] 2. 스플래시 이미지 크기/해상도 문제 ✅
+[X] 3. iOS PWA 메타 태그 설정 문제 ✅
+[X] 4. Next.js PWA 설정 문제 ✅
+[ ] 5. Node.js 18+ 버전 업그레이드 필요
 
-**전체 구현 완료 ✅**
-- **안전 레벨**: `text-green-600 safe-glow` 적용
-  - 부드러운 초록색 glow 효과 (bounce 애니메이션 제거)
-- **주의 레벨**: `text-yellow-500 caution-glow` 적용
-  - 부드러운 노랑색 glow 효과 (wiggle 애니메이션 제거)
-- **매우 위험**: `text-red-700 animate-pulse` 적용 (glow 제거)
-- **극도로 위험**: `text-red-800 animate-pulse` 적용 (glow 제거)
-  - **카드 전체**: `extreme-danger-card` 클래스 추가
-  - 빨간색 테두리 (#d32f2f) + borderPulse 애니메이션
-- **globals.css**: 새로운 glow 효과 클래스 추가
-  - `.safe-glow`: 초록색 glow 효과
-  - `.caution-glow`: 노랑색 glow 효과
-  - `.danger-glow`, `.extreme-danger-glow`: 쉐도우 제거
-  - `.extreme-danger-card`: 빨간색 테두리 pulse 애니메이션
-- **접근성 지원**: `prefers-reduced-motion` 미디어 쿼리로 모든 애니메이션 비활성화
+**수정 완료:**
+- manifest.json에서 splash_pages null 설정 제거
+- background_color와 theme_color를 앱 디자인에 맞게 조정 (#f8fafc, #1e293b)
+- 14개의 다양한 해상도 스플래시 이미지 생성 (640x1136부터 2048x2732까지)
+- iOS PWA 메타 태그 최적화 및 중복 제거
+- layout.tsx에서 중복 startupImage 설정 제거
+- IOSPWAMeta.tsx에 포괄적인 디바이스 지원 추가
 
-**최종 애니메이션 효과:**
-- **안전**: 초록색 glow 효과 (산뜻한 빛남)
-- **주의**: 노랑색 glow 효과 (부드러운 빛남)
-- **위험**: 단순 Pulse 애니메이션 (쉐도우 제거)
-- **극도 위험**: 단순 Pulse 애니메이션 + 카드 테두리 빨간색 pulse
-- **카드 레벨 강조**: 극도로 위험한 경우 카드 전체가 빨간 테두리로 강조
-- **성능 최적화**: 가벼운 glow 효과와 pulse 애니메이션
+**성과:**
+- iPhone SE부터 iPad Pro 12.9인치까지 모든 주요 iOS 디바이스 지원
+- Android PWA 자동 스플래시 생성을 위한 manifest.json 최적화
+- 테마 색상과 배경색이 앱 디자인과 일치하도록 조정
 
 ## Previous Tasks (완료됨)
 
