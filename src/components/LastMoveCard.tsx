@@ -203,6 +203,43 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
     }
   };
 
+  // NOTE: 극도로 위험한 경우 카드 스타일 결정
+  const isExtremeDanger = () => {
+    if (days === null) return false;
+
+    const { value, unit } = {
+      value: item.frequency_value,
+      unit: item.frequency_unit,
+    };
+
+    // 주기를 시간(시)으로 변환
+    let periodInHours = 0;
+    switch (unit) {
+      case 'days':
+        periodInHours = value * 24;
+        break;
+      case 'weeks':
+        periodInHours = value * 24 * 7;
+        break;
+      case 'months':
+        periodInHours = value * 24 * 30;
+        break;
+      case 'quarters':
+        periodInHours = value * 24 * 90;
+        break;
+      case 'years':
+        periodInHours = value * 24 * 365;
+        break;
+      default:
+        periodInHours = 24;
+    }
+
+    const hoursElapsed = days * 24;
+
+    // 극도로 위험 조건 확인 (최종 단계)
+    return hoursElapsed >= periodInHours;
+  };
+
   const getDaysText = (days: number | null) => {
     if (days === null) return 'No record';
     if (days === 0) return 'Today';
@@ -215,7 +252,9 @@ export default function LastMoveCard({ item }: LastMoveCardProps) {
       <div
         ref={cardRef}
         onClick={handleCardClick}
-        className="bg-white border border-gray-200 rounded-lg p-2.5 hover:shadow-md transition-shadow duration-200 h-fit cursor-pointer"
+        className={`bg-white border border-gray-200 rounded-lg p-2.5 hover:shadow-md transition-shadow duration-200 h-fit cursor-pointer ${
+          isExtremeDanger() ? 'extreme-danger-card' : ''
+        }`}
       >
         <div className="flex items-center justify-between">
           {/* 제목과 카테고리 */}

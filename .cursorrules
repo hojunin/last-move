@@ -57,18 +57,21 @@ LastMoveCard.tsx 컴포넌트의 위험도 색상 시스템에 애니메이션 �
   - 부드러운 노랑색 glow 효과 (wiggle 애니메이션 제거)
 - **매우 위험**: `text-red-700 animate-pulse` 적용 (glow 제거)
 - **극도로 위험**: `text-red-800 animate-pulse` 적용 (glow 제거)
+  - **카드 전체**: `extreme-danger-card` 클래스 추가
+  - 빨간색 테두리 (#d32f2f) + borderPulse 애니메이션
 - **globals.css**: 새로운 glow 효과 클래스 추가
   - `.safe-glow`: 초록색 glow 효과
   - `.caution-glow`: 노랑색 glow 효과
   - `.danger-glow`, `.extreme-danger-glow`: 쉐도우 제거
-- **접근성 지원**: `prefers-reduced-motion` 미디어 쿼리로 glow 효과 비활성화
+  - `.extreme-danger-card`: 빨간색 테두리 pulse 애니메이션
+- **접근성 지원**: `prefers-reduced-motion` 미디어 쿼리로 모든 애니메이션 비활성화
 
 **최종 애니메이션 효과:**
 - **안전**: 초록색 glow 효과 (산뜻한 빛남)
 - **주의**: 노랑색 glow 효과 (부드러운 빛남)
 - **위험**: 단순 Pulse 애니메이션 (쉐도우 제거)
-- **극도 위험**: 단순 Pulse 애니메이션 (쉐도우 제거)
-- **산뜻하고 긍정적인 느낌**: 안전/주의 레벨 glow 효과
+- **극도 위험**: 단순 Pulse 애니메이션 + 카드 테두리 빨간색 pulse
+- **카드 레벨 강조**: 극도로 위험한 경우 카드 전체가 빨간 테두리로 강조
 - **성능 최적화**: 가벼운 glow 효과와 pulse 애니메이션
 
 ## Previous Tasks (완료됨)

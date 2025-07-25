@@ -274,3 +274,33 @@
     text-shadow: none;
   }
 }
+
+/* 극도로 위험한 카드 배경 효과 */
+.extreme-danger-card {
+  border: 2px solid #d32f2f !important;
+  animation: borderPulse 2s ease-in-out infinite;
+}
+
+@keyframes borderPulse {
+  0%,
+  100% {
+    border-color: #d32f2f;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  50% {
+    border-color: #f44336;
+    box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.3),
+      0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* 접근성 고려: 모션 감소 설정 시 애니메이션 비활성화 */
+@media (prefers-reduced-motion: reduce) {
+  .safe-glow,
+  .caution-glow,
+  .extreme-danger-card {
+    text-shadow: none;
+    animation: none !important;
+  }
+}
