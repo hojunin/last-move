@@ -1,13 +1,14 @@
-import { Badge } from "@/components/ui/badge";
-import ActivityStats from "./ActivityStats";
-import ActivityEditForm from "./ActivityEditForm";
-import { ActivityInfoSectionProps } from "./types";
+import { Badge } from '@/components/ui/badge';
+import ActivityStats from './ActivityStats';
+import ActivityEditForm from './ActivityEditForm';
+import { ActivityInfoSectionProps } from './types';
 
 export default function ActivityInfoSection({
   activity,
   isEditing,
   onActivityUpdate,
   categories,
+  onClose,
 }: ActivityInfoSectionProps) {
   if (isEditing) {
     return (
@@ -16,6 +17,7 @@ export default function ActivityInfoSection({
           activity={activity}
           categories={categories}
           onSubmit={onActivityUpdate}
+          onClose={onClose}
         />
       </div>
     );

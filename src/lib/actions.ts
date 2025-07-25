@@ -627,3 +627,38 @@ export async function deleteMove(moveId: number) {
     return { success: false, error: 'Move 삭제에 실패했습니다' };
   }
 }
+
+// NOTE: 활동을 삭제하는 서버 액션 (소프트 삭제)
+export async function deleteActivity(activityId: number) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: '인증이 필요합니다' };
+    }
+
+    const userId = parseInt(session.user.id);
+
+    // 해당 활동이 현재 사용자의 것인지 확인
+    const activityCheck = await sql`
+      SELECT id FROM activities WHERE id = ${activityId} AND user_id = ${userId}
+    `;
+
+    if (activityCheck.rows.length === 0) {
+      return { success: false, error: '권한이 없는 활동입니다' };
+    }
+
+    // 소프트 삭제 (is_active를 false로 설정)
+    await sql`
+      UPDATE activities SET
+        is_active = false,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${activityId} AND user_id = ${userId}
+    `;
+
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete activity:', error);
+    return { success: false, error: '활동 삭제에 실패했습니다' };
+  }
+}

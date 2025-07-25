@@ -302,6 +302,7 @@ export default function LastMoveDetailModal({
             isEditing={isEditing}
             onActivityUpdate={handleActivityUpdate}
             categories={categories}
+            onClose={handleSheetClose.bind(null, false)}
           />
 
           {/* 실행 캘린더 */}

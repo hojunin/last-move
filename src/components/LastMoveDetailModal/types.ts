@@ -45,6 +45,7 @@ export interface ActivityInfoSectionProps {
   isEditing: boolean;
   onActivityUpdate: (data: ActivityFormData) => Promise<void>;
   categories: Category[];
+  onClose?: () => void;
 }
 
 export interface ActivityStatsProps {
